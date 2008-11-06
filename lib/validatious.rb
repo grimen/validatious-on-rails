@@ -24,11 +24,11 @@ module Validatious
     def self.from_active_record(object_or_class, method)
       # Get class
       klass = object_or_class.to_s.classify.constantize
-      options = { :class_name => "" }
+      options = { :class => "" }
 
       klass.reflect_on_validations_for(method).each do |validation|
-        opts = self.send(validation.macro.sub(/^validates_/, ''), validation)
-        options[:class_name] += " #{opts[:class_name]}"
+        opts = self.send(validation.macro.to_s.sub(/^validates_/, ''), validation)
+        options[:class] += " #{opts[:class]}"
       end
 
       options
@@ -38,35 +38,35 @@ module Validatious
     # Resolve validation from validates_acceptance_of
     #
     def self.acceptance_of(validation)
-      { :class_name => "" }
+      { :class => "" }
     end
 
     #
     # Resolve validation from validates_associated
     #
     def self.associated(validation)
-      { :class_name => "" }
+      { :class => "" }
     end
 
     #
     # Resolve validation from validates_confirmation_of
     #
     def self.confirmation_of(validation)
-        { :class_name => "" }
+        { :class => "" }
     end
 
     #
     # Resolve validation from validates_exclusion_of
     #
     def self.exclusion_of(validation)
-      { :class_name => "" }
+      { :class => "" }
     end
 
     #
     # Resolve validation from validates_format_of
     #
     def self.format_of(validation)
-      { :class_name => validation.options.key?(:name) ?
+      { :class => validation.options.key?(:name) ?
                          validation.options[:name] : "" }
     end
 
@@ -74,7 +74,7 @@ module Validatious
     # Resolve validation from validates_inclusion_of
     #
     def self.inclusion_of(validation)
-      { :class_name => "" }
+      { :class => "" }
     end
 
     #
@@ -90,28 +90,28 @@ module Validatious
       class_name += "min-length_#{min}" unless min.nil?
       class_name += " max-length_#{max}" unless max.nil?
 
-      { :class_name => class_name }
+      { :class => class_name }
     end
 
     #
     # Resolve validation from validates_numericality_of
     #
     def self.numericality_of(validation)
-      { :class_name => "numeric" }
+      { :class => "numeric" }
     end
 
     #
     # Resolve validation from validates_presence_of
     #
     def self.presence_of(validation)
-      { :class_name => "required" }
+      { :class => "required" }
     end
 
     #
     # Resolve validation from validates_uniqueness_of
     #
     def self.uniqueness_of(validation)
-      { :class_name => "" }
+      { :class => "" }
     end
   end
 end

@@ -1,4 +1,4 @@
-require 'validatious.rb'
+require File.join(File.dirname(__FILE__), 'validatious')
 
 #
 # Tap into the built-in form helpers to add validatious class names from
@@ -14,7 +14,7 @@ module ActionView::Helpers::FormHelper
   def text_field_with_validation(object_name, method, options = {})
     klass = object_name.to_s.classify.constantize
     options[:class] ||= ""
-    validation = Validatious::Validation.from_active_record(object_name, method)
+    validation = Validatious::RailsValidation.from_active_record(object_name, method)
 
     # Loop validation and add/append pairs to options
     validation.each_pair do |attr, value|
