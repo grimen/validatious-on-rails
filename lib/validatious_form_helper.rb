@@ -29,4 +29,15 @@ module ActionView::Helpers::FormHelper
   end
 
   alias_method_chain :text_field, :validation
+
+  #
+  # Adds the title attribute to label tags when there is no title
+  # set, and the label text is provided. The title is set to object_name.humanize
+  #
+  def label_with_title(object_name, method, text = nil, options = {})
+    options[:title] ||= method.to_s.humanize unless text.nil?
+    label_without_title(object_name, method, text, options)
+  end
+
+  alias_method_chain :label, :title
 end

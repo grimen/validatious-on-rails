@@ -26,4 +26,18 @@ class FormHelperTest < Test::Unit::TestCase
     assert_has_class "required", text_field(:bogus_item, :name)
     assert_has_class "required text", text_field(:bogus_item, :name, :class => "text")
   end
+
+  def test_normal_label
+    assert_equal "<label for=\"bogus_item_name\">Name</label>", label(:bogus_item, :name)
+  end
+
+  def test_label_with_title
+    assert_equal "<label for=\"bogus_item_name\" title=\"craaazy\">Name</label>",
+                 label(:bogus_item, :name, nil, :title => "craaazy")
+  end
+
+  def test_label_without_title
+    assert_equal "<label for=\"bogus_item_name\" title=\"Name\">Your name</label>",
+                 label(:bogus_item, :name, "Your name")
+  end
 end
