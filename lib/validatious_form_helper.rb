@@ -12,7 +12,7 @@ module ActionView::Helpers::FormHelper
   # Add validation class names to text fields
   #
   def text_field_with_validation(object_name, method, options = {})
-    klass = object_name.classify.constantize
+    klass = object_name.to_s.classify.constantize
     options[:class] ||= ""
     validation = Validatious::Validation.from_active_record(object_name, method)
 

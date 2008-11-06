@@ -9,7 +9,7 @@ module Validatious
   #
   # Validatious/rails validation translator
   #
-  class Validation
+  class RailsValidation
 
     #
     # Groks rails validations, and is able to convert a rails validation to
@@ -38,7 +38,7 @@ module Validatious
     # Resolve validation from validates_acceptance_of
     #
     def self.acceptance_of(validation)
-      { :class_name => "required" }
+      { :class_name => "" }
     end
 
     #
@@ -65,7 +65,7 @@ module Validatious
     #
     # Resolve validation from validates_format_of
     #
-    def format_of(validation)
+    def self.format_of(validation)
       { :class_name => validation.options.key?(:name) ?
                          validation.options[:name] : "" }
     end
@@ -97,7 +97,7 @@ module Validatious
     # Resolve validation from validates_numericality_of
     #
     def self.numericality_of(validation)
-      { :class_name => "" }
+      { :class_name => "numeric" }
     end
 
     #
