@@ -22,6 +22,30 @@ module Validatious
     class << self
 
       #
+      # Generates form field helper options for a specified object-attribute to
+      # reflect on it's validations.
+      #
+      # Input may be an ActiveRecord class, a class name (string), or an object
+      # name along with a method/field.
+      #
+      def options_for(object_name, method, options = {})
+        klass = object_name.to_s.classify.constantize
+        options[:class] ||= ''
+        validation = self.from_active_record(object_name, method)
+
+        # Loop validation and add/append pairs to options.
+        validation.each_pair do |attr, value|
+          options[attr] ||= ''
+          options[attr] << value
+
+          # Shake out duplicates.
+          options[attr] = options[attr].split.uniq.join(' ')
+        end
+        
+        options
+      end
+
+      #
       # Groks rails validations, and is able to convert a rails validation to
       # a Validatious 2.0 compatible class string.
       #

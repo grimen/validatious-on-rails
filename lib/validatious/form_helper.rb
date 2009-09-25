@@ -10,19 +10,7 @@ module ActionView
       # Add validation class names to text fields.
       #
       def text_field_with_validation(object_name, method, options = {})
-        klass = object_name.to_s.classify.constantize
-        options[:class] ||= ''
-        validation = ::Validatious::RailsValidation.from_active_record(object_name, method)
-
-        # Loop validation and add/append pairs to options
-        validation.each_pair do |attr, value|
-          options[attr] ||= ''
-          options[attr] << value
-
-          # Shake out duplicates
-          options[attr] = options[attr].split.uniq.join(' ')
-        end
-
+        options = ::Validatious::RailsValidation.options_for(object_name, method, options)
         text_field_without_validation(object_name, method, options)
       end
       alias_method_chain :text_field, :validation
