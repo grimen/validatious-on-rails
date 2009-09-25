@@ -32,60 +32,59 @@ module Validatious
       # form markup.
       #
       def from_active_record(object_or_class, method)
-        # Get class
         klass = object_or_class.to_s.classify.constantize
-        options = { :class => "" }
-      
+        options = { :class => '' }
+
         klass.reflect_on_validations_for(method).each do |validation|
           opts = send(validation.macro.to_s.sub(/^validates_/, ''), validation)
-          options[:class] += " #{opts[:class]}"
+          options[:class] << " #{opts[:class]}"
         end
-      
+
         options
       end
-      
+
       #
       # Resolve validation from validates_acceptance_of.
       #
       def acceptance_of(validation)
-        { :class => "" }
+        { :class => '' }
       end
-      
+
       #
       # Resolve validation from validates_associated.
       #
       def associated(validation)
-        { :class => "" }
+        { :class => '' }
       end
-      
+
       #
       # Resolve validation from validates_confirmation_of.
       #
       def confirmation_of(validation)
-        { :class => "" }
+        { :class => '' }
       end
-      
+
       #
       # Resolve validation from validates_exclusion_of.
       #
       def exclusion_of(validation)
-        { :class => "" }
+        { :class => '' }
       end
-      
+
       #
       # Resolve validation from validates_format_of.
       #
       def format_of(validation)
         { :class => validation.options.key?(:name) ? validation.options[:name] : "" }
       end
-      
+
       #
       # Resolve validation from validates_inclusion_of.
       #
       def inclusion_of(validation)
         { :class => "" }
       end
-      
+
       #
       # Resolve validation from validates_length_of.
       #
@@ -95,34 +94,35 @@ module Validatious
         min, max = range.min, range.max if range
         min ||= validation.options[:minimum]
         max ||= validation.options[:maximum]
-        class_name = ""
-        class_name += "min-length_#{min}" unless min.nil?
-        class_name += " max-length_#{max}" unless max.nil?
-      
+        class_name = [
+            ("min-length_#{min}" unless min.nil?),
+            ("max-length_#{max}" unless max.nil?)
+          ].compact.join(' ')
+
         { :class => class_name }
       end
-      
+
       #
       # Resolve validation from validates_numericality_of.
       #
       def numericality_of(validation)
-        { :class => "numeric" }
+        { :class => 'numeric' }
       end
-      
+
       #
       # Resolve validation from validates_presence_of.
       #
       def presence_of(validation)
-        { :class => "required" }
+        { :class => 'required' }
       end
-      
+
       #
       # Resolve validation from validates_uniqueness_of.
       #
       def uniqueness_of(validation)
-        { :class => "" }
+        { :class => '' }
       end
-      
+
     end
   end
 end

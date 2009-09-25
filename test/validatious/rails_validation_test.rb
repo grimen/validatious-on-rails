@@ -48,7 +48,7 @@ class RailsValidationTest < Test::Unit::TestCase
   
   def test_length_of_with_maximum
     validation = Validatious::RailsValidation.length_of(validation(:validates_length_of, :maximum => 1))
-    assert_equal " max-length_1", validation[:class]
+    assert_equal "max-length_1", validation[:class]
   end
   
   def test_length_of_with_min_and_max
