@@ -8,20 +8,29 @@
 #
 # Modified for validatious_on_rails by Christian Johansen
 #
-require 'test/unit'
 
 begin
-  require File.dirname(__FILE__) + '/../../../../config/environment'
+  require File.expand_path(File.join(File.dirname(__FILE__), *%w(.. .. .. .. config environment)))
 rescue LoadError
   require 'rubygems'
-  gem 'activerecord'
-  gem 'actionpack'
+  gem 'test-unit', '1.2.3'
+  gem 'activerecord', '>= 1.2.3'
+  gem 'actionpack', '>= 1.2.3'
+  require 'test/unit'
   require 'active_record'
   require 'action_controller'
 end
 
-ActiveRecord::Base.logger = Logger.new(File.dirname(__FILE__) + '/debug.log')
-ActiveRecord::Base.configurations = YAML::load(IO.read(File.dirname(__FILE__) + '/database.yml'))
-ActiveRecord::Base.establish_connection(ENV['DB'] || 'mysql')
+#
+# ValidationReflection seems to expect RAILS_ROOT to be defined, but it's not
+# if it's tested outside of a Rails project. So, just set it to something random.
+#
+RAILS_ROOT = File.join(File.dirname(__FILE__)) unless defined?(RAILS_ROOT)
 
-load(File.dirname(__FILE__) + '/schema.rb')
+ActiveRecord::Base.logger = Logger.new(File.join(File.dirname(__FILE__), 'debug.log'))
+ActiveRecord::Base.configurations = YAML::load(IO.read(File.join(File.dirname(__FILE__), 'database.yml')))
+ActiveRecord::Base.establish_connection(ENV['DB'] || 'sqlite3')
+
+load(File.join(File.dirname(__FILE__), 'schema.rb'))
+
+require 'validatious'

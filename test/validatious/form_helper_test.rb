@@ -1,4 +1,4 @@
-require File.join(File.dirname(__FILE__), 'test_helper')
+require File.expand_path(File.join(File.dirname(__FILE__), '..', 'test_helper'))
 
 class BogusItem < ActiveRecord::Base
   validates_presence_of :name
@@ -20,6 +20,7 @@ module Test::Unit::Assertions
 end
 
 class FormHelperTest < Test::Unit::TestCase
+
   include ActionView::Helpers::FormHelper
 
   def test_required_text_field
