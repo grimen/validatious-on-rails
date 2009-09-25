@@ -1,11 +1,7 @@
 require File.expand_path(File.join(File.dirname(__FILE__), '..', 'test_helper'))
 
-class BogusItem < ActiveRecord::Base
-  validates_presence_of :name
-  validates_format_of :url, :with => /^(http|https|ftp):\/\/(([A-Z0-9][A-Z0-9_-]*)(\.[A-Z0-9][A-Z0-9_-]*)+)(:(\d+))?\/?/i, :name => "url"
-end
-
 module Test::Unit::Assertions
+  
   #
   # Assert that a piece of HTML includes the class name.
   #
@@ -17,6 +13,7 @@ module Test::Unit::Assertions
       class_name.split(" ").all? { |cname| classes.include?(cname) }
     end
   end
+  
 end
 
 class FormHelperTest < Test::Unit::TestCase
@@ -41,4 +38,5 @@ class FormHelperTest < Test::Unit::TestCase
     assert_equal "<label for=\"bogus_item_name\" title=\"Name\">Your name</label>",
                  label(:bogus_item, :name, "Your name")
   end
+  
 end
