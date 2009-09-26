@@ -1,7 +1,7 @@
 require File.expand_path(File.join(File.dirname(__FILE__), '..', 'test_helper'))
 
 module Test::Unit::Assertions
-  
+
   #
   # Assert that a piece of HTML includes the class name.
   #
@@ -13,7 +13,7 @@ module Test::Unit::Assertions
       class_name.split(" ").all? { |cname| classes.include?(cname) }
     end
   end
-  
+
 end
 
 class FormHelperTest < Test::Unit::TestCase
@@ -23,6 +23,25 @@ class FormHelperTest < Test::Unit::TestCase
   def test_required_text_field
     assert_has_class "required", text_field(:bogus_item, :name)
     assert_has_class "required text", text_field(:bogus_item, :name, :class => "text")
+  end
+
+  def test_required_password_field
+    assert_has_class "required", password_field(:bogus_item, :name)
+    assert_has_class "required text", password_field(:bogus_item, :name, :class => "text")
+  end
+
+  def test_required_text_area
+    assert_has_class "required", text_field(:bogus_item, :body)
+    assert_has_class "required text", text_field(:bogus_item, :body, :class => "text")
+  end
+
+  def test_required_check_box # a.k.a. "acceptance required"
+    assert_has_class "required", text_field(:bogus_item, :signed)
+    assert_has_class "required boolean", text_field(:bogus_item, :signed, :class => "boolean")
+  end
+
+  def test_required_radio_button
+    # TODO
   end
 
   def test_normal_label
