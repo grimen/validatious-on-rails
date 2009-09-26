@@ -8,7 +8,7 @@ SUMMARY = %Q{Rails plugin that maps model validations to class names on form ele
 HOMEPAGE = "http://github.com/grimen/#{NAME}"
 AUTHORS = ["Christian Johansen", "Jonas Grimfelt"]
 EMAIL = "christian@cjohansen.no"
-SUPPORT_FILES = %w(README.textile)
+SUPPORT_FILES = %w(README)
 
 begin
   gem 'technicalpickles-jeweler', '>= 1.2.1'
@@ -22,7 +22,7 @@ begin
     gemspec.email       = EMAIL
     
     gemspec.require_paths = %w{lib}
-    gemspec.files = SUPPORT_FILES << %w(MIT-LICENSE Rakefile) << Dir.glob(File.join('{generators,lib,test,rails}', '**', '*').to_s)
+    gemspec.files = SUPPORT_FILES << %w(Rakefile) << Dir.glob(File.join('{generators,lib,test,rails}', '**', '*').to_s)
     gemspec.executables = %w()
     gemspec.extra_rdoc_files = SUPPORT_FILES
   end
