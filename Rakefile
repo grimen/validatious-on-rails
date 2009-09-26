@@ -22,7 +22,8 @@ begin
     gemspec.email       = EMAIL
     
     gemspec.require_paths = %w{lib}
-    gemspec.files = SUPPORT_FILES << %w(Rakefile) << Dir.glob(File.join('{generators,lib,test,rails}', '**', '*').to_s)
+    gemspec.files = SUPPORT_FILES << %w(Rakefile) <<
+      Dir.glob(File.join('{generators,lib,test,rails}', '**', '*').to_s).reject { |v| v =~ /\.log/i }
     gemspec.executables = %w()
     gemspec.extra_rdoc_files = SUPPORT_FILES
   end
