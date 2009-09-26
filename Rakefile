@@ -22,7 +22,7 @@ begin
     gemspec.email       = EMAIL
     
     gemspec.require_paths = %w{lib}
-    gemspec.files = SUPPORT_FILES << %w(MIT-LICENSE Rakefile) << Dir.glob(File.join('{generators,lib,test,rails}', '**', '*'))
+    gemspec.files = SUPPORT_FILES << %w(MIT-LICENSE Rakefile) << Dir.glob(File.join('{generators,lib,test,rails}', '**', '*').to_s)
     gemspec.executables = %w()
     gemspec.extra_rdoc_files = SUPPORT_FILES
   end
