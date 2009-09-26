@@ -16,6 +16,15 @@ module ActionView
       alias_method_chain :text_field, :validation
 
       #
+      # Add validation class names to text fields.
+      #
+      def text_area_with_validation(object_name, method, options = {})
+        options = ::Validatious::RailsValidation.options_for(object_name, method, options)
+        text_field_without_validation(object_name, method, options)
+      end
+      alias_method_chain :text_area, :validation
+
+      #
       # Adds the title attribute to label tags when there is no title
       # set, and the label text is provided. The title is set to object_name.humanize.
       #
