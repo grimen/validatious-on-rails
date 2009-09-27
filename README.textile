@@ -4,9 +4,9 @@ _Rails plugin that maps model validations to class names on form elements to int
 
 h2. What Is Validatious?
 
-"http://validatious.org":http://validatious.org
-
 *Elevator pitch:* A (kick-ass) unobtrusive client-side validation javascript library - the only one you'll ever need.
+
+"http://validatious.org":http://validatious.org
 
 h2. Installation
 
@@ -37,10 +37,13 @@ h3. 1. Generate required javascript files
 
 h3. 2. Include the javascripts in your layout
 
-@app/views/application.html.erb@ or similar, in @<head>@:
+@app/views/application.html.erb@ or similar
 
 <pre>
+<head>
+  ...
   <%= javascript_include_tag 'v2.standalone.full.min.js', 'validatious.config.js' %>
+</head>
 </pre>
 
 *Note:* @validatious.config.js@ is optional, but contains some default Valdiatious-configuration that easily can be tweaked or extended - see "Validatious documentation":http://validatious.org/learn.
