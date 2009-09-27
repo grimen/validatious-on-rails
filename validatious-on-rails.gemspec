@@ -13,8 +13,7 @@ Gem::Specification.new do |s|
   s.description = %q{Rails plugin that maps model validations to class names on form elements to integrate with Validatious.}
   s.email = %q{christian@cjohansen.no}
   s.extra_rdoc_files = [
-    "README",
-     "Rakefile",
+    "Rakefile",
      "generators/validatious/templates/v2.standalone.full.min.js",
      "generators/validatious/templates/validatious.config.js",
      "generators/validatious/validatious_generator.rb",
@@ -28,8 +27,7 @@ Gem::Specification.new do |s|
      "test/validatious_test.rb"
   ]
   s.files = [
-    "README",
-     "Rakefile",
+    "Rakefile",
      "generators/validatious/templates/v2.standalone.full.min.js",
      "generators/validatious/templates/validatious.config.js",
      "generators/validatious/validatious_generator.rb",
@@ -45,7 +43,7 @@ Gem::Specification.new do |s|
   s.homepage = %q{http://github.com/grimen/validatious-on-rails}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.5}
+  s.rubygems_version = %q{1.3.3}
   s.summary = %q{Rails plugin that maps model validations to class names on form elements to integrate with Validatious.}
   s.test_files = [
     "test/test_helper.rb",
