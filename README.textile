@@ -27,13 +27,10 @@ h2. Configuration
 h3. 1. Generate required javascript files
 
 <pre>
-./script/generate validatious
+$ ./script/generate validatious                                                                                                                                                              
+      create  public/javascripts/v2.standalone.full.min.js
+      create  public/javascripts/validatious.config.js
 </pre>
-
-...which will create the following files:
-
-* @public/stylesheets/v2.standalone.full.min.js@
-* @public/stylesheets/validatious.config.js@
 
 h3. 2. Include the javascripts in your layout
 
