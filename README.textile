@@ -53,8 +53,8 @@ Consider you got some model validations:
 
 <pre>
 class Post < ActiveRecord::Base
+  validates_presence_of :title
   validates_length_of :title, :within => 3..20
-  validates_format_of :title, :with => /^\D+$/
 end
 </pre>
 
