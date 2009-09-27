@@ -45,6 +45,11 @@ class FormHelperTest < Test::Unit::TestCase
     # TODO
   end
 
+  def test_confirmation_field
+    assert_has_class "confirmation-of_name", text_field(:bogus_item, :name_confirmation)
+    assert_has_class "confirmation-of_name text", text_field(:bogus_item, :name_confirmation, :class => "text")
+  end
+
   def test_normal_label
     assert_equal "<label for=\"bogus_item_name\">Name</label>", label(:bogus_item, :name)
   end

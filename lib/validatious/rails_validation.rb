@@ -31,16 +31,15 @@ module Validatious
       # Input may be an ActiveRecord class, a class name (string), or an object
       # name along with a method/field.
       #
-      def options_for(object_name, method, options = {})
-        validation = self.from_active_record(object_name, method)
+      def options_for(object_name, attribute_method, options = {})
+        validation = self.from_active_record(object_name, attribute_method)
 
         # Loop validation and add/append pairs to options.
-        validation.each_pair do |attr, value|
-          options[attr] ||= ''
-          options[attr] << value
-
+        validation.each_pair do |attribute, value|
+          options[attribute] ||= ''
+          options[attribute] << value
           # Shake out duplicates.
-          options[attr] = options[attr].split.uniq.join(' ').strip
+          options[attribute] = options[attribute].split.uniq.join(' ').strip
         end
         options
       end
@@ -55,17 +54,39 @@ module Validatious
       # Returns a string that will be recognized by Validatious as a class name in
       # form markup.
       #
-      def from_active_record(object_or_class, method)
+      def from_active_record(object_or_class, attribute_method)
         klass = object_or_class.to_s.classify.constantize
         options = {:class => ''}
         validation_classes = []
-        
+
         # Iterate thorugh the validations for the current class,
         # and collect validation options.
-        klass.reflect_on_validations_for(method).each do |validation|
-          validation_options = self.send(validation.macro.to_s.sub(/^validates_/, ''), validation)
-          validation_classes << validation_options[:class]
+        klass.reflect_on_validations_for(attribute_method.to_sym).each do |validation|
+          validates_type = validation.macro.to_s.sub(/^validates_/, '')
+
+          # Skip "confirmation_of"-validation info for the attribute that
+          # needs to be confirmed. Validatious expects this validation rule
+          # on the confirmation field. *
+          unless validates_type =~ /^confirmation_of$/
+            validation_options = self.send(validates_type, validation)
+            validation_classes << validation_options[:class]
+          end
         end
+
+        # Special case for "confirmation_of"-validation (see * above).
+        if attribute_method.to_s =~ /(.+)_confirmation$/
+          confirm_attribute_method = $1
+          # Check if validates_confirmation_of(:hello) actually exists,
+          # if :hello_confirmation field exists - just to be safe.
+          klass.reflect_on_validations_for(confirm_attribute_method.to_sym).each do |validation|
+            if validation.macro.to_s =~ /^validates_confirmation_of$/
+              validation_options = self.confirmation_of(validation)
+              validation_classes << validation_options[:class]
+              break
+            end
+          end
+        end
+
         options[:class] = [options[:class], validation_classes].flatten.compact.join(' ')
         options
       end
@@ -82,17 +103,20 @@ module Validatious
       #
       # Resolve validation from validates_associated.
       #
+      # Note: Most probably too hard to implement.
+      #
       def associated(validation)
         {:class => ''}
       end
 
       #
-      # TODO: Resolve validation from validates_confirmation_of.
+      # Resolve validation from validates_confirmation_of.
       #
-      # Note: Should be added to "#{field}_confirmation" instead of "#{field}", i.e. non-standard approach.
+      # Note: This validation needed to be treated a bit differently in compare
+      #       to the other validations. See "from_active_record".
       #
       def confirmation_of(validation)
-        {:class => ''}
+        {:class => "confirmation-of_#{validation.name}"}
       end
 
       #

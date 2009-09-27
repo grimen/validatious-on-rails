@@ -6,7 +6,7 @@ class RailsValidationTest < Test::Unit::TestCase
   include ActionView::Helpers::FormHelper
   
   def test_acceptance_of
-    validation = Validatious::RailsValidation.presence_of(validation(:validates_acceptance_of))
+    validation = Validatious::RailsValidation.acceptance_of(validation(:validates_acceptance_of))
     assert_equal 'required', validation[:class]
   end
   
@@ -15,7 +15,8 @@ class RailsValidationTest < Test::Unit::TestCase
   end
   
   def test_confirmation_of
-    # TODO: not implemented
+    validation = Validatious::RailsValidation.confirmation_of(validation(:validates_confirmation_of))
+    assert_equal 'confirmation-of_name', validation[:class]
   end
   
   def test_exclusion_of
