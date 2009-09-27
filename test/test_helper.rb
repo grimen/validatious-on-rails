@@ -1,3 +1,4 @@
+# encoding: utf-8
 #
 # This file loads up the in-memory database needed to run the tests, and adds a few
 # convenience methods.
@@ -11,10 +12,13 @@ rescue LoadError
   gem 'test-unit', '1.2.3'
   gem 'activerecord', '>= 1.2.3'
   gem 'actionpack', '>= 1.2.3'
+  gem 'sqlite3-ruby', '>= 1.2.0'
   
   require 'test/unit'
   require 'active_record'
   require 'action_controller'
+  require 'action_controller'
+  require 'sqlite3'
 end
 
 begin

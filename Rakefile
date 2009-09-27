@@ -1,9 +1,10 @@
+# encoding: utf-8
 require 'rubygems'
 require 'rake'
 require 'rake/testtask'
 require 'rake/rdoctask'
 
-NAME = "validatious_on_rails"
+NAME = "validatious-on-rails"
 SUMMARY = %Q{Rails plugin that maps model validations to class names on form elements to integrate with Validatious.}
 HOMEPAGE = "http://github.com/grimen/#{NAME}"
 AUTHORS = ["Christian Johansen", "Jonas Grimfelt"]

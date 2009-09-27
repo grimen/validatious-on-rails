@@ -1,3 +1,4 @@
+# encoding: utf-8
 #
 # Tap into the built-in form helpers to add validatious class names from
 # model validations.

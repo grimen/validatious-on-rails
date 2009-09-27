@@ -4,19 +4,19 @@
 # -*- encoding: utf-8 -*-
 
 Gem::Specification.new do |s|
-  s.name = %q{validatious_on_rails}
+  s.name = %q{validatious-on-rails}
   s.version = "0.1.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Christian Johansen", "Jonas Grimfelt"]
-  s.date = %q{2009-09-26}
+  s.date = %q{2009-09-27}
   s.description = %q{Rails plugin that maps model validations to class names on form elements to integrate with Validatious.}
   s.email = %q{christian@cjohansen.no}
   s.extra_rdoc_files = [
     "README",
      "Rakefile",
      "generators/validatious/templates/v2.standalone.full.min.js",
-     "generators/validatious/templates/validatious_config.js",
+     "generators/validatious/templates/validatious.config.js",
      "generators/validatious/validatious_generator.rb",
      "lib/validatious.rb",
      "lib/validatious/form_helper.rb",
@@ -31,7 +31,7 @@ Gem::Specification.new do |s|
     "README",
      "Rakefile",
      "generators/validatious/templates/v2.standalone.full.min.js",
-     "generators/validatious/templates/validatious_config.js",
+     "generators/validatious/templates/validatious.config.js",
      "generators/validatious/validatious_generator.rb",
      "lib/validatious.rb",
      "lib/validatious/form_helper.rb",
@@ -42,10 +42,10 @@ Gem::Specification.new do |s|
      "test/validatious/rails_validation_test.rb",
      "test/validatious_test.rb"
   ]
-  s.homepage = %q{http://github.com/grimen/validatious_on_rails}
+  s.homepage = %q{http://github.com/grimen/validatious-on-rails}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.3}
+  s.rubygems_version = %q{1.3.5}
   s.summary = %q{Rails plugin that maps model validations to class names on form elements to integrate with Validatious.}
   s.test_files = [
     "test/test_helper.rb",

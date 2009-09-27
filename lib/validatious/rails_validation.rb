@@ -1,3 +1,4 @@
+# encoding: utf-8
 begin
   require 'validation_reflection'
 rescue LoadError

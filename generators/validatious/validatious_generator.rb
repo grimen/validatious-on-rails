@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 class ValidatiousGenerator < Rails::Generator::Base
   
   def manifest

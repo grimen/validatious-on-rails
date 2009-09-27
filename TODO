@@ -1,5 +1,7 @@
 == TODO
 
+=== validatious-on-rails
+
 * Respect validation macro options:
   * :on => :<action> (i.e. if current form action is ACTION)
   * :if/:unless => true|false
@@ -13,3 +15,7 @@
 * Support for custom validators with adapter-interface
 * Support more form helpers - also 3rd party ones (through adapters)?
 * Full coverage tests
+
+=== validatious
+
+* Make the submit button be disabled (non-clickable) while the form contains invalid values
