@@ -46,6 +46,7 @@ class FormHelperTest < Test::Unit::TestCase
   end
 
   def test_confirmation_field
+    # TODO: Add form-builder-test as well
     assert_has_class "confirmation-of_name", text_field(:bogus_item, :name_confirmation)
     assert_has_class "confirmation-of_name text", text_field(:bogus_item, :name_confirmation, :class => "text")
   end

@@ -34,7 +34,7 @@ $ ./script/generate validatious
 
 h3. 2. Include the javascripts in your layout
 
-@app/views/application.html.erb@ or similar
+@app/views/application.html.erb@ or similar:
 
 <pre>
 <head>

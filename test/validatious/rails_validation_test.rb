@@ -5,6 +5,13 @@ class RailsValidationTest < Test::Unit::TestCase
   
   include ActionView::Helpers::FormHelper
   
+  #
+  # Simulate a validation
+  #
+  def validation(macro, options = {})
+    ActiveRecord::Reflection::MacroReflection.new(macro, :name, options, BogusItem.new)
+  end
+  
   def test_acceptance_of
     validation = Validatious::RailsValidation.acceptance_of(validation(:validates_acceptance_of))
     assert_equal 'required', validation[:class]
@@ -77,13 +84,6 @@ class RailsValidationTest < Test::Unit::TestCase
   
   def test_uniqueness_of
     # TODO: not implemented
-  end
-  
-  #
-  # Simulate a validation
-  #
-  def validation(macro, options = {})
-    ActiveRecord::Reflection::MacroReflection.new(macro, :name, options, nil)
   end
   
 end

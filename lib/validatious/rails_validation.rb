@@ -116,7 +116,12 @@ module Validatious
       #       to the other validations. See "from_active_record".
       #
       def confirmation_of(validation)
-        {:class => "confirmation-of_#{validation.name}"}
+        field_id_to_confirm = unless validation.active_record.present?
+          "#{validation.active_record.name.tableize.singularize.gsub('/', '_')}_#{validation.name}"
+        else
+          "#{validation.name}"
+        end
+        {:class => "confirmation-of_#{field_id_to_confirm}"}
       end
 
       #
