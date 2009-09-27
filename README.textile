@@ -1,0 +1,89 @@
+h1. VALIDATIOUS-ON-RAILS ~ beta ~
+
+_Rails plugin that maps model validations to class names on form elements to integrate with Validatious._
+
+h2. What Is Validatious?
+
+"http://validatious.org":http://validatious.org
+
+*Elevator pitch:* A (kick-ass) unobtrusive client-side validation javascript library - the only one you'll ever need.
+
+h2. Installation
+
+*Gem:*
+
+<pre>sudo gem install grimen-validatious-on-rails</pre>
+
+and in @config/environment.rb@:
+
+<pre>config.gem 'grimen-validatious-on-rails', :lib => 'validatious'</pre>
+
+*Plugin:*
+
+<pre>./script/plugin install git://github.com/grimen/validatious-on-rails.git</pre>
+
+h2. Configuration
+
+h3. 1. Generate required javascript files
+
+<pre>
+./script/generate validatious
+</pre>
+
+...which will create the following files:
+
+* @public/stylesheets/v2.standalone.full.min.js@
+* @public/stylesheets/validatious.config.js@
+
+h3. 2. Include the javascripts in your layout
+
+@app/views/application.html.erb@ or similar, in @<head>@:
+
+<pre>
+  <%= javascript_include_tag 'v2.standalone.full.min.js', 'validatious.config.js' %>
+</pre>
+
+*Note:* @validatious.config.js@ is optional, but contains some default Valdiatious-configuration that easily can be tweaked or extended - see "Validatious documentation":http://validatious.org/learn.
+
+h2. Usage
+
+*Easy!*
+
+Consider you got some model validations:
+
+<pre>
+class Post < ActiveRecord::Base
+  validates_length_of :title, :within => 3..20
+  validates_format_of :title, :with => /^\D+$/
+end
+</pre>
+
+...then you now got working client-side validations for any forms with class @validate@ (or any custom class - see documentation/config):
+
+<pre>
+<% form_for(@post, :html => {:class => 'validate'}) do |f| %>
+  <%= f.text_field :title %>
+<% end %>
+</pre>
+
+h2. Limitations
+
+This is very much work-in-progress, so there are some known limitations that should work very soon. For example some validations are not supported yet - either because it takes some tricks, or it's not scalable without AJAX. See @TODO@.
+
+h2. Notes
+
+This project was originally forked from:
+
+"http://github.com/cjohansen/validatious-on-rails":http://github.com/cjohansen/validatious-on-rails
+
+h2. License
+
+*Original work:*
+
+Released under the MIT license.<br />
+Copyright (c) 2008 "Christian Johansen":http://github.com/cjohansen
+
+*Additional work:*
+
+Released under the MIT license.<br />
+Copyright (c) 2009 "Jonas Grimfelt":http://github.com/grimen
