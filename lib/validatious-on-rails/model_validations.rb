@@ -79,7 +79,6 @@ module ValidatiousOnRails
         # Iterate thorugh the validations for the current class,
         # and collect validation options.
         klass.reflect_on_validations_for(attribute_method.to_sym).each do |validation|
-          puts validation.inspect
           validates_type = validation.macro.to_s.sub(/^validates_/, '')
 
           # Skip "confirmation_of"-validation info for the attribute that

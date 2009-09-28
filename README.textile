@@ -23,14 +23,15 @@ h2. Features & Goals
 * Ruby representation of v2.Validator
 * Tests included
 * Tested with Ruby 1.9+
+* For the near fanatic Formtastic form-builder users like me: With default config, it's compatible with the Formtastic semantic HTML structure.
 
 _Note: Just started so...expect the list to expand - especially validations._
 
 *Goals:*
 
 * Should be very easy to extend with custom validations (plugins, e.g. @Validatious::Validators.add MyCustomValidator@), but within the domain of *Validatious* (focus) - no vision of support multiple libraries (only makes the code base unnecessary big and complex)
-* Should support all Rails core validations (using preferably *client-side* validation*, or last-resort solution using *server-side validation* - backed by Validatious)
-* Should not only perform the validations, but also respect the Rails valdiation conditionals (such as :on, :allow_blank, etc.)
+* Should support all Rails core validations (using preferably *client-side* validation, or last-resort solution using *server-side* validation - backed by Validatious)
+* Should not only perform the validations, but also respect the Rails validation conditionals (such as :on, :allow_blank, etc.)
 * Support all Rails core form helpers, but also new ones using pluggable interface
 * Full I18n-support - backed by Rails I18n
 * Full coverage tests
