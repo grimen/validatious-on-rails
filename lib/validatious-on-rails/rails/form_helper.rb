@@ -7,41 +7,16 @@ module ActionView
   module Helpers
     module FormHelper
 
-      #
-      # Add validation class names to: text-fields.
-      #
-      def text_field_with_validation(object_name, method, options = {})
-        options = ::ValidatiousOnRails::ModelValidations.options_for(object_name, method, options)
-        text_field_without_validation(object_name, method, options)
-      end
-      alias_method_chain :text_field, :validation
+      FORM_FIELD_TYPES_A = [:text_field, :password_field, :text_area, :check_box].freeze
 
-      #
-      # Add validation class names to: password-fields.
-      #
-      def password_field_with_validation(object_name, method, options = {})
-        options = ::ValidatiousOnRails::ModelValidations.options_for(object_name, method, options)
-        password_field_without_validation(object_name, method, options)
+      FORM_FIELD_TYPES_A.each do |field_type|
+        define_method "#{field_type}_with_validation".to_sym do |*args|
+          object_name, method, options = args
+          options = ::ValidatiousOnRails::ModelValidations.options_for(object_name, method, options || {})
+          self.send "#{field_type}_without_validation", object_name, method, options
+        end
+        alias_method_chain field_type, :validation
       end
-      alias_method_chain :password_field, :validation
-
-      #
-      # Add validation class names to: text-areas.
-      #
-      def text_area_with_validation(object_name, method, options = {})
-        options = ::ValidatiousOnRails::ModelValidations.options_for(object_name, method, options)
-        text_area_without_validation(object_name, method, options)
-      end
-      alias_method_chain :text_area, :validation
-
-      #
-      # Add validation class names to: check-boxes.
-      #
-      def check_box_with_validation(object_name, method, options = {}, checked_value = '1', unchecked_value = '0')
-        options = ::ValidatiousOnRails::ModelValidations.options_for(object_name, method, options)
-        check_box_without_validation(object_name, method, options)
-      end
-      alias_method_chain :check_box, :validation
 
       #
       # Add validation class names to: radio-buttons.
