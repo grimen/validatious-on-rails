@@ -28,7 +28,7 @@ rescue LoadError
   require 'acts_as_fu'
 end
 
-require 'validatious'
+require 'validatious-on-rails'
 
 build_model :bogus_items do
   string :url

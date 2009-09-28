@@ -15,7 +15,7 @@ class RailsValidationTest < ::ActiveSupport::TestCase
   end
   
   test "acceptance_of" do
-    validation = Validatious::RailsValidation.acceptance_of(validation(:validates_acceptance_of))
+    validation = ValidatiousOnRails::ModelValidations.acceptance_of(validation(:validates_acceptance_of))
     assert_equal 'required', validation[:class]
   end
   
@@ -24,7 +24,7 @@ class RailsValidationTest < ::ActiveSupport::TestCase
   end
   
   test "confirmation_of" do
-    validation = Validatious::RailsValidation.confirmation_of(validation(:validates_confirmation_of))
+    validation = ValidatiousOnRails::ModelValidations.confirmation_of(validation(:validates_confirmation_of))
     assert_equal 'confirmation-of_name', validation[:class]
   end
   
@@ -44,43 +44,43 @@ class RailsValidationTest < ::ActiveSupport::TestCase
   end
   
   test "length_of_with_in" do
-    validation = Validatious::RailsValidation.length_of(validation(:validates_length_of, :in => 1..10))
+    validation = ValidatiousOnRails::ModelValidations.length_of(validation(:validates_length_of, :in => 1..10))
     assert_equal 'min-length_1 max-length_10', validation[:class]
   
-    validation = Validatious::RailsValidation.length_of(validation(:validates_length_of, :in => 1...10))
+    validation = ValidatiousOnRails::ModelValidations.length_of(validation(:validates_length_of, :in => 1...10))
     assert_equal 'min-length_1 max-length_9', validation[:class]
   end
   
   test "length_of_with_within" do
-    validation = Validatious::RailsValidation.length_of(validation(:validates_length_of, :within => 1..10))
+    validation = ValidatiousOnRails::ModelValidations.length_of(validation(:validates_length_of, :within => 1..10))
     assert_equal 'min-length_1 max-length_10', validation[:class]
   
-    validation = Validatious::RailsValidation.length_of(validation(:validates_length_of, :within => 1...10))
+    validation = ValidatiousOnRails::ModelValidations.length_of(validation(:validates_length_of, :within => 1...10))
     assert_equal 'min-length_1 max-length_9', validation[:class]
   end
   
   test "length_of_with_minimum" do
-    validation = Validatious::RailsValidation.length_of(validation(:validates_length_of, :minimum => 1))
+    validation = ValidatiousOnRails::ModelValidations.length_of(validation(:validates_length_of, :minimum => 1))
     assert_equal 'min-length_1', validation[:class]
   end
   
   test "length_of_with_maximum" do
-    validation = Validatious::RailsValidation.length_of(validation(:validates_length_of, :maximum => 1))
+    validation = ValidatiousOnRails::ModelValidations.length_of(validation(:validates_length_of, :maximum => 1))
     assert_equal 'max-length_1', validation[:class]
   end
   
   test "length_of_with_min_and_max" do
-    validation = Validatious::RailsValidation.length_of(validation(:validates_length_of, :minimum => 1, :maximum => 3))
+    validation = ValidatiousOnRails::ModelValidations.length_of(validation(:validates_length_of, :minimum => 1, :maximum => 3))
     assert_equal 'min-length_1 max-length_3', validation[:class]
   end
   
   test "numericality_of" do
-    validation = Validatious::RailsValidation.numericality_of(validation(:validates_numericality_of))
+    validation = ValidatiousOnRails::ModelValidations.numericality_of(validation(:validates_numericality_of))
     assert_equal 'numeric', validation[:class]
   end
   
   test "presence_of" do
-    validation = Validatious::RailsValidation.presence_of(validation(:validates_presence_of))
+    validation = ValidatiousOnRails::ModelValidations.presence_of(validation(:validates_presence_of))
     assert_equal 'required', validation[:class]
   end
   

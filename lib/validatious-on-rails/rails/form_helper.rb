@@ -11,7 +11,7 @@ module ActionView
       # Add validation class names to: text-fields.
       #
       def text_field_with_validation(object_name, method, options = {})
-        options = ::Validatious::RailsValidation.options_for(object_name, method, options)
+        options = ::ValidatiousOnRails::ModelValidations.options_for(object_name, method, options)
         text_field_without_validation(object_name, method, options)
       end
       alias_method_chain :text_field, :validation
@@ -20,7 +20,7 @@ module ActionView
       # Add validation class names to: password-fields.
       #
       def password_field_with_validation(object_name, method, options = {})
-        options = ::Validatious::RailsValidation.options_for(object_name, method, options)
+        options = ::ValidatiousOnRails::ModelValidations.options_for(object_name, method, options)
         password_field_without_validation(object_name, method, options)
       end
       alias_method_chain :password_field, :validation
@@ -29,7 +29,7 @@ module ActionView
       # Add validation class names to: text-areas.
       #
       def text_area_with_validation(object_name, method, options = {})
-        options = ::Validatious::RailsValidation.options_for(object_name, method, options)
+        options = ::ValidatiousOnRails::ModelValidations.options_for(object_name, method, options)
         text_area_without_validation(object_name, method, options)
       end
       alias_method_chain :text_area, :validation
@@ -38,7 +38,7 @@ module ActionView
       # Add validation class names to: check-boxes.
       #
       def check_box_with_validation(object_name, method, options = {}, checked_value = '1', unchecked_value = '0')
-        options = ::Validatious::RailsValidation.options_for(object_name, method, options)
+        options = ::ValidatiousOnRails::ModelValidations.options_for(object_name, method, options)
         check_box_without_validation(object_name, method, options)
       end
       alias_method_chain :check_box, :validation
@@ -47,7 +47,7 @@ module ActionView
       # Add validation class names to: radio-buttons.
       #
       def radio_button_with_validation(object_name, method, tag_value, options = {})
-        options = ::Validatious::RailsValidation.options_for(object_name, method, options)
+        options = ::ValidatiousOnRails::ModelValidations.options_for(object_name, method, options)
         radio_button_without_validation(object_name, method, tag_value, options)
       end
       alias_method_chain :radio_button, :validation

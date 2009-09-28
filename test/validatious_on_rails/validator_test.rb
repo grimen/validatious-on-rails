@@ -6,8 +6,8 @@ require 'active_support/test_case'
 class ValidatorTest < ::ActiveSupport::TestCase
   
   def setup
-    @empty_validator = Validatious::Validator.new('dummie')
-    @custom_validator = returning Validatious::Validator.new('dummie') do |v|
+    @empty_validator = ValidatiousOnRails::Validatious::Validator.new('dummie')
+    @custom_validator = returning ValidatiousOnRails::Validatious::Validator.new('dummie') do |v|
       v.message = 'Fail, fail, fail!'
       v.params = ['some', 'params']
       v.aliases = ['some', 'aliases']

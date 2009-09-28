@@ -18,8 +18,8 @@ end
 #
 # Validatious-Rails validation translator.
 #
-module Validatious
-  class RailsValidation
+module ValidatiousOnRails
+  class ModelValidations
 
     CORE_VALIDATIONS = [
         :acceptance_of,
@@ -173,7 +173,7 @@ module Validatious
         min, max = range.min, range.max if range
         min ||= validation.options[:minimum] || validation.options[:is]
         max ||= validation.options[:maximum] || validation.options[:is]
-        
+    
         class_name = [
             ("min-length_#{min}" unless min.nil?),
             ("max-length_#{max}" unless max.nil?)

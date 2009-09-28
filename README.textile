@@ -16,7 +16,7 @@ h2. Installation
 
 and in @config/environment.rb@:
 
-<pre>config.gem 'grimen-validatious-on-rails', :lib => 'validatious'</pre>
+<pre>config.gem 'grimen-validatious-on-rails', :lib => 'validatious-on-rails'</pre>
 
 *Plugin:*
 
