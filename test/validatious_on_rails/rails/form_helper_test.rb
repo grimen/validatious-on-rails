@@ -1,5 +1,5 @@
 # encoding: utf-8
-require File.expand_path(File.join(File.dirname(__FILE__), '..', 'test_helper'))
+require File.expand_path(File.join(File.dirname(__FILE__), *%w(.. .. test_helper)))
 
 module Test::Unit::Assertions
 

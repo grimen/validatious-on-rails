@@ -30,6 +30,26 @@ end
 
 require 'validatious-on-rails'
 
+# TODO: Should extend Rails validators with this - to test respond_to.
+module ActiveRecord
+  module Validations
+    module ClassMethods
+      def validates_craziness_of(*args)
+        #...
+      end
+    end
+  end
+end
+
+gem 'rr', '>= 0.0.0'
+require 'rr'
+extend RR::Adapters::RRMethods
+
+# Reflected_validations already freezed...ned to find a workaround.
+# reflected_validatons = ActiveRecordExtensions::ValidationReflection.reflected_validations
+# stub(ActiveRecordExtensions::ValidationReflection).reflected_validations {reflected_validatons + [:validates_craziness_of]}
+
+
 build_model :bogus_items do
   string :url
   string :name
@@ -47,6 +67,9 @@ build_model :bogus_items do
   validates_format_of :url,
     :with => /^(http|https|ftp):\/\/(([A-Z0-9][A-Z0-9_-]*)(\.[A-Z0-9][A-Z0-9_-]*)+)(:(\d+))?\/?/i,
     :name => 'url'
+    
+  # TODO: Test: If this is a validator makro, then it should not cause any issues.
+  validates_craziness_of :name
 end
 
 #

@@ -1,4 +1,4 @@
-h1. VALIDATIOUS-ON-RAILS ~ beta ~
+h1. VALIDATIOUS-ON-RAILS ~ concept version ~
 
 _Rails plugin that maps model validations to class names on form elements to integrate with Validatious._
 
@@ -7,6 +7,35 @@ h2. What Is Validatious?
 *Elevator pitch:* A (kick-ass) unobtrusive client-side validation javascript library - the only one you'll ever need.
 
 "http://validatious.org":http://validatious.org
+
+h2. Features & Goals
+
+*Current Features:*
+
+* Rails core validations
+** validates_acceptance_of
+** validates_confirmation_of
+** validates_length_of
+** validates_numericality_of
+** validates_presence_of
+** _(Work in progress...)_
+* Generator for getting started - easy as 1-2-3 (see below)
+* Ruby representation of v2.Validator
+* Tests included
+* Tested with Ruby 1.9+
+
+_Note: Just started so...expect the list to expand - especially validations._
+
+*Goals:*
+
+* Should be very easy to extend with custom validations (plugins, e.g. @Validatious::Validators.add MyCustomValidator@), but within the domain of *Validatious* (focus) - no vision of support multiple libraries (only makes the code base unnecessary big and complex)
+* Should support all Rails core validations (using preferably *client-side* validation*, or last-resort solution using *server-side validation* - backed by Validatious)
+* Should not only perform the validations, but also respect the Rails valdiation conditionals (such as :on, :allow_blank, etc.)
+* Support all Rails core form helpers, but also new ones using pluggable interface
+* Full I18n-support - backed by Rails I18n
+* Full coverage tests
+
+_Note: Somethings fundamental is missing? Let me know! =)_
 
 h2. Installation
 

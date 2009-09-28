@@ -21,6 +21,8 @@ end
 module ValidatiousOnRails
   class ModelValidations
 
+    # MissingValidation = ::Class.new(::ValidatiousOnRails::ValidatiousError)
+
     CORE_VALIDATIONS = [
         :acceptance_of,
         :associated,
@@ -77,12 +79,19 @@ module ValidatiousOnRails
         # Iterate thorugh the validations for the current class,
         # and collect validation options.
         klass.reflect_on_validations_for(attribute_method.to_sym).each do |validation|
+          puts validation.inspect
           validates_type = validation.macro.to_s.sub(/^validates_/, '')
 
           # Skip "confirmation_of"-validation info for the attribute that
           # needs to be confirmed. Validatious expects this validation rule
           # on the confirmation field. *
-          unless validates_type =~ /^confirmation_of$/ || !SUPPORTED_VALIDATIONS.include?(validates_type.to_sym)
+          unless validates_type =~ /^confirmation_of$/
+            # unless self.respond_to?(validates_type)
+            #   raise MissingValidation,
+            #     "No such validation recognized: #{validates_type}. " <<
+            #     "Maybe you forgot to register you custom validation using " <<
+            #     "ValidatiousOnRails::ModelValidations.add <CustomValidationClass>"
+            # end
             validation_options = self.send(validates_type, validation)
             validation_classes << validation_options[:class]
           end
@@ -206,6 +215,17 @@ module ValidatiousOnRails
       def uniqueness_of(validation)
         {:class => ''}
       end
+
+      #
+      # Unknown validations - if no matching custom validator is found/registered.
+      #
+      def method_missing(sym, *args, &block)
+        ::ValidatiousOnRails.log "Unknown validation: #{sym}. No custom Validatious validator found for this validation makro.", :warn
+        {:class => ''}
+      end
+
+      # TODO: Include custom validations here
+      # @custom_validators.each { |validator_class| extend validator_class }
 
     end
   end
