@@ -12,10 +12,9 @@
   * validates_inclusion_of
   * validates_uniqueness_of
 * Generate Validatious-compatible localized error messages, either using I18n-js lib, or own solution.
-* Support for custom validators with adapter-interface
+* Support for custom Validatious-validators (v2.Validator) with adapter-interface
 * Support more form helpers - also 3rd party ones (through adapters)?
 * Test with form-builders also (now tests only use form helpers)
-* Full coverage tests
 
 === validatious
 

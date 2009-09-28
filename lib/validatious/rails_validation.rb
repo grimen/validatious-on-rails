@@ -20,6 +20,21 @@ end
 #
 module Validatious
   class RailsValidation
+
+    CORE_VALIDATIONS = [
+        :acceptance_of,
+        :associated,
+        :confirmation_of,
+        :exclusion_of,
+        :format_of,
+        :inclusion_of,
+        :length_of,
+        :numericality_of,
+        :presence_of,
+        :uniqueness_of
+      ].freeze
+    SUPPORTED_VALIDATIONS = CORE_VALIDATIONS
+
     class << self
 
       # Reference: http://api.rubyonrails.org/classes/ActiveRecord/Validations/ClassMethods.html
@@ -67,7 +82,7 @@ module Validatious
           # Skip "confirmation_of"-validation info for the attribute that
           # needs to be confirmed. Validatious expects this validation rule
           # on the confirmation field. *
-          unless validates_type =~ /^confirmation_of$/
+          unless validates_type =~ /^confirmation_of$/ || !SUPPORTED_VALIDATIONS.include?(validates_type.to_sym)
             validation_options = self.send(validates_type, validation)
             validation_classes << validation_options[:class]
           end
