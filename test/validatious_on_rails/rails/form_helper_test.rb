@@ -7,7 +7,8 @@ module Test::Unit::Assertions
   # Assert that a piece of HTML includes the class name.
   #
   def assert_has_class(class_name, html, message = nil)
-    classes = /class="([^"]*)"/.match(html)[1].split(' ')
+    # Might need to consider this...but works a bit better.
+    classes = html.scan(/class="([^"]*)"/).collect { |c| c.to_s.split(' ') }.flatten
     full_message = build_message(message, "<?>\nexpected to include class(es) <?>.\n", html, class_name)
 
     assert_block(full_message) do
@@ -23,24 +24,60 @@ class FormHelperTest < ::ActionView::TestCase
 
   include ActionView::Helpers::FormHelper
 
+  def setup
+    @bogus_item = BogusItem.new
+  end
+  
   test "required :text_field" do
     assert_has_class 'required', text_field(:bogus_item, :name)
     assert_has_class 'required text', text_field(:bogus_item, :name, :class => 'text')
+    
+    # Using builder
+    assert_has_class 'required', form_for(@bogus_item, :url => '/bogus_items') { |f|
+        concat f.text_field(:name)
+      }
+    assert_has_class 'required text', form_for(@bogus_item, :url => '/bogus_items') { |f|
+        concat f.text_field(:name, :class => 'text')
+      }
   end
 
   test "required :password_field" do
-    assert_has_class "required", password_field(:bogus_item, :name)
-    assert_has_class "required text", password_field(:bogus_item, :name, :class => "text")
+    assert_has_class 'required', password_field(:bogus_item, :name)
+    assert_has_class 'required text', password_field(:bogus_item, :name, :class => 'text')
+    
+    # Using builder
+    assert_has_class 'required', form_for(@bogus_item, :url => '/bogus_items') { |f|
+        concat f.password_field(:name)
+      }
+    assert_has_class 'required text', form_for(@bogus_item, :url => '/bogus_items') { |f|
+        concat f.password_field(:name, :class => 'text')
+      }
   end
 
   test "required :text_area" do
-    assert_has_class "required", text_area(:bogus_item, :body)
-    assert_has_class "required text", text_area(:bogus_item, :body, :class => "text")
+    assert_has_class 'required', text_area(:bogus_item, :body)
+    assert_has_class 'required text', text_area(:bogus_item, :body, :class => 'text')
+    
+    # Using builder
+    assert_has_class 'required', form_for(@bogus_item, :url => '/bogus_items') { |f|
+        concat f.text_area(:body)
+      }
+    assert_has_class 'required text', form_for(@bogus_item, :url => '/bogus_items') { |f|
+        concat f.text_area(:body, :class => 'text')
+      }
   end
 
   test "required :check_box" do # a.k.a. "acceptance required"
-    assert_has_class "required", check_box(:bogus_item, :signed)
-    assert_has_class "required boolean", check_box(:bogus_item, :signed, :class => "boolean")
+    assert_has_class 'required', check_box(:bogus_item, :signed)
+    assert_has_class 'required boolean', check_box(:bogus_item, :signed, :class => 'boolean')
+    
+    # Using builder
+    assert_has_class 'required', form_for(@bogus_item, :url => '/bogus_items') { |f|
+        concat f.check_box(:signed)
+      }
+    assert_has_class 'required boolean', form_for(@bogus_item, :url => '/bogus_items') { |f|
+        concat f.check_box(:signed, :class => 'boolean')
+      }
   end
 
   test "required :radio_button" do
@@ -48,12 +85,21 @@ class FormHelperTest < ::ActionView::TestCase
   end
 
   test "confirmation_of-field" do
-    # TODO: Add form-builder-test as well
+    # Using helper
     assert_has_class "confirmation-of_name", text_field(:bogus_item, :name_confirmation)
-    assert_has_class "confirmation-of_name text", text_field(:bogus_item, :name_confirmation, :class => "text")
+    assert_has_class "confirmation-of_name confirmation", text_field(:bogus_item, :name_confirmation, :class => "confirmation")
+    
+    # Using builder
+    assert_has_class "confirmation-of_name", form_for(@bogus_item, :url => '/bogus_items') { |f|
+        concat f.text_field(:name_confirmation)
+      }
+    assert_has_class "confirmation-of_name confirmation", form_for(@bogus_item, :url => '/bogus_items') { |f|
+        concat f.text_field(:name_confirmation, :class => 'confirmation')
+      }
   end
 
   test "regular label" do
+    # Using helper
     assert_equal "<label for=\"bogus_item_name\">Name</label>", label(:bogus_item, :name)
   end
 
@@ -66,5 +112,11 @@ class FormHelperTest < ::ActionView::TestCase
     assert_equal "<label for=\"bogus_item_name\" title=\"Name\">Your name</label>",
                  label(:bogus_item, :name, "Your name")
   end
+
+  private
+
+    def protect_against_forgery?
+      false
+    end
 
 end
