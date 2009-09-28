@@ -3,9 +3,6 @@ require File.join(File.dirname(__FILE__), *%w[validatious-on-rails validatious])
 require File.join(File.dirname(__FILE__), *%w[validatious-on-rails model_validations])
 require File.join(File.dirname(__FILE__), *%w[validatious-on-rails rails])
 
-#
-# Validatious module.
-#
 module ValidatiousOnRails
   
   extend self
