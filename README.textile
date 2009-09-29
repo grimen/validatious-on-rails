@@ -22,10 +22,10 @@ h2. Features & Goals
 * Generator for getting started - easy as 1-2-3 (see below)
 * Ruby representation of v2.Validator
 * Tests included
-* Tested with Ruby 1.9+
+* Ruby 1.9.x support
 * For the near fanatic Formtastic form-builder users like me: With default config, it's compatible with the Formtastic semantic HTML structure.
 
-_Note: Just started so...expect the list to expand - especially validations._
+_*Note:* Just started so...expect the list to expand - especially validations. See the "TODO":http://github.com/grimen/validatious-on-rails/blob/master/TODO for more info._
 
 *Goals:*
 
@@ -33,10 +33,10 @@ _Note: Just started so...expect the list to expand - especially validations._
 * Should support all Rails core validations (using preferably *client-side* validation, or last-resort solution using *server-side* validation - backed by Validatious)
 * Should not only perform the validations, but also respect the Rails validation conditionals (such as :on, :allow_blank, etc.)
 * Support all Rails core form helpers, but also new ones using pluggable interface
-* Full I18n-support - backed by Rails I18n
+* Full I18n-support - backed by Rails I18n (incl. interpolation)
 * Full coverage tests
 
-_Note: Somethings fundamental is missing? Let me know! =)_
+_*Note:* Somethings fundamental is missing? Let me know! =)_
 
 h2. Installation
 

@@ -29,7 +29,7 @@ module ValidatiousOnRails
                     :aliases,
                     :accept_empty,
                     :fn
-                
+
       def initialize(name, *args)
         raise ValidatorError, "Parameter :name is required for an Validatious validator" unless name.present?
         self.name = name
@@ -132,7 +132,7 @@ module ValidatiousOnRails
           params: #{self.params.to_json},
           aliases: #{self.aliases.to_json},
           acceptEmpty: #{self.accept_empty.to_json},
-          fn: #{fn}
+          fn: #{self.fn}
         });}
       end
 

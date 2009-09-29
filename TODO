@@ -16,7 +16,8 @@
 * Server-side (custom) Validatious-validator support (v2.Validator)
 * Support 3rd party form helpers through adapters?
 * If needed (becuase how ValidationReflection is implemented - a bit hardcoded): Own validation reflection.
+* Add README-note on how to make Formtastic and Validatious be nice to each other - just for the clarity
 
 === validatious
 
-* Make the submit button be disabled (non-clickable) while the form contains invalid values
+* Make the submit button be disabled (non-clickable) while the form contains invalid values (maybe)
