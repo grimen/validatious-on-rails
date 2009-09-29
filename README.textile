@@ -52,6 +52,13 @@ and in @config/environment.rb@:
 
 <pre>./script/plugin install git://github.com/grimen/validatious-on-rails.git</pre>
 
+*Dependencies:*
+
+* "validatious":http://github.com/cjohansen/validatious - the DSL-extension is optional, but I very much recommend the full package (it's so tiny in size anyway)
+* "validation_reflection":http://github.com/redinger/validation_reflection
+
+*Note:* For testing, get "acts_as_fu":http://github.com/nakajima/acts_as_fu.
+
 h2. Configuration
 
 h3. 1. Generate required javascript files
