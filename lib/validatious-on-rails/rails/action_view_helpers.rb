@@ -57,9 +57,9 @@ module ActionView
       FIELD_TYPES.each do |field_type|
         define_method "#{field_type}_with_validation".to_sym do |*args|
           case true
-          when FIELD_TYPES_A.include?(field_type) then options_index = 5
-          when FIELD_TYPES_B.include?(field_type) then options_index = 7
-          when FIELD_TYPES_C.include?(field_type) then options_index = 9
+          when FIELD_TYPES_A.include?(field_type) then options_index = 4
+          when FIELD_TYPES_B.include?(field_type) then options_index = 6
+          when FIELD_TYPES_C.include?(field_type) then options_index = 8
           end
           args[options_index] = ::ValidatiousOnRails::ModelValidations.options_for(args.first, args.second, args[options_index] || {})
           self.send "#{field_type}_without_validation", *args
@@ -83,7 +83,7 @@ module ActionView
 
       FIELD_TYPES.each do |field_type|
         define_method "#{field_type}_with_validation".to_sym do |*args|
-          options_index = 3
+          options_index = 2
           args[options_index] = ::ValidatiousOnRails::ModelValidations.options_for(args.first, args.second, args[options_index] || {})
           self.send "#{field_type}_without_validation", *args
         end
