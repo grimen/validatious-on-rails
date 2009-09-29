@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Christian Johansen", "Jonas Grimfelt"]
-  s.date = %q{2009-09-28}
+  s.date = %q{2009-09-29}
   s.description = %q{Rails plugin that maps model validations to class names on form elements to integrate with Validatious.}
   s.email = %q{christian@cjohansen.no}
   s.extra_rdoc_files = [
@@ -20,14 +20,16 @@ Gem::Specification.new do |s|
      "lib/validatious-on-rails.rb",
      "lib/validatious-on-rails/model_validations.rb",
      "lib/validatious-on-rails/rails.rb",
-     "lib/validatious-on-rails/rails/form_helper.rb",
+     "lib/validatious-on-rails/rails/action_view_helpers.rb",
      "lib/validatious-on-rails/validatious.rb",
+     "lib/validatious-on-rails/validatious/client_side_validator.rb",
+     "lib/validatious-on-rails/validatious/remote_validator.rb",
      "lib/validatious-on-rails/validatious/validator.rb",
      "rails/init.rb",
      "test/test_helper.rb",
-     "test/validatious_on_rails/form_helper_test.rb",
-     "test/validatious_on_rails/rails_validation_test.rb",
-     "test/validatious_on_rails/validator_test.rb",
+     "test/validatious_on_rails/model_validations_test.rb",
+     "test/validatious_on_rails/rails/action_view_helpers_test.rb",
+     "test/validatious_on_rails/validatious/validator_test.rb",
      "test/validatious_on_rails_test.rb"
   ]
   s.files = [
@@ -38,14 +40,16 @@ Gem::Specification.new do |s|
      "lib/validatious-on-rails.rb",
      "lib/validatious-on-rails/model_validations.rb",
      "lib/validatious-on-rails/rails.rb",
-     "lib/validatious-on-rails/rails/form_helper.rb",
+     "lib/validatious-on-rails/rails/action_view_helpers.rb",
      "lib/validatious-on-rails/validatious.rb",
+     "lib/validatious-on-rails/validatious/client_side_validator.rb",
+     "lib/validatious-on-rails/validatious/remote_validator.rb",
      "lib/validatious-on-rails/validatious/validator.rb",
      "rails/init.rb",
      "test/test_helper.rb",
-     "test/validatious_on_rails/form_helper_test.rb",
-     "test/validatious_on_rails/rails_validation_test.rb",
-     "test/validatious_on_rails/validator_test.rb",
+     "test/validatious_on_rails/model_validations_test.rb",
+     "test/validatious_on_rails/rails/action_view_helpers_test.rb",
+     "test/validatious_on_rails/validatious/validator_test.rb",
      "test/validatious_on_rails_test.rb"
   ]
   s.homepage = %q{http://github.com/grimen/validatious-on-rails}
@@ -55,9 +59,9 @@ Gem::Specification.new do |s|
   s.summary = %q{Rails plugin that maps model validations to class names on form elements to integrate with Validatious.}
   s.test_files = [
     "test/test_helper.rb",
-     "test/validatious_on_rails/form_helper_test.rb",
-     "test/validatious_on_rails/rails_validation_test.rb",
-     "test/validatious_on_rails/validator_test.rb",
+     "test/validatious_on_rails/model_validations_test.rb",
+     "test/validatious_on_rails/rails/action_view_helpers_test.rb",
+     "test/validatious_on_rails/validatious/validator_test.rb",
      "test/validatious_on_rails_test.rb"
   ]
 
