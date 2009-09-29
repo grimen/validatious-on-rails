@@ -29,6 +29,7 @@ class FormHelperTest < ::ActionView::TestCase
   end
   
   test "required :text_field" do
+    # Using helper
     assert_has_class 'required', text_field(:bogus_item, :name)
     assert_has_class 'required text', text_field(:bogus_item, :name, :class => 'text')
     
@@ -42,6 +43,7 @@ class FormHelperTest < ::ActionView::TestCase
   end
 
   test "required :password_field" do
+    # Using helper
     assert_has_class 'required', password_field(:bogus_item, :name)
     assert_has_class 'required text', password_field(:bogus_item, :name, :class => 'text')
     
@@ -55,6 +57,7 @@ class FormHelperTest < ::ActionView::TestCase
   end
 
   test "required :text_area" do
+    # Using helper
     assert_has_class 'required', text_area(:bogus_item, :body)
     assert_has_class 'required text', text_area(:bogus_item, :body, :class => 'text')
     
@@ -68,6 +71,7 @@ class FormHelperTest < ::ActionView::TestCase
   end
 
   test "required :check_box" do # a.k.a. "acceptance required"
+    # Using helper
     assert_has_class 'required', check_box(:bogus_item, :signed)
     assert_has_class 'required boolean', check_box(:bogus_item, :signed, :class => 'boolean')
     
@@ -81,19 +85,28 @@ class FormHelperTest < ::ActionView::TestCase
   end
 
   test "required :radio_button" do
-    # TODO
+    # Using helper
+     assert_has_class 'required', radio_button(:bogus_item, :variant, 1)
+     assert_has_class 'required bogus', radio_button(:bogus_item, :variant, 1, :class => 'bogus')
+     
+     assert_has_class 'required', form_for(@bogus_item, :url => '/bogus_items') { |f|
+         concat f.radio_button(:variant, 1)
+       }
+     assert_has_class 'required bogus', form_for(@bogus_item, :url => '/bogus_items') { |f|
+         concat f.radio_button(:variant, 1, :class => 'bogus')
+       }
   end
 
   test "confirmation_of-field" do
     # Using helper
-    assert_has_class "confirmation-of_name", text_field(:bogus_item, :name_confirmation)
-    assert_has_class "confirmation-of_name confirmation", text_field(:bogus_item, :name_confirmation, :class => "confirmation")
+    assert_has_class 'confirmation-of_name', text_field(:bogus_item, :name_confirmation)
+    assert_has_class 'confirmation-of_name confirmation', text_field(:bogus_item, :name_confirmation, :class => "confirmation")
     
     # Using builder
-    assert_has_class "confirmation-of_name", form_for(@bogus_item, :url => '/bogus_items') { |f|
+    assert_has_class 'confirmation-of_name', form_for(@bogus_item, :url => '/bogus_items') { |f|
         concat f.text_field(:name_confirmation)
       }
-    assert_has_class "confirmation-of_name confirmation", form_for(@bogus_item, :url => '/bogus_items') { |f|
+    assert_has_class 'confirmation-of_name confirmation', form_for(@bogus_item, :url => '/bogus_items') { |f|
         concat f.text_field(:name_confirmation, :class => 'confirmation')
       }
   end
@@ -104,11 +117,13 @@ class FormHelperTest < ::ActionView::TestCase
   end
 
   test "label with title" do
+    # Using helper
     assert_equal "<label for=\"bogus_item_name\" title=\"craaazy\">Name</label>",
                  label(:bogus_item, :name, nil, :title => "craaazy")
   end
 
   test "label without title" do
+    # Using helper
     assert_equal "<label for=\"bogus_item_name\" title=\"Name\">Your name</label>",
                  label(:bogus_item, :name, "Your name")
   end

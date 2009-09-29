@@ -59,9 +59,10 @@ build_model :bogus_items do
   string :num3
   
   text    :body
+  integer :variant
   boolean :signed
   
-  validates_presence_of :name, :body
+  validates_presence_of :name, :body, :variant
   validates_confirmation_of :name
   validates_acceptance_of :signed
   validates_format_of :url,
