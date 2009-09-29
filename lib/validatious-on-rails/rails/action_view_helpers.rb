@@ -69,28 +69,28 @@ module ActionView
 
     end
 
-    module DateHelper
-
-      # Options-hash argument position for each helper:
-      #
-      # ActionView::Helpers::DateHelper
-      #   select_date:3, select_datetime:3, select_time:3, select_year:3, select_month:3, select_day:3,
-      #   select_hour:3, select_minute:3, select_second:3
-      #
-      # helpers matching: (a, b, options = {})
-      FIELD_TYPES = [:select_date, :select_datetime, :select_time, :select_year,
-                      :select_month, :select_day,:select_hour, :select_minute, :select_second]
-
-      FIELD_TYPES.each do |field_type|
-        define_method "#{field_type}_with_validation".to_sym do |*args|
-          options_index = 2
-          args[options_index] = ::ValidatiousOnRails::ModelValidations.options_for(args.first, args.second, args[options_index] || {})
-          self.send "#{field_type}_without_validation", *args
-        end
-        alias_method_chain field_type, :validation
-      end
-
-    end
+    # module DateHelper
+    # 
+    #   # Options-hash argument position for each helper:
+    #   #
+    #   # ActionView::Helpers::DateHelper
+    #   #   select_date:3, select_datetime:3, select_time:3, select_year:3, select_month:3, select_day:3,
+    #   #   select_hour:3, select_minute:3, select_second:3
+    #   #
+    #   # helpers matching: (a, b, options = {})
+    #   FIELD_TYPES = [:select_date, :select_datetime, :select_time, :select_year,
+    #                   :select_month, :select_day,:select_hour, :select_minute, :select_second]
+    # 
+    #   FIELD_TYPES.each do |field_type|
+    #     define_method "#{field_type}_with_validation".to_sym do |*args|
+    #       options_index = 2
+    #       args[options_index] = ::ValidatiousOnRails::ModelValidations.options_for(args.first, args.second, args[options_index] || {})
+    #       self.send "#{field_type}_without_validation", *args
+    #     end
+    #     alias_method_chain field_type, :validation
+    #   end
+    # 
+    # end
 
   end
 end
