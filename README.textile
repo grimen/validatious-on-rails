@@ -112,9 +112,9 @@ end
 <% end %>
 </pre>
 
-h2. Extra: Formtastic  ♥ Validatious
+h2. Validatious ♥ Formtastic
 
-For all you Formtastic users out there: This plugin is out-of-the-box compatible with Formtastic - unlike the similar solution(s) out there. But to get Validatious and Formtastic to play well with each other, you need to tweak the *configuration* settings a bit. These settings is very much recommended:
+For all you "Formtastic":http://github.com/justinfrench/formtastic users out there: This plugin is out-of-the-box compatible with Formtastic - unlike the similar solution(s) out there. But to get Validatious and Formtastic to play well with each other, you need to tweak the *configuration* settings a bit. These settings is very much recommended:
 
 *Formtastic:*
 
