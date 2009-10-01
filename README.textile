@@ -27,7 +27,7 @@ h2. Features & Goals
 * Ruby representation of @v2.Validator@
 * Test-suit
 * Ruby 1.9.x support
-* For the near fanatic Formtastic form-builder users like me: With default config, it's compatible with the Formtastic semantic HTML structure. Note: It seems acceptance_of + check_box not really working so good becuase of the wrapped checkbox-input - Validatious-issue.
+* For the near fanatic Formtastic form-builder users like me: With default config, it's compatible with the Formtastic semantic HTML structure.
 
 _*Note:* Just started so...expect the list to expand - especially validations. See the "TODO":http://github.com/grimen/validatious-on-rails/blob/master/TODO for more info._
 
