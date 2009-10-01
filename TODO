@@ -2,6 +2,7 @@
 
 === validatious-on-rails
 
+* BUG: check-boxes that are wrapped in a label - seems to fail
 * Respect validation macro options:
   * :on => :<action> (i.e. if current form action is ACTION)
   * :if/:unless => true|false

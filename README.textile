@@ -13,8 +13,8 @@ h2. Features & Goals
 *Current Features:*
 
 * Rails core validations
-** @validates_acceptance_of@
-** @validates_confirmation_of@
+** @validates_acceptance_of@ (a bit unstable depending on form-builder-markup)
+** @validates_confirmation_of@ (see above)
 ** @validates_exclusion_of@ *new*
 ** @validates_format_of@ *new*
 ** @validates_inclusion_of@ *new*
