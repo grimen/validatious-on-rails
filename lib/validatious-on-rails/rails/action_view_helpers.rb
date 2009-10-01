@@ -7,50 +7,35 @@ module ActionView
   module Helpers
     module FormHelper
 
-      # TODO: Figure out if "extract_options!" is safe to use.
-      
-      # FORM_TYPES = [:fields_for]
-      # 
-      # FORM_TYPES.each do |form_type|
-      #   define_method "#{form_type}_with_validation".to_sym do |*args, &proc|
-      #     attach_custom_validations do
-      #       self.send "#{form_type}_without_validation".to_sym, *args, &proc
-      #     end
-      #   end
-      #   alias_method_chain form_type, :validation
-      # end
-      # alias :form_remote_for_with_validation :remote_form_for_with_validation
+      FIELD_TYPES = [:text_field, :password_field, :text_area, :file_field, :radio_button].freeze
 
-      # Options-hash argument position for each helper:
-      #
-      # ActionView::Helpers::FormHelper
-      #   text_field:3, password_field:3, file_field:3, text_area:3, check_box:3, radio_button:4
-      #
-      FIELD_TYPES_A = [:text_field, :password_field, :text_area, :check_box, :file_field].freeze
-      FIELD_TYPES_B = [:radio_button].freeze
-      FIELD_TYPES = FIELD_TYPES_A + FIELD_TYPES_B
-
-      # Only options[:class] is interesting for this plugin - we want to set the class,
+      # Only altering the options hash is interesting - we want to set a validator class for fields,
       # so the hooking of these helpers don't have to be very explicit.
-      #
+      #      
       FIELD_TYPES.each do |field_type|
         define_method "#{field_type}_with_validation".to_sym do |*args|
-          case true
-          when FIELD_TYPES_A.include?(field_type) then options_index = 2
-          when FIELD_TYPES_B.include?(field_type) then options_index = 3
-          end
-
+          options = args.extract_options!
           # Get the validation options.
-          args[options_index] = ::ValidatiousOnRails::ModelValidations.options_for(args.first, args.second, args[options_index] || {})
+          options = ::ValidatiousOnRails::ModelValidations.options_for(args.first, args.second, options)
 
           # Attach custom validator - if any - to the layout (in the <head>-tag - the unobtrusive way).
-          validators = args[options_index].delete(:validators)
-          content_for :validatious, validators if validators.present?
+          content_for :validatious, options.delete(:validators) if options[:validators].present?
 
-          self.send "#{field_type}_without_validation".to_sym, *args
+          self.send "#{field_type}_without_validation".to_sym, *(args << options)
         end
         alias_method_chain field_type, :validation
       end
+
+      # Special case...no hash as last argument.
+      #
+      def check_box_with_validation(object_name, method, options = {}, checked_value = '1', unchecked_value = '0')
+        # Get the validation options.
+        options = ::ValidatiousOnRails::ModelValidations.options_for(object_name, method, options)
+        # Attach custom validator - if any - to the layout (in the <head>-tag - the unobtrusive way).
+        content_for :validatious, options.delete(:validators) if options[:validators].present?
+        self.check_box_without_validation object_name, method, options, checked_value, unchecked_value
+      end
+      alias_method_chain :check_box, :validation
 
       # Adds the title attribute to label tags when there is no title
       # set, and the label text is provided. The title is set to object_name.humanize
@@ -65,57 +50,43 @@ module ActionView
 
     module FormOptionsHelper
 
-      # Options-hash argument position for each helper:
-      #
-      # ActionView::Helpers::FormOptionsHelper
-      #   time_zone_select:5, select:5, grouped_options_for_select:9, collection_select:7
-      #
-      FIELD_TYPES_A = [:time_zone_select, :select]
-      FIELD_TYPES_B = [:collection_select]
-      FIELD_TYPES_C = [:grouped_options_for_select]
-      FIELD_TYPES = FIELD_TYPES_A + FIELD_TYPES_B + FIELD_TYPES_C
+      FIELD_TYPES = [:time_zone_select, :select, :collection_select, :grouped_options_for_select]
 
       FIELD_TYPES.each do |field_type|
         define_method "#{field_type}_with_validation".to_sym do |*args|
-          case true
-          when FIELD_TYPES_A.include?(field_type) then options_index = 4
-          when FIELD_TYPES_B.include?(field_type) then options_index = 6
-          when FIELD_TYPES_C.include?(field_type) then options_index = 8
-          end
-          args[options_index] = ::ValidatiousOnRails::ModelValidations.options_for(args.first, args.second, args[options_index] || {})
-          
-          # Attach validator - if any - to the layout (in the <head>-tag - the unobtrusive way)
-          content_for :validatious, args[options_index].delete(:validator).to_s
-          
-          self.send "#{field_type}_without_validation".to_sym, *args
+          options = args.extract_options!
+          # Get the validation options.
+          options = ::ValidatiousOnRails::ModelValidations.options_for(args.first, args.second, options)
+
+          # Attach custom validator - if any - to the layout (in the <head>-tag - the unobtrusive way).
+          content_for :validatious, options.delete(:validators) if options[:validators].present?
+
+          self.send "#{field_type}_without_validation".to_sym, *(args << options)
         end
         alias_method_chain field_type, :validation
       end
 
     end
 
-    # module DateHelper
-    # 
-    #   # Options-hash argument position for each helper:
-    #   #
-    #   # ActionView::Helpers::DateHelper
-    #   #   select_date:3, select_datetime:3, select_time:3, select_year:3, select_month:3, select_day:3,
-    #   #   select_hour:3, select_minute:3, select_second:3
-    #   #
-    #   # helpers matching: (a, b, options = {})
-    #   FIELD_TYPES = [:select_date, :select_datetime, :select_time, :select_year,
-    #                   :select_month, :select_day, :select_hour, :select_minute, :select_second]
-    # 
-    #   FIELD_TYPES.each do |field_type|
-    #     define_method "#{field_type}_with_validation".to_sym do |*args|
-    #       options_index = 2
-    #       args[options_index] = ::ValidatiousOnRails::ModelValidations.options_for(args.first, args.second, args[options_index] || {})
-    #       self.send "#{field_type}_without_validation", *args
-    #     end
-    #     alias_method_chain field_type, :validation
-    #   end
-    # 
-    # end
-    
+    module DateHelper
+
+      FIELD_TYPES = [:date_select, :datetime_select, :time_select]
+
+      FIELD_TYPES.each do |field_type|
+        define_method "#{field_type}_with_validation".to_sym do |*args|
+          options = args.extract_options!
+          # Get the validation options.
+          options = ::ValidatiousOnRails::ModelValidations.options_for(args.first, args.second, options)
+
+          # Attach custom validator - if any - to the layout (in the <head>-tag - the unobtrusive way).
+          content_for :validatious, options.delete(:validators) if options[:validators].present?
+
+          self.send "#{field_type}_without_validation".to_sym, *(args << options)
+        end
+        alias_method_chain field_type, :validation
+      end
+
+    end
+
   end
 end
