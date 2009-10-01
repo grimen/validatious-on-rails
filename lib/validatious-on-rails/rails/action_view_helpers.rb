@@ -19,7 +19,8 @@ module ActionView
           options = ::ValidatiousOnRails::ModelValidations.options_for(args.first, args.second, options)
 
           # Attach custom validator - if any - to the layout (in the <head>-tag - the unobtrusive way).
-          content_for :validatious, options.delete(:validators) if options[:validators].present?
+          validators = options.delete(:validators)
+          content_for :validatious, validators if validators.present?
 
           self.send "#{field_type}_without_validation".to_sym, *(args << options)
         end
@@ -32,7 +33,8 @@ module ActionView
         # Get the validation options.
         options = ::ValidatiousOnRails::ModelValidations.options_for(object_name, method, options)
         # Attach custom validator - if any - to the layout (in the <head>-tag - the unobtrusive way).
-        content_for :validatious, options.delete(:validators) if options[:validators].present?
+        validators = options.delete(:validators)
+        content_for :validatious, validators if validators.present?
         self.check_box_without_validation object_name, method, options, checked_value, unchecked_value
       end
       alias_method_chain :check_box, :validation
@@ -59,7 +61,8 @@ module ActionView
           options = ::ValidatiousOnRails::ModelValidations.options_for(args.first, args.second, options)
 
           # Attach custom validator - if any - to the layout (in the <head>-tag - the unobtrusive way).
-          content_for :validatious, options.delete(:validators) if options[:validators].present?
+          validators = options.delete(:validators)
+          content_for :validatious, validators if validators.present?
 
           self.send "#{field_type}_without_validation".to_sym, *(args << options)
         end
@@ -79,7 +82,8 @@ module ActionView
           options = ::ValidatiousOnRails::ModelValidations.options_for(args.first, args.second, options)
 
           # Attach custom validator - if any - to the layout (in the <head>-tag - the unobtrusive way).
-          content_for :validatious, options.delete(:validators) if options[:validators].present?
+          validators = options.delete(:validators)
+          content_for :validatious, validators if validators.present?
 
           self.send "#{field_type}_without_validation".to_sym, *(args << options)
         end
