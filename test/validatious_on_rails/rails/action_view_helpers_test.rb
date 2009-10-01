@@ -28,6 +28,14 @@ class FormHelperTest < ::ActionView::TestCase
     @bogus_item = BogusItem.new
   end
   
+  test "attach custom javascript validations to layout" do
+    @content_for_validatious = nil
+    view_output = form_for(@bogus_item, :url => '/bogus_items') do |f|
+      concat f.text_field(:url)
+    end
+    assert_match /v2.Validator/, @content_for_validatious
+  end
+  
   test "required :text_field" do
     # Using helper
     assert_has_class 'required', text_field(:bogus_item, :name)
@@ -97,7 +105,7 @@ class FormHelperTest < ::ActionView::TestCase
        }
   end
 
-  test "confirmation_of-field" do
+  test "confirmation_of :name field" do
     # Using helper
     assert_has_class 'confirmation-of_name', text_field(:bogus_item, :name_confirmation)
     assert_has_class 'confirmation-of_name confirmation', text_field(:bogus_item, :name_confirmation, :class => "confirmation")
@@ -109,6 +117,29 @@ class FormHelperTest < ::ActionView::TestCase
     assert_has_class 'confirmation-of_name confirmation', form_for(@bogus_item, :url => '/bogus_items') { |f|
         concat f.text_field(:name_confirmation, :class => 'confirmation')
       }
+  end
+
+  test "format_of :url field" do
+    # Using helper
+    assert_has_class 'url', text_field(:bogus_item, :url)
+    assert_has_class 'url some_other_class', text_field(:bogus_item, :url, :class => 'some_other_class')
+    
+    # Using builder
+    assert_has_class 'url', form_for(@bogus_item, :url => '/bogus_items') { |f|
+        concat f.text_field(:url)
+      }
+    assert_has_class 'url some_other_class', form_for(@bogus_item, :url => '/bogus_items') { |f|
+        concat f.text_field(:url, :class => 'some_other_class')
+      }
+    assert_match /v2.Validator\.add\(.*\{.*name:.*"url"/, @content_for_validatious
+  end
+  
+  test "exclusion_of :variant field" do
+    # TODO
+  end
+
+  test "inclusion_of :variant field" do
+    # TODO
   end
 
   test "regular label" do

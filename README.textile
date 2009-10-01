@@ -13,15 +13,19 @@ h2. Features & Goals
 *Current Features:*
 
 * Rails core validations
-** validates_acceptance_of
-** validates_confirmation_of
-** validates_length_of
-** validates_numericality_of
-** validates_presence_of
+** @validates_acceptance_of@
+** @validates_confirmation_of@
+** @validates_exclusion_of@ *new*
+** @validates_format_of@ *new*
+** @validates_inclusion_of@ *new*
+** @validates_length_of@
+** @validates_numericality_of@ (partial - will be full soon)
+** @validates_presence_of@
+** @validates_size_of@ *new*
 ** _(Work in progress...)_
 * Generator for getting started - easy as 1-2-3 (see below)
-* Ruby representation of v2.Validator
-* Tests included
+* Ruby representation of @v2.Validator@
+* Test-suit
 * Ruby 1.9.x support
 * For the near fanatic Formtastic form-builder users like me: With default config, it's compatible with the Formtastic semantic HTML structure.
 
@@ -76,11 +80,16 @@ h3. 2. Include the javascripts in your layout
 <pre>
 <head>
   ...
-  <%= javascript_include_tag 'v2.standalone.full.min.js', 'validatious.config.js' %>
+  <%= javascript_include_tag 'v2.standalone.full.min.js', 'validatious.config.js' # 1) %>
+  <%= yield :validatious # 2) %>
+  ...
 </head>
 </pre>
 
-*Note:* @validatious.config.js@ is optional, but contains some default Valdiatious-configuration that easily can be tweaked or extended - see "Validatious documentation":http://validatious.org/learn.
+*Notes:*
+
+# @validatious.config.js@ is optional, but contains some default Valdiatious-configuration that easily can be tweaked or extended - see "Validatious documentation":http://validatious.org/learn.
+# FYI, this is where custom validations gets inserted. No worries; the plugin is doing the magic!
 
 h2. Usage
 

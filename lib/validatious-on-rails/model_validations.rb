@@ -6,6 +6,8 @@ rescue LoadError
   require 'validation_reflection'
 end
 
+require File.join(File.dirname(__FILE__), *%w[validatious client_side_validator])
+
 #
 # Force this, as it seems ValidationReflection don't do this correctly. =S
 #
@@ -39,7 +41,9 @@ module ValidatiousOnRails
 
     class << self
 
-      # Reference: http://api.rubyonrails.org/classes/ActiveRecord/Validations/ClassMethods.html
+      # References:
+      #   http://api.rubyonrails.org/classes/ActiveRecord/Validations/ClassMethods.html
+      #   http://github.com/rails/rails/blob/13fb26b714dec0874303f51cc125ff62f65a2729/activerecord/lib/active_record/validations.rb
 
       #
       # Generates form field helper options for a specified object-attribute to
@@ -50,15 +54,10 @@ module ValidatiousOnRails
       #
       def options_for(object_name, attribute_method, options = {})
         validation = self.from_active_record(object_name, attribute_method)
-
-        # Loop validation and add/append pairs to options.
-        validation.each_pair do |attribute, value|
-          options[attribute] ||= ''
-          options[attribute] << value
-          # Shake out duplicates.
-          options[attribute] = options[attribute].split.uniq.join(' ').strip
-        end
-        options
+        options.merge!(
+            :class => [options[:class], validation[:classes]].flatten.compact.uniq.join(' '),
+            :validators => validation[:validators].compact.uniq.join(' ').gsub(/[\n]+/, '')
+          )
       end
 
       #
@@ -73,26 +72,25 @@ module ValidatiousOnRails
       #
       def from_active_record(object_or_class, attribute_method)
         klass = object_or_class.to_s.classify.constantize
-        options = {:class => ''}
-        validation_classes = []
+        attribute_validation = {:classes => [], :validators => []}
 
         # Iterate thorugh the validations for the current class,
         # and collect validation options.
         klass.reflect_on_validations_for(attribute_method.to_sym).each do |validation|
-          validates_type = validation.macro.to_s.sub(/^validates_/, '')
+          validates_type = validation.macro.to_s.sub(/^validates?_/, '')
 
           # Skip "confirmation_of"-validation info for the attribute that
           # needs to be confirmed. Validatious expects this validation rule
           # on the confirmation field. *
           unless validates_type =~ /^confirmation_of$/
             # unless self.respond_to?(validates_type)
-            #   raise MissingValidation,
-            #     "No such validation recognized: #{validates_type}. " <<
+            #   raise MissingValidation, "No such validation recognized: #{validates_type}. " <<
             #     "Maybe you forgot to register you custom validation using " <<
             #     "ValidatiousOnRails::ModelValidations.add <CustomValidationClass>"
             # end
-            validation_options = self.send(validates_type, validation)
-            validation_classes << validation_options[:class]
+            validation_options = self.send(validates_type.to_sym, validation)
+            attribute_validation[:classes] << validation_options[:class]
+            attribute_validation[:validators] << validation_options[:validator]
           end
         end
 
@@ -104,14 +102,12 @@ module ValidatiousOnRails
           klass.reflect_on_validations_for(confirm_attribute_method.to_sym).each do |validation|
             if validation.macro.to_s =~ /^validates_confirmation_of$/
               validation_options = self.confirmation_of(validation)
-              validation_classes << validation_options[:class]
+              attribute_validation[:classes] << validation_options[:class]
               break
             end
           end
         end
-
-        options[:class] = [options[:class], validation_classes].flatten.compact.join(' ')
-        options
+        attribute_validation
       end
 
       #
@@ -119,23 +115,25 @@ module ValidatiousOnRails
       #
       # Note: acceptance_of <=> presence_of (for Validatious)
       #
+      # TODO: Make this a custom validator - if the advanced options are set (:accept)
+      #
       def acceptance_of(validation)
-        {:class => 'required'}
+        {:class => 'required', :validator => nil}
       end
 
       #
       # Resolve validation from validates_associated.
       #
-      # Note: Most probably too hard to implement.
+      # Note: Most probably too hard to implement on client-side at least.
       #
       def associated(validation)
-        {:class => ''}
+        {:class => '', :validator => nil}
       end
 
       #
       # Resolve validation from validates_confirmation_of.
       #
-      # Note: This validation needed to be treated a bit differently in compare
+      # Note: This validation is treated a bit differently in compare
       #       to the other validations. See "from_active_record".
       #
       def confirmation_of(validation)
@@ -144,32 +142,77 @@ module ValidatiousOnRails
         else
           "#{validation.name}"
         end
-        {:class => "confirmation-of_#{field_id_to_confirm}"}
+        {:class => "confirmation-of_#{field_id_to_confirm}", :validator => nil}
       end
 
       #
-      # TODO: Resolve validation from validates_exclusion_of.
+      # Resolve validation from validates_exclusion_of.
+      #
+      # Note: Attaching custom validator - if not already defined.
       #
       def exclusion_of(validation)
-        {:class => ''}
+        name, alias_name = validator_name(validation, :in)
+
+        validator = returning Validatious::ClientSideValidator.new(name) do |v|
+            v.accept_empty = validation.options[:allow_blank] || validation.options[:allow_nil]
+            v.fn = %{
+              var exclusion_values = #{validation.options[:in].to_json};
+              for (var i = 0; i < exclusion_values.length; i++) {
+                if (exclusion_values[i] == value) { return false; }
+              };
+              return true;
+            }
+            v.message = validation_error_message(validation)
+            v.params = []
+            v.aliases = [alias_name] - [name]
+        end
+        {:class => "#{name}", :validator => validator}
       end
 
       #
-      # TODO: Resolve validation from validates_format_of.
+      # Resolve validation from validates_format_of.
       #
-      # Note: Should be implemented using "Custom validators" - generated and attached to the form on render page.
+      # Note: Attaching custom validator - only if identical format validator already exists,
+      #       otherwise refer to that one instead. Needs regex.inspect to get it right.
       #
       def format_of(validation)
-        # format_expression = validation.options[:with]
-        # Old: {:class => validation.options.key?(:name) ? validation.options[:name] : ''}
-        {:class => ''}
+        name, alias_name = validator_name(validation, :with, validation.options[:with].inspect)
+
+        validator = returning Validatious::ClientSideValidator.new(name) do |v|
+            v.accept_empty = validation.options[:allow_blank] || validation.options[:allow_nil]
+            v.fn = %{
+              var format_regex = #{validation.options[:with].inspect};
+              return format_regex.test(value);
+            }
+            v.message = validator_error_message(validation)
+            v.params = []
+            v.aliases = [alias_name] - [name]
+        end
+        {:class => "#{name}", :validator => validator}
       end
 
       #
-      # TODO: Resolve validation from validates_inclusion_of.
+      # Resolve validation from validates_inclusion_of.
+      #
+      # Note: Attaching custom validator - if not already defined.
       #
       def inclusion_of(validation)
-        {:class => ''}
+        name, alias_name = validator_name(validation, :in)
+
+        validator = returning Validatious::ClientSideValidator.new(name) do |v|
+            v.accept_empty = validation.options[:allow_blank] || validation.options[:allow_nil]
+            v.fn = %{
+              var inclusion_values = #{validation.options[:in].to_json};
+              for (var i = 0; i < inclusion_values.length; i++) {
+                if (inclusion_values[i] == value) { return true; }
+              };
+              return false;
+            }
+            v.message = validator_error_message(validation)
+            v.params = []
+            v.aliases = [alias_name] - [name]
+        end
+        {:class => "#{name}", :validator => validator}
       end
 
       #
@@ -177,24 +220,26 @@ module ValidatiousOnRails
       #
       def length_of(validation)
         range = validation.options[:in] || validation.options[:within]
-        min, max = nil, nil
         min, max = range.min, range.max if range
         min ||= validation.options[:minimum] || validation.options[:is]
         max ||= validation.options[:maximum] || validation.options[:is]
-    
+
         class_name = [
-            ("min-length_#{min}" unless min.nil?),
-            ("max-length_#{max}" unless max.nil?)
+            ("min-length_#{min}" if min.present?),
+            ("max-length_#{max}" if max.present?)
           ].compact.join(' ')
 
-        {:class => class_name}
+        {:class => class_name, :validator => nil}
       end
+      alias :size_of :length_of
 
       #
       # Resolve validation from validates_numericality_of.
       #
+      # TODO: Make this a custom validator - if the advanced options are set (:odd, :even, ...)
+      #
       def numericality_of(validation)
-        {:class => 'numeric'}
+        {:class => 'numeric', :validator => nil}
       end
 
       #
@@ -203,7 +248,7 @@ module ValidatiousOnRails
       # Note: acceptance_of <=> presence_of (for Validatious)
       #
       def presence_of(validation)
-        {:class => 'required'}
+        {:class => 'required', :validator => nil}
       end
 
       #
@@ -212,7 +257,7 @@ module ValidatiousOnRails
       # Note: A bit tricky on the client-side - especially with many records.
       #
       def uniqueness_of(validation)
-        {:class => ''}
+        {:class => '', :validator => nil}
       end
 
       #
@@ -220,11 +265,54 @@ module ValidatiousOnRails
       #
       def method_missing(sym, *args, &block)
         ::ValidatiousOnRails.log "Unknown validation: #{sym}. No custom Validatious validator found for this validation makro.", :warn
-        {:class => ''}
+        {:class => '', :validator => nil}
       end
 
       # TODO: Include custom validations here
       # @custom_validators.each { |validator_class| extend validator_class }
+
+      private
+
+        def validator_id(value)
+          # Way faster than SHA1, just replace any negative sign.
+          value.to_s.hash.to_s.tr('-', '1')
+        end
+
+        # Any named specified for this custom validation?
+        # E.g. validates_format_of :name, :with => /\d{6}-\d{4}/, :name => 'ssn-se'
+        #
+        # If not, create one that's uniqe based on validation and what to validate based on,
+        # e.g. validates_format_of :name, :with => /\d{6}-\d{4}/ # => :name => "format_with_#{hash-of-:with-value}"
+        #
+        def validator_name(validation, id_key, id_value = nil)
+          # Avoiding duplicates...
+          identifier = id_value.present? ? validator_id(id_value) : validator_id(validation.options[id_key])
+          validator_id = "#{validation.macro.to_s.sub(/^validates_/, '').sub(/_of/, '')}_#{id_key}-#{identifier}"
+          name = validation.options[:name].present? ? validation.options[:name] : validator_id
+          # "_" is not allowed in name/alias(es) - used to seperate validator-id from it's args/params.
+          [name, validator_id].collect! { |v| v.tr('_', '-') }
+        end
+
+        # Generate a proper error message.
+        #
+        # TODO: Debug this, now returns very odd results even though it's so simple.
+        #
+        def validator_error_message(validation)
+          explicit_message = validation.options[:message]
+          
+          if explicit_message.present?
+            if explicit_message.is_a?(::Symbol)
+              ::I18n.t(explicit_message, :scope => :'activerecord.errors.messages',
+                :default => "activerecord.errors.messages.#{explicit_message}")
+            else
+              explicit_message.to_s
+            end
+          else
+            key = validation.macro.to_s.tr('-', '_').gsub(/^validates?_/, '').gsub(/_of/, '').to_sym
+            ::I18n.t(key, :scope => :'activerecord.errors.messages',
+              :default => "activerecord.errors.messages.#{key}")
+          end
+        end
 
     end
   end

@@ -7,13 +7,6 @@ class ModelValidationsTest < ::ActiveSupport::TestCase
   
   include ActionView::Helpers::FormHelper
   
-  #
-  # Simulate a validation
-  #
-  def validation(macro, options = {})
-    ActiveRecord::Reflection::MacroReflection.new(macro, :name, options, BogusItem.new)
-  end
-  
   test "acceptance_of" do
     validation = ValidatiousOnRails::ModelValidations.acceptance_of(validation(:validates_acceptance_of))
     assert_equal 'required', validation[:class]
@@ -29,18 +22,27 @@ class ModelValidationsTest < ::ActiveSupport::TestCase
   end
   
   test "exclusion_of" do
-    # TODO: not implemented
+    values = (6..10).to_a
+    validation = ValidatiousOnRails::ModelValidations.exclusion_of(validation(:validates_exclusion_of,
+      :in => values))
+    assert_match /^exclusion-in-(\d+)/, validation[:class]
+    assert_match /#{values.to_json}/, validation[:validator].fn
   end
   
   test "format_of" do
-    # pattern = /^(http|https|ftp):\/\/(([A-Z0-9][A-Z0-9_-]*)(\.[A-Z0-9][A-Z0-9_-]*)+)(:(\d+))?\/?/i
-    # validation = Validatious::RailsValidation.format_of(validation(:validates_format_of, :with => pattern, :name => "email"))
-    # assert_equal 'email', validation[:class]
-    # TODO: Not fully supported really, should 
+    pattern = /^(http|https|ftp):\/\/(([A-Z0-9][A-Z0-9_-]*)(\.[A-Z0-9][A-Z0-9_-]*)+)(:(\d+))?\/?/i
+    validation = ValidatiousOnRails::ModelValidations.format_of(validation(:validates_format_of,
+      :with => pattern, :name => 'url'))
+    assert_equal 'url', validation[:class]
+    assert_match /#{pattern.inspect[1,-1]}/, validation[:validator].fn
   end
   
   test "inclusion_of" do
-    # TODO: not implemented
+    values = (1..5).to_a
+    validation = ValidatiousOnRails::ModelValidations.inclusion_of(validation(:validates_inclusion_of,
+      :in => values))
+    assert_match /^inclusion-in-(\d+)/, validation[:class]
+    assert_match /#{values.to_json}/, validation[:validator].fn
   end
   
   test "length_of_with_in" do
@@ -88,4 +90,12 @@ class ModelValidationsTest < ::ActiveSupport::TestCase
     # TODO: not implemented
   end
   
+  private
+    
+    # Simulate a validation
+    #
+    def validation(macro, options = {})
+      ActiveRecord::Reflection::MacroReflection.new(macro, :name, options, BogusItem.new)
+    end
+    
 end

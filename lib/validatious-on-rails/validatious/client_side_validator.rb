@@ -1,5 +1,5 @@
 # encoding: utf-8
-require 'validator'
+require File.join(File.dirname(__FILE__), 'validator')
 
 module ValidatiousOnRails
   module Validatious

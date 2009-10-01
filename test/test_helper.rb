@@ -54,9 +54,6 @@ build_model :bogus_items do
   string :url
   string :name
   string :email
-  string :num
-  string :num2
-  string :num3
   
   text    :body
   integer :variant
@@ -67,8 +64,10 @@ build_model :bogus_items do
   validates_acceptance_of :signed
   validates_format_of :url,
     :with => /^(http|https|ftp):\/\/(([A-Z0-9][A-Z0-9_-]*)(\.[A-Z0-9][A-Z0-9_-]*)+)(:(\d+))?\/?/i,
-    :name => 'url'
-    
+    :name => 'url', :message => 'Invalid URL.'
+  validates_inclusion_of :variant, :in => (1..5).to_a
+  validates_exclusion_of :variant, :in => (6..10).to_a
+  
   # TODO: Test: If this is a validator makro, then it should not cause any issues.
   validates_craziness_of :name
 end

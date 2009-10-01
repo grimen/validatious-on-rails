@@ -26,11 +26,8 @@ class ValidatorTest < ::ActiveSupport::TestCase
     assert_equal '
         v2.Validator.add({
           name: "dummie",
-          message: "",
-          params: [],
-          aliases: [],
-          acceptEmpty: true,
-          fn: function(field, value, params) {return true;}
+          fn: function(field, value, params) {return true;},
+          acceptEmpty: true
         });'.gsub(/[\n\s\t]/, ''), @empty_validator.to_s.gsub(/[\n\s\t]/, '')
   end
   
@@ -43,12 +40,12 @@ class ValidatorTest < ::ActiveSupport::TestCase
     assert_equal "function(field, value, params) {return false;}", @custom_validator.fn.gsub(/\n/, '')
     assert_equal '
         v2.Validator.add({
-          name: "dummie",
-          message: "Fail, fail, fail!",
-          params: ["some", "params"],
           aliases: ["some", "aliases"],
+          message: "Fail, fail, fail!",
+          name: "dummie",
+          fn: function(field, value, params) {return false;},
           acceptEmpty: false,
-          fn: function(field, value, params) {return false;}
+          params: ["some", "params"]
         });'.gsub(/[\n\s\t]/, ''), @custom_validator.to_s.gsub(/[\n\s\t]/, '')
   end
   

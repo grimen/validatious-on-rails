@@ -7,6 +7,20 @@ module ActionView
   module Helpers
     module FormHelper
 
+      # TODO: Figure out if "extract_options!" is safe to use.
+      
+      # FORM_TYPES = [:fields_for]
+      # 
+      # FORM_TYPES.each do |form_type|
+      #   define_method "#{form_type}_with_validation".to_sym do |*args, &proc|
+      #     attach_custom_validations do
+      #       self.send "#{form_type}_without_validation".to_sym, *args, &proc
+      #     end
+      #   end
+      #   alias_method_chain form_type, :validation
+      # end
+      # alias :form_remote_for_with_validation :remote_form_for_with_validation
+
       # Options-hash argument position for each helper:
       #
       # ActionView::Helpers::FormHelper
@@ -25,8 +39,15 @@ module ActionView
           when FIELD_TYPES_A.include?(field_type) then options_index = 2
           when FIELD_TYPES_B.include?(field_type) then options_index = 3
           end
+
+          # Get the validation options.
           args[options_index] = ::ValidatiousOnRails::ModelValidations.options_for(args.first, args.second, args[options_index] || {})
-          self.send "#{field_type}_without_validation", *args
+
+          # Attach custom validator - if any - to the layout (in the <head>-tag - the unobtrusive way).
+          validators = args[options_index].delete(:validators)
+          content_for :validatious, validators if validators.present?
+
+          self.send "#{field_type}_without_validation".to_sym, *args
         end
         alias_method_chain field_type, :validation
       end
@@ -62,7 +83,11 @@ module ActionView
           when FIELD_TYPES_C.include?(field_type) then options_index = 8
           end
           args[options_index] = ::ValidatiousOnRails::ModelValidations.options_for(args.first, args.second, args[options_index] || {})
-          self.send "#{field_type}_without_validation", *args
+          
+          # Attach validator - if any - to the layout (in the <head>-tag - the unobtrusive way)
+          content_for :validatious, args[options_index].delete(:validator).to_s
+          
+          self.send "#{field_type}_without_validation".to_sym, *args
         end
         alias_method_chain field_type, :validation
       end
@@ -79,7 +104,7 @@ module ActionView
     #   #
     #   # helpers matching: (a, b, options = {})
     #   FIELD_TYPES = [:select_date, :select_datetime, :select_time, :select_year,
-    #                   :select_month, :select_day,:select_hour, :select_minute, :select_second]
+    #                   :select_month, :select_day, :select_hour, :select_minute, :select_second]
     # 
     #   FIELD_TYPES.each do |field_type|
     #     define_method "#{field_type}_with_validation".to_sym do |*args|
@@ -91,6 +116,6 @@ module ActionView
     #   end
     # 
     # end
-
+    
   end
 end

@@ -111,7 +111,7 @@ module ValidatiousOnRails
       #
       def fn=(value)
         # Handle either full function definition, or just the function body - just because.
-        @fn = if (value =~ /function\(field,\s*value,\s*params\)/i)
+        @fn = if (value =~ /function\(\w*,\w*,\w*\).*\{.*\}/i)
           value
         else
           value ||= ''
@@ -126,14 +126,18 @@ module ValidatiousOnRails
       end
 
       def to_s
-        %{v2.Validator.add({
-          name: #{self.name.to_json},
-          message: #{self.message.to_json},
-          params: #{self.params.to_json},
-          aliases: #{self.aliases.to_json},
-          acceptEmpty: #{self.accept_empty.to_json},
-          fn: #{self.fn}
-        });}
+        options = {
+            :name => self.name,
+            :message => self.message,
+            :params => self.params,
+            :aliases => self.aliases,
+            :acceptEmpty => self.accept_empty,
+            :fn => self.fn
+          }
+        js_options = options.collect { |k,v|
+            ("#{k}: #{k == :fn ? v : v.to_json}" if [false, true].include?(v) || v.present?)
+          }.compact.join(',')
+        "v2.Validator.add({#{js_options}});"
       end
 
     end
