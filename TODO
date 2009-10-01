@@ -2,21 +2,20 @@
 
 === validatious-on-rails
 
-* BUG: check-boxes that are wrapped in a label - seems to fail
 * Respect validation macro options:
   * :on => :<action> (i.e. if current form action is ACTION)
   * :if/:unless => true|false
   * :allow_blank - for all validations (implemented for format/inclusion/exclusion already)
 * Add client-side support for all the standard Rails validations (that are possible)
   * validates_uniqueness_of (RemoteValidator)
-  * validates_association (ClientSideValidator?!)
+  * validates_association (?)
 * Fix I18n-message issues - I guess there are small bugs related to the I18n-lookup keys (easy to fix though).
 * Finalize custom client-side Validatious-validators (v2.Validator) with adapter-interface
 * Server-side (custom) Validatious-validator support (v2.Validator)
 * Support 3rd party form helpers through adapters?
 * If needed (becuase how ValidationReflection is implemented - a bit hardcoded): Own validation reflection.
-* Add README-note on how to make Formtastic and Validatious be nice to each other - just for the clarity
 * Clean up tests with Shoulda or similar - tighten up the tests, not full coverage now.
+* BUG: validates_acceptance_of - Validatious and Rails seems to clash (can be avoided by using "validates_presence_of" instead)
 
 === validatious
 
