@@ -14,13 +14,13 @@ h2. Features & Goals
 
 * Rails core validations
 ** @validates_acceptance_of@ (a bit unstable it seems: Validatious vs. Rails input-attributes clash)
-** @validates_confirmation_of@ (use this one instead of validates_acceptance_of - it works the same way without Validatious and Rails clash)
+** @validates_confirmation_of@
 ** @validates_exclusion_of@ *new*
 ** @validates_format_of@ *new*
 ** @validates_inclusion_of@ *new*
 ** @validates_length_of@
 ** @validates_numericality_of@ (partial - will be full soon)
-** @validates_presence_of@
+** @validates_presence_of@ (use this one instead of @validates_acceptance_of@ - it works the same way without Validatious and Rails clash)
 ** @validates_size_of@ *new*
 ** _(Work in progress...)_
 * Generator for getting started - easy as 1-2-3 (see below)
