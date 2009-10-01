@@ -13,8 +13,8 @@ h2. Features & Goals
 *Current Features:*
 
 * Rails core validations
-** @validates_acceptance_of@ (a bit unstable depending on form-builder-markup)
-** @validates_confirmation_of@ (see above)
+** @validates_acceptance_of@ (a bit unstable it seems: Validatious vs. Rails input-attributes clash)
+** @validates_confirmation_of@ (use this one instead of validates_acceptance_of - it works the same way without Validatious and Rails clash)
 ** @validates_exclusion_of@ *new*
 ** @validates_format_of@ *new*
 ** @validates_inclusion_of@ *new*
@@ -27,7 +27,7 @@ h2. Features & Goals
 * Ruby representation of @v2.Validator@
 * Test-suit
 * Ruby 1.9.x support
-* For the near fanatic Formtastic form-builder users like me: With default config, it's compatible with the Formtastic semantic HTML structure.
+* For the near fanatic Formtastic form-builder users like me: With default config, it's compatible with the Formtastic semantic HTML structure. Note: It seems acceptance_of + check_box not really working so good becuase of the wrapped checkbox-input - Validatious-issue.
 
 _*Note:* Just started so...expect the list to expand - especially validations. See the "TODO":http://github.com/grimen/validatious-on-rails/blob/master/TODO for more info._
 
