@@ -81,7 +81,7 @@ h3. 2. Include the javascripts in your layout
 <head>
   ...
   <%= javascript_include_tag 'v2.standalone.full.min.js', 'validatious.config.js' # 1) %>
-  <%= yield :validatious # 2) %>
+  <%= content_tag(:script, yield(:validatious), :type => 'text/javascript') # 2) %>
   ...
 </head>
 </pre>
