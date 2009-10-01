@@ -112,11 +112,35 @@ end
 <% end %>
 </pre>
 
+h2. Extra: Formtastic  ♥ Validatious
+
+For all you Formtastic users out there: This plugin is out-of-the-box compatible with Formtastic - unlike the similar solution(s) out there. But to get Validatious and Formtastic to play well with each other, you need to tweak the *configuration* settings a bit. These settings is very much recommended:
+
+*Formtastic:*
+
+<pre>
+Formtastic::SemanticFormBuilder.inline_errors = :list
+Formtastic::SemanticFormBuilder.inline_order  = [:input, :hints, :errors]
+</pre>
+
+*Validatious:*
+
+<pre>
+v2.Field.prototype.positionErrorsAbove = false;
+v2.Fieldset.prototype.positionErrorsAbove = false;
+v2.Fieldset.prototype.messagesClass = 'errors';
+v2.Fieldset.prototype.failureClass = 'error';
+v2.Fieldset.prototype.successClass = '';
+v2.Field.prototype.messagesClass = 'errors';
+v2.Field.prototype.failureClass = 'error';
+v2.Field.prototype.successClass = '';
+</pre>
+
 h2. Limitations
 
 This is very much work-in-progress, so there are some known limitations that should work very soon. For example some validations are not supported yet - either because it takes some tricks, or it's not scalable without AJAX. See @TODO@.
 
-h2. Notes
+h2. Origin
 
 This project was originally forked from:
 
