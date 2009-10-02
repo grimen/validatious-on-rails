@@ -29,6 +29,7 @@ module ValidatiousOnRails
   def custom_validators
     Helpers.custom_validatious_validators
   end
-  ::ActionController::Base.helper_method :custom_validators
+  alias :include_custom_validators :custom_validators
+  ::ActionController::Base.helper_method :custom_validators, :include_custom_validators
   
 end

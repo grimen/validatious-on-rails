@@ -8,7 +8,6 @@ end
 
 require File.join(File.dirname(__FILE__), *%w[validatious client_side_validator])
 
-#
 # Force this, as it seems ValidationReflection don't do this correctly. =S
 #
 ActiveRecord::Base.class_eval do
@@ -17,13 +16,10 @@ ActiveRecord::Base.class_eval do
   ::ActiveRecordExtensions::ValidationReflection.install(self)
 end
 
-#
 # Validatious-Rails validation translator.
 #
 module ValidatiousOnRails
   class ModelValidations
-
-    # MissingValidation = ::Class.new(::ValidatiousOnRails::ValidatiousError)
 
     CORE_VALIDATIONS = [
         :acceptance_of,
@@ -83,11 +79,6 @@ module ValidatiousOnRails
           # needs to be confirmed. Validatious expects this validation rule
           # on the confirmation field. *
           unless validates_type =~ /^confirmation_of$/
-            # unless self.respond_to?(validates_type)
-            #   raise MissingValidation, "No such validation recognized: #{validates_type}. " <<
-            #     "Maybe you forgot to register you custom validation using " <<
-            #     "ValidatiousOnRails::ModelValidations.add <CustomValidationClass>"
-            # end
             validation_options = self.send(validates_type.to_sym, validation)
             attribute_validation[:classes] << validation_options[:class]
             attribute_validation[:validators] << validation_options[:validator]
@@ -115,7 +106,7 @@ module ValidatiousOnRails
       #
       # Note: acceptance_of <=> presence_of (for Validatious)
       #
-      # TODO: Make this a custom validator - if the advanced options are set (:accept)
+      # TODO: Make this a custom validator - if the advanced options are set (:accept) (low-prio)
       #
       def acceptance_of(validation)
         {:class => 'required', :validator => nil}
@@ -148,7 +139,7 @@ module ValidatiousOnRails
       #
       # Resolve validation from validates_exclusion_of.
       #
-      # Note: Attaching custom validator - if not already defined.
+      # Attaching custom validator - if not already defined.
       #
       def exclusion_of(validation)
         name, alias_name = validator_name(validation, :in)
@@ -172,8 +163,8 @@ module ValidatiousOnRails
       #
       # Resolve validation from validates_format_of.
       #
-      # Note: Attaching custom validator - only if identical format validator already exists,
-      #       otherwise refer to that one instead. Needs regex.inspect to get it right.
+      # Attaching custom validator - only if identical format validator already exists,
+      # otherwise refer to that one instead. Needs regex.inspect to get it right.
       #
       def format_of(validation)
         name, alias_name = validator_name(validation, :with, validation.options[:with].inspect)
@@ -254,7 +245,7 @@ module ValidatiousOnRails
       #
       # TODO: Resolve validation from validates_uniqueness_of.
       #
-      # Note: A bit tricky on the client-side - especially with many records.
+      # Note: Implement using .
       #
       def uniqueness_of(validation)
         {:class => '', :validator => nil}
@@ -264,7 +255,10 @@ module ValidatiousOnRails
       # Unknown validations - if no matching custom validator is found/registered.
       #
       def method_missing(sym, *args, &block)
-        ::ValidatiousOnRails.log "Unknown validation: #{sym}. No custom Validatious validator found for this validation makro.", :warn
+        ::ValidatiousOnRails.log
+          "Unknown validation: #{sym}. No custom Validatious validator found for this validation makro. " <<
+          "Maybe you forgot to register you custom validation using: " <<
+          "ValidatiousOnRails::ModelValidations.add(<CustomValidationClass>)", :warn
         {:class => '', :validator => nil}
       end
 
@@ -273,8 +267,11 @@ module ValidatiousOnRails
 
       private
 
+        # Generate a unique valdiator ID to avoid clashes.
+        #
+        # Note: Ruby #hash is way faster than SHA1 (etc.) - just replace any negative sign.
+        #
         def validator_id(value)
-          # Way faster than SHA1, just replace any negative sign.
           value.to_s.hash.to_s.tr('-', '1')
         end
 
@@ -293,9 +290,8 @@ module ValidatiousOnRails
           [name, validator_id].collect! { |v| v.tr('_', '-') }
         end
 
-        # Generate a proper error message.
-        #
-        # TODO: Debug this, now returns very odd results even though it's so simple.
+        # Generate proper error message using explicit message, or I18n-lookup.
+        # Core validations gets treated by Rails - unless explicit message is set that is.
         #
         def validator_error_message(validation)
           explicit_message = validation.options[:message]
@@ -308,9 +304,14 @@ module ValidatiousOnRails
               explicit_message.to_s
             end
           else
-            key = validation.macro.to_s.tr('-', '_').gsub(/^validates?_/, '').gsub(/_of/, '').to_sym
-            ::I18n.t(key, :scope => :'activerecord.errors.messages',
-              :default => "activerecord.errors.messages.#{key}")
+            unless CORE_VALIDATIONS.include?(validation.macro.to_sym)
+              # No core validation, try to make up a descent I18n lookup path using conventions.
+              key = validation.macro.to_s.tr('-', '_').gsub(/^validates?_/, '').gsub(/_of/, '').to_sym
+              ::I18n.t(key, :scope => :'activerecord.errors.messages',
+                :default => "activerecord.errors.messages.#{key}")
+            else
+              # Nothing - let Rails rails handle the core validation message translations (I18n).
+            end
           end
         end
 
