@@ -3,9 +3,9 @@
 # Tap into the built-in form/input helpers to add validatious class names from
 # model validations.
 #
-module ActionView
-  module Helpers
-    module FormHelper
+module ActionView # :nodoc:
+  module Helpers # :nodoc:
+    module FormHelper # :nodoc:
 
       FIELD_TYPES = [:text_field, :password_field, :text_area, :file_field, :radio_button].freeze
 

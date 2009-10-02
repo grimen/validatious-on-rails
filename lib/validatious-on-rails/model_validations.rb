@@ -57,8 +57,10 @@ module ValidatiousOnRails
       end
 
       #
-      # Groks rails validations, and is able to convert a rails validation to
-      # a Validatious 2.0 compatible class string.
+      # Groks Rails validations, and is able to convert a rails validation to
+      # a Validatious 2.0 compatible class string, and a Validatous validator
+      # for more complex validations. Even some of the Rails core validations
+      # with certain options requires this.
       #
       # Input may be an ActiveRecord class, a class name (string), or an object
       # name along with a method/field.

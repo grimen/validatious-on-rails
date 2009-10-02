@@ -4,11 +4,13 @@ require File.join(File.dirname(__FILE__), *%w[validatious-on-rails model_validat
 require File.join(File.dirname(__FILE__), *%w[validatious-on-rails rails])
 require File.join(File.dirname(__FILE__), *%w[validatious-on-rails helpers])
 
-module ValidatiousOnRails
+module ValidatiousOnRails # :nodoc:
   
   extend self
   
-  class ValidatiousError < ::StandardError
+  # Standard error: Acts as base error class for the plugin.
+  #
+  class ValidatiousOnRailsError < ::StandardError
     def initialize(message)
       ::Validatious.log message, :debug
       super message
@@ -19,6 +21,8 @@ module ValidatiousOnRails
   
   @@verbose = ::Object.const_defined?(:RAILS_ENV) ? (::RAILS_ENV.to_sym == :development) : true
   
+  # Logging helper: Internal debug-logging for the plugin.
+  #
   def log(message, level = :info)
     return unless @@verbose
     level = :info if level.blank?
@@ -26,6 +30,8 @@ module ValidatiousOnRails
     @@logger.send(level.to_sym, message)
   end
   
+  # Alias method for: ValidatiousOnRails::Helpers#custom_validatious_validators
+  #
   def custom_validators
     Helpers.custom_validatious_validators
   end
