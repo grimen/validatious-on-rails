@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{validatious-on-rails}
-  s.version = "0.2.1"
+  s.version = "0.2.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Christian Johansen", "Jonas Grimfelt"]
-  s.date = %q{2009-10-01}
+  s.date = %q{2009-10-02}
   s.description = %q{Rails plugin that maps model validations to class names on form elements to integrate with Validatious.}
   s.email = %q{christian@cjohansen.no}
   s.extra_rdoc_files = [
@@ -18,6 +18,7 @@ Gem::Specification.new do |s|
      "generators/validatious/templates/validatious.config.js",
      "generators/validatious/validatious_generator.rb",
      "lib/validatious-on-rails.rb",
+     "lib/validatious-on-rails/helpers.rb",
      "lib/validatious-on-rails/model_validations.rb",
      "lib/validatious-on-rails/rails.rb",
      "lib/validatious-on-rails/rails/action_view_helpers.rb",
@@ -38,6 +39,7 @@ Gem::Specification.new do |s|
      "generators/validatious/templates/validatious.config.js",
      "generators/validatious/validatious_generator.rb",
      "lib/validatious-on-rails.rb",
+     "lib/validatious-on-rails/helpers.rb",
      "lib/validatious-on-rails/model_validations.rb",
      "lib/validatious-on-rails/rails.rb",
      "lib/validatious-on-rails/rails/action_view_helpers.rb",

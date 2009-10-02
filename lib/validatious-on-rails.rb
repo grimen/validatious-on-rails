@@ -2,6 +2,7 @@
 require File.join(File.dirname(__FILE__), *%w[validatious-on-rails validatious])
 require File.join(File.dirname(__FILE__), *%w[validatious-on-rails model_validations])
 require File.join(File.dirname(__FILE__), *%w[validatious-on-rails rails])
+require File.join(File.dirname(__FILE__), *%w[validatious-on-rails helpers])
 
 module ValidatiousOnRails
   
@@ -24,5 +25,10 @@ module ValidatiousOnRails
     @@logger ||= ::Logger.new(::STDOUT)
     @@logger.send(level.to_sym, message)
   end
+  
+  def custom_validators
+    Helpers.custom_validatious_validators
+  end
+  ::ActionController::Base.helper_method :custom_validators
   
 end
