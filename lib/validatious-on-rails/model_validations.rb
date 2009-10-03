@@ -211,6 +211,8 @@ module ValidatiousOnRails
       #
       # Resolve validation from validates_length_of.
       #
+      #   # TODO: :allow_nil, :allow_blank, :tokenizer
+      #
       def length_of(validation)
         range = validation.options[:in] || validation.options[:within]
         min, max = range.min, range.max if range
@@ -229,7 +231,9 @@ module ValidatiousOnRails
       #
       # Resolve validation from validates_numericality_of.
       #
-      # TODO: Make this a custom validator - if the advanced options are set (:odd, :even, ...)
+      # TODO: :only_integer, :allow_nil, :greater_than, :greater_than_or_equal_to,
+      #       :equal_to, :less_than, :less_than_or_equal_to, :odd, :even
+      #       numericality_of-regex:  /A[+-]?d+Z/
       #
       def numericality_of(validation)
         {:class => 'numeric', :validator => nil}

@@ -3,6 +3,8 @@
 === validatious-on-rails
 
 * Make Rails core validations basic options fully supported (wait with :on and :if/:unless until later)
+  * numericality_of - support all validation options (see method comments)
+  * length_of - support all validation options (see method comments)
   * :allow_blank - for all validations (implemented for format/inclusion/exclusion already)
   * etc...
 * Adapter-interface (API) for custom client-side Validatious-validators
