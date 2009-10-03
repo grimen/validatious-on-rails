@@ -22,6 +22,13 @@ rescue LoadError
 end
 
 begin
+  require 'shoulda'
+rescue LoadError
+  gem 'thoughtbot-shoulda', '>= 2.0.0'
+  require 'shoulda'
+end
+
+begin
   require 'acts_as_fu'
 rescue LoadError
   gem 'nakajima-acts_as_fu', '>= 0.0.5'

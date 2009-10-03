@@ -134,9 +134,18 @@ module ValidatiousOnRails
             :acceptEmpty => self.accept_empty,
             :fn => self.fn
           }
-        js_options = options.collect { |k,v|
-            ("#{k}: #{k == :fn ? v : v.to_json}" if [false, true].include?(v) || v.present?)
-          }.compact.join(',')
+
+        # Just to make the tests much DRY and maintanable on Ruby 1.8
+        # - hash ordered by key only 1.9. =(
+        js_options = options.keys.collect(&:to_s).sort.collect { |k|
+            v = options[k.to_sym]
+            ("#{k}: #{k.to_sym == :fn ? v : v.to_json}" if [false, true].include?(v) || v.present?)
+          }.compact.join(', ')
+        # instead of...
+        # js_options = options.collect { |k,v|
+        #   ("#{k}: #{k == :fn ? v : v.to_json}" if [false, true].include?(v) || v.present?)
+        # }.compact.join(',')
+
         "v2.Validator.add({#{js_options}});"
       end
 

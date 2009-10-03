@@ -257,8 +257,8 @@ module ValidatiousOnRails
       # Unknown validations - if no matching custom validator is found/registered.
       #
       def method_missing(sym, *args, &block)
-        ::ValidatiousOnRails.log
-          "Unknown validation: #{sym}. No custom Validatious validator found for this validation makro. " <<
+        ::ValidatiousOnRails.log "Unknown validation: #{sym}." <<
+          " No custom Validatious validator found for this validation makro. " <<
           "Maybe you forgot to register you custom validation using: " <<
           "ValidatiousOnRails::ModelValidations.add(<CustomValidationClass>)", :warn
         {:class => '', :validator => nil}
