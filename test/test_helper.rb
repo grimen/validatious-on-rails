@@ -17,16 +17,23 @@ rescue LoadError
   require 'test/unit'
   require 'active_record'
   require 'action_controller'
-  require 'action_controller'
   require 'sqlite3'
 end
 
 begin
-  require 'shoulda'
+  require 'context'
 rescue LoadError
-  gem 'thoughtbot-shoulda', '>= 2.0.0'
-  require 'shoulda'
+  gem 'jeremymcanally-context', '>= 0.5.5'
+  require 'context'
 end
+
+begin
+  require 'rr'
+rescue LoadError
+  gem 'rr', '>= 0.0.0'
+  require 'rr'
+end
+extend RR::Adapters::RRMethods
 
 begin
   require 'acts_as_fu'
@@ -48,14 +55,9 @@ module ActiveRecord
   end
 end
 
-gem 'rr', '>= 0.0.0'
-require 'rr'
-extend RR::Adapters::RRMethods
-
 # Reflected_validations already freezed...ned to find a workaround.
 # reflected_validatons = ActiveRecordExtensions::ValidationReflection.reflected_validations
 # stub(ActiveRecordExtensions::ValidationReflection).reflected_validations {reflected_validatons + [:validates_craziness_of]}
-
 
 build_model :bogus_items do
   string :url

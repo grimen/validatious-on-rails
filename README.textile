@@ -14,15 +14,31 @@ h2. Features & Goals
 
 * Rails core validations
 ** @validates_acceptance_of@ (Hint: To avoid issues, check Rails API for :accept-option - if this is incorrectly set, your validations may act very strange. @validates_presence_of@ always works though.)
+*** no support: :accept, :allow_nil, :on, :if, :unless
 ** @validates_confirmation_of@
-** @validates_exclusion_of@ *new*
-** @validates_format_of@ *new*
-** @validates_inclusion_of@ *new*
+*** partial support: :allow_blank
+*** no support: :on, :if, :unless
+** @validates_exclusion_of@
+*** partial support: :allow_blank
+*** no support: :on, :if, :unless
+** @validates_format_of@
+*** partial support: :allow_blank
+*** no support: :on, :if, :unless
+** @validates_inclusion_of@
+*** partial support: :allow_blank
+*** no support: :on, :if, :unless
 ** @validates_length_of@
-** @validates_numericality_of@ (partial - will be full soon)
+*** partial support: :allow_blank
+*** no support: :on, :if, :unless
+** @validates_numericality_of@
+*** no support: :only_integer, :greater_than, :greater_than_or_equal_to, :equal_to, :less_than, :less_than_or_equal_to, :odd, :even, :on, :if, :unless
 ** @validates_presence_of@
-** @validates_size_of@ *new*
-** _(Work in progress...)_
+*** partial support: :allow_blank
+*** no support: :on, :if, :unless
+** @validates_size_of@
+*** partly: :allow_blank
+*** not supported: :on, :if, :unless
+** _(More to come...)_
 * Ruby representation of @v2.Validator@ - for custom validators (public API announced soon)
 * I18n-support (validation error messages) - using Rails conventions
 * Generator for getting started - easy as 1-2-3 (see below)
@@ -139,7 +155,7 @@ v2.Field.prototype.successClass = '';
 
 h2. Limitations
 
-This is very much work-in-progress, so there are some known limitations that should work very soon. For example some validations are not supported yet - either because it takes some tricks, or it's not scalable without AJAX. See @TODO@.
+This is very much work-in-progress, so there are some known limitations that should work very soon. For example some validations are not supported yet - either because it takes some tricks, or it's not scalable without AJAX. See "TODO":http://github.com/grimen/validatious-on-rails/blob/master/TODO.
 
 h2. Origin
 

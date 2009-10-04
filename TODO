@@ -2,21 +2,18 @@
 
 === validatious-on-rails
 
-* Make Rails core validations basic options fully supported (wait with :on and :if/:unless until later)
-  * numericality_of - support all validation options (see method comments)
-  * length_of - support all validation options (see method comments)
+* Make Rails core validations basic options fully supported
+  * numericality_of - support all validation options (see method notes)
   * :allow_blank - for all validations (implemented for format/inclusion/exclusion already)
-  * etc...
+  * :on => :<action> (i.e. if current form action is ACTION)
+  * :if/:unless => true|false (doubt this is even possible for all cases though - like Ruby procs)
+* Tighten up the tests, not full coverage since the latest experiments.
 * Adapter-interface (API) for custom client-side Validatious-validators
 * Additional helpers: Support 3rd party form helpers
 * Initializer (generate with the generator)
-* Respect the more advanced validation macro options - when possible:
-  * :on => :<action> (i.e. if current form action is ACTION)
-  * :if/:unless => true|false (doubt this is even possible for all cases though - like Ruby procs)
 * Server-side (custom) Validatious-validator support (v2.Validator)
   * validates_uniqueness_of (RemoteValidator)
   * validates_association (?)
-* Clean up tests with Shoulda or similar - tighten up the tests, not full coverage now.
 
 === validatious
 

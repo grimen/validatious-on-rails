@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Christian Johansen", "Jonas Grimfelt"]
-  s.date = %q{2009-10-02}
+  s.date = %q{2009-10-04}
   s.description = %q{Rails plugin that maps model validations to class names on form elements to integrate with Validatious.}
   s.email = %q{christian@cjohansen.no}
   s.extra_rdoc_files = [
@@ -26,6 +26,13 @@ Gem::Specification.new do |s|
      "lib/validatious-on-rails/validatious/client_side_validator.rb",
      "lib/validatious-on-rails/validatious/remote_validator.rb",
      "lib/validatious-on-rails/validatious/validator.rb",
+     "lib/validatious-on-rails/validatious/validators.rb",
+     "lib/validatious-on-rails/validatious/validators/exclusion_validator.rb",
+     "lib/validatious-on-rails/validatious/validators/format_validator.rb",
+     "lib/validatious-on-rails/validatious/validators/inclusion_validator.rb",
+     "lib/validatious-on-rails/validatious/validators/length_maximum_validator.rb",
+     "lib/validatious-on-rails/validatious/validators/length_minimum_validator.rb",
+     "lib/validatious-on-rails/validatious/validators/length_validator.rb",
      "rails/init.rb",
      "test/test_helper.rb",
      "test/validatious_on_rails/model_validations_test.rb",
@@ -47,6 +54,13 @@ Gem::Specification.new do |s|
      "lib/validatious-on-rails/validatious/client_side_validator.rb",
      "lib/validatious-on-rails/validatious/remote_validator.rb",
      "lib/validatious-on-rails/validatious/validator.rb",
+     "lib/validatious-on-rails/validatious/validators.rb",
+     "lib/validatious-on-rails/validatious/validators/exclusion_validator.rb",
+     "lib/validatious-on-rails/validatious/validators/format_validator.rb",
+     "lib/validatious-on-rails/validatious/validators/inclusion_validator.rb",
+     "lib/validatious-on-rails/validatious/validators/length_maximum_validator.rb",
+     "lib/validatious-on-rails/validatious/validators/length_minimum_validator.rb",
+     "lib/validatious-on-rails/validatious/validators/length_validator.rb",
      "rails/init.rb",
      "test/test_helper.rb",
      "test/validatious_on_rails/model_validations_test.rb",

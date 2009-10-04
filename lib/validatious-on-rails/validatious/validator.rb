@@ -21,7 +21,7 @@ module ValidatiousOnRails
 
       # Reference: http://validatious.org/learn/features/core/custom_validators
 
-      ValidatorError = ::Class.new(::StandardError)
+      ValidatorError = ::Class.new(::StandardError) unless defined?(ValidatorError)
 
       attr_accessor :name
       attr_writer   :message,
@@ -30,10 +30,10 @@ module ValidatiousOnRails
                     :accept_empty,
                     :fn
 
-      def initialize(name, *args)
+      def initialize(name, options = {})
         raise ValidatorError, "Parameter :name is required for an Validatious validator" unless name.present?
         self.name = name
-        (options = args.extract_options!).each do |attr, value|
+        options.each do |attr, value|
           self.send(:"#{attr}=", value) if value.present?
         end
       end
@@ -122,7 +122,7 @@ module ValidatiousOnRails
       end
 
       def fn
-        @fn ||= "function(field, value, params) {return true;}"
+        (@fn ||= "function(field, value, params) {return true;}").gsub(/[\n\t]/, '')
       end
 
       def to_s
@@ -134,19 +134,93 @@ module ValidatiousOnRails
             :acceptEmpty => self.accept_empty,
             :fn => self.fn
           }
-
-        # Just to make the tests much DRY and maintanable on Ruby 1.8
-        # - hash ordered by key only 1.9. =(
+        # Just to make the tests much DRYer and maintanable on Ruby 1.8
+        # - hash ordered by key only 1.9. ='(
         js_options = options.keys.collect(&:to_s).sort.collect { |k|
             v = options[k.to_sym]
             ("#{k}: #{k.to_sym == :fn ? v : v.to_json}" if [false, true].include?(v) || v.present?)
           }.compact.join(', ')
-        # instead of...
-        # js_options = options.collect { |k,v|
-        #   ("#{k}: #{k == :fn ? v : v.to_json}" if [false, true].include?(v) || v.present?)
-        # }.compact.join(',')
-
         "v2.Validator.add({#{js_options}});"
+      end
+
+      class << self
+
+        # Generate a unique valdiator ID to avoid clashes.
+        # Note: Ruby #hash is way faster than SHA1 (etc.) - just replace any negative sign.
+        #
+        def generate_id(value)
+          value.to_s.hash.to_s.tr('-', '1')
+        end
+
+        # Any named specified for this custom validation?
+        # E.g. validates_format_of :name, :with => /\d{6}-\d{4}/, :name => 'ssn-se'
+        #
+        # If not, create one that's uniqe based on validation and what to validate based on,
+        # e.g. validates_format_of :name, :with => /\d{6}-\d{4}/ # => :name => "format_with_#{hash-of-:with-value}"
+        #
+        def generate_name(validation, id_key, id_value = nil)
+          # Avoiding duplicates...
+          identifier = "-#{id_value}" if id_value.present?
+          validator_id = "#{validation.macro.to_s.sub(/^validates_/, '').sub(/_of/, '')}_#{id_key}#{identifier}"
+          name = validation.options[:name].present? ? validation.options[:name] : validator_id
+          # "_" is not allowed in name/alias(es) - used to seperate validator-id from it's args/params.
+          [name, validator_id].collect! { |v| v.tr('_', '-') }
+        end
+
+        # Generate proper error message using explicit message, or I18n-lookup.
+        # Core validations gets treated by Rails - unless explicit message is set that is.
+        #
+        # NOTE: Might refactor this into a even more abstract class/module.
+        #
+        def generate_message(validation, *args)
+          options = args.extract_options!
+          explicit_message = validation.options[:message]
+          key = options.delete(:key) || (explicit_message if explicit_message.is_a?(::Symbol))
+
+          message = if key.present?
+            ::I18n.t(key, options.merge(:scope => :'activerecord.errors.messages',
+              :default => "activerecord.errors.messages.#{key}"))
+          elsif explicit_message.is_a?(::String)
+            explicit_message
+          else
+            unless ::ValidatiousOnRails::ModelValidations::CORE_VALIDATIONS.include?(validation.macro.to_sym)
+              # No core validation, try to make up a descent I18n lookup path using conventions.
+              key ||= validation.macro.to_s.tr('-', '_').gsub(/^validates?_/, '').gsub(/_of/, '').to_sym
+              ::I18n.t(key, options.merge(:scope => :'activerecord.errors.messages',
+                :default => "activerecord.errors.messages.#{key}"))
+            else
+              # Nothing - let Rails rails handle the core validation message translations (I18n).
+            end
+          end
+          # Rails I18n interpolations => Validatious interpolations
+          # Example: {{count}} => ${count}
+          message.gsub(/\{\{/, '${').gsub(/\}\}/, '}')
+        end
+
+        # Rails core validation messages:
+        #
+        # messages:
+        #   inclusion: "is not included in the list"
+        #   exclusion: "is reserved"
+        #   invalid: "is invalid"
+        #   confirmation: "doesn't match confirmation"
+        #   accepted: "must be accepted"
+        #   empty: "can't be empty"
+        #   blank: "can't be blank"
+        #   too_long: "is too long (maximum is {{count}} characters)"
+        #   too_short: "is too short (minimum is {{count}} characters)"
+        #   wrong_length: "is the wrong length (should be {{count}} characters)"
+        #   taken: "has already been taken"
+        #   not_a_number: "is not a number"
+        #   greater_than: "must be greater than {{count}}"
+        #   greater_than_or_equal_to: "must be greater than or equal to {{count}}"
+        #   equal_to: "must be equal to {{count}}"
+        #   less_than: "must be less than {{count}}"
+        #   less_than_or_equal_to: "must be less than or equal to {{count}}"
+        #   odd: "must be odd"
+        #   even: "must be even"
+        #   record_invalid: "is invalid"
+
       end
 
     end
