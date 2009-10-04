@@ -62,7 +62,7 @@ and in @config/environment.rb@:
 * "validatious 2.0":http://github.com/cjohansen/validatious - the DSL-extension is optional, but I very much recommend the full package (it's so tiny in size anyway)
 * "validation_reflection":http://github.com/redinger/validation_reflection
 
-*Note:* For testing, get "acts_as_fu":http://github.com/nakajima/acts_as_fu.
+*Note:* For testing, get "context":http://github.com/jeremymcanally/acts_as_fu, "rr":http://github.com/btakita/rr, "acts_as_fu":http://github.com/nakajima/acts_as_fu.
 
 h2. Configuration
 
