@@ -13,31 +13,15 @@ h2. Features & Goals
 *Current Features:*
 
 * Rails core validations
-** @validates_acceptance_of@ (Hint: To avoid issues, check Rails API for :accept-option - if this is incorrectly set, your validations may act very strange. @validates_presence_of@ always works though.)
-*** no support: :accept, :allow_nil, :on, :if, :unless
-** @validates_confirmation_of@
-*** partial support: :allow_blank
-*** no support: :on, :if, :unless
-** @validates_exclusion_of@
-*** partial support: :allow_blank
-*** no support: :on, :if, :unless
-** @validates_format_of@
-*** partial support: :allow_blank
-*** no support: :on, :if, :unless
-** @validates_inclusion_of@
-*** partial support: :allow_blank
-*** no support: :on, :if, :unless
-** @validates_length_of@
-*** partial support: :allow_blank
-*** no support: :on, :if, :unless
-** @validates_numericality_of@
-*** no support: :only_integer, :greater_than, :greater_than_or_equal_to, :equal_to, :less_than, :less_than_or_equal_to, :odd, :even, :on, :if, :unless
-** @validates_presence_of@
-*** partial support: :allow_blank
-*** no support: :on, :if, :unless
-** @validates_size_of@
-*** partly: :allow_blank
-*** not supported: :on, :if, :unless
+** @validates_acceptance_of@ - <small>no support: :accept, :allow_nil, :on, :if, :unless / Hint: To avoid issues, check Rails API for :accept-option - if this is incorrectly set, your validations may act very strange. *validates_presence_of* always works though.</small>
+** @validates_confirmation_of@ - <small>partial support: :allow_blank / no support: :on, :if, :unless</small>
+** @validates_exclusion_of@ - <small>partial support: :allow_blank / no support: :on, :if, :unless</small>
+** @validates_format_of@ - <small>partial support: :allow_blank / no support: :on, :if, :unless</small>
+** @validates_inclusion_of@ - <small>partial support: :allow_blank / no support: :on, :if, :unless</small>
+** @validates_length_of@ - <small>partial support: :allow_blank / no support: :on, :if, :unless</small>
+** @validates_numericality_of@ - <small>no support: :only_integer, :greater_than, :greater_than_or_equal_to, :equal_to, :less_than, :less_than_or_equal_to, :odd, :even, :on, :if, :unless</small>
+** @validates_presence_of@ - <small>partial support: :allow_blank / no support: :on, :if, :unless</small>
+** @validates_size_of@ - <small>partly: :allow_blank - not supported: :on, :if, :unless</small>
 ** _(More to come...)_
 * Ruby representation of @v2.Validator@ - for custom validators (public API announced soon)
 * I18n-support (validation error messages) - using Rails conventions
