@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{validatious-on-rails}
-  s.version = "0.3.0"
+  s.version = "0.3.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Christian Johansen", "Jonas Grimfelt"]
-  s.date = %q{2009-10-04}
+  s.date = %q{2009-10-06}
   s.description = %q{Rails plugin that maps model validations to class names on form elements to integrate with Validatious.}
   s.email = %q{christian@cjohansen.no}
   s.extra_rdoc_files = [
@@ -30,11 +30,20 @@ Gem::Specification.new do |s|
      "lib/validatious-on-rails/validatious/validators/exclusion_validator.rb",
      "lib/validatious-on-rails/validatious/validators/format_validator.rb",
      "lib/validatious-on-rails/validatious/validators/inclusion_validator.rb",
-     "lib/validatious-on-rails/validatious/validators/length_maximum_validator.rb",
-     "lib/validatious-on-rails/validatious/validators/length_minimum_validator.rb",
-     "lib/validatious-on-rails/validatious/validators/length_validator.rb",
+     "lib/validatious-on-rails/validatious/validators/length/is_validator.rb",
+     "lib/validatious-on-rails/validatious/validators/length/maximum_validator.rb",
+     "lib/validatious-on-rails/validatious/validators/length/minimum_validator.rb",
+     "lib/validatious-on-rails/validatious/validators/numericality/equal_to_validator.rb",
+     "lib/validatious-on-rails/validatious/validators/numericality/even_validator.rb",
+     "lib/validatious-on-rails/validatious/validators/numericality/greater_than_or_equal_to_validator.rb",
+     "lib/validatious-on-rails/validatious/validators/numericality/greater_than_validator.rb",
+     "lib/validatious-on-rails/validatious/validators/numericality/less_than_or_equal_to_validator.rb",
+     "lib/validatious-on-rails/validatious/validators/numericality/less_than_validator.rb",
+     "lib/validatious-on-rails/validatious/validators/numericality/odd_validator.rb",
+     "lib/validatious-on-rails/validatious/validators/numericality/only_integer_validator.rb",
      "rails/init.rb",
      "test/test_helper.rb",
+     "test/validatious_on_rails/helpers_test.rb",
      "test/validatious_on_rails/model_validations_test.rb",
      "test/validatious_on_rails/rails/action_view_helpers_test.rb",
      "test/validatious_on_rails/validatious/validator_test.rb",
@@ -58,11 +67,20 @@ Gem::Specification.new do |s|
      "lib/validatious-on-rails/validatious/validators/exclusion_validator.rb",
      "lib/validatious-on-rails/validatious/validators/format_validator.rb",
      "lib/validatious-on-rails/validatious/validators/inclusion_validator.rb",
-     "lib/validatious-on-rails/validatious/validators/length_maximum_validator.rb",
-     "lib/validatious-on-rails/validatious/validators/length_minimum_validator.rb",
-     "lib/validatious-on-rails/validatious/validators/length_validator.rb",
+     "lib/validatious-on-rails/validatious/validators/length/is_validator.rb",
+     "lib/validatious-on-rails/validatious/validators/length/maximum_validator.rb",
+     "lib/validatious-on-rails/validatious/validators/length/minimum_validator.rb",
+     "lib/validatious-on-rails/validatious/validators/numericality/equal_to_validator.rb",
+     "lib/validatious-on-rails/validatious/validators/numericality/even_validator.rb",
+     "lib/validatious-on-rails/validatious/validators/numericality/greater_than_or_equal_to_validator.rb",
+     "lib/validatious-on-rails/validatious/validators/numericality/greater_than_validator.rb",
+     "lib/validatious-on-rails/validatious/validators/numericality/less_than_or_equal_to_validator.rb",
+     "lib/validatious-on-rails/validatious/validators/numericality/less_than_validator.rb",
+     "lib/validatious-on-rails/validatious/validators/numericality/odd_validator.rb",
+     "lib/validatious-on-rails/validatious/validators/numericality/only_integer_validator.rb",
      "rails/init.rb",
      "test/test_helper.rb",
+     "test/validatious_on_rails/helpers_test.rb",
      "test/validatious_on_rails/model_validations_test.rb",
      "test/validatious_on_rails/rails/action_view_helpers_test.rb",
      "test/validatious_on_rails/validatious/validator_test.rb",
@@ -75,6 +93,7 @@ Gem::Specification.new do |s|
   s.summary = %q{Rails plugin that maps model validations to class names on form elements to integrate with Validatious.}
   s.test_files = [
     "test/test_helper.rb",
+     "test/validatious_on_rails/helpers_test.rb",
      "test/validatious_on_rails/model_validations_test.rb",
      "test/validatious_on_rails/rails/action_view_helpers_test.rb",
      "test/validatious_on_rails/validatious/validator_test.rb",

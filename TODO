@@ -3,7 +3,8 @@
 === validatious-on-rails
 
 * Make Rails core validations basic options fully supported
-  * numericality_of - support all validation options (see method notes)
+  * validates_acceptance_of - :accept, :allow_nil
+  * confirmation_of - Should use Rails I18n message, not Validatious message.
   * :allow_blank - for all validations (implemented for format/inclusion/exclusion already)
   * :on => :<action> (i.e. if current form action is ACTION)
   * :if/:unless => true|false (doubt this is even possible for all cases though - like Ruby procs)
@@ -14,6 +15,7 @@
 * Server-side (custom) Validatious-validator support (v2.Validator)
   * validates_uniqueness_of (RemoteValidator)
   * validates_association (?)
+* Make Validatious::Validator#class_with_params(*params) generate the full HTML class name call for specified parameters (i.e. *params). Example: Validatious::LenghtMinumumValidator(validator).class_with_params(2) => "lenght-minimum_2"
 
 === validatious
 

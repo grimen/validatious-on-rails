@@ -27,7 +27,7 @@ class FormHelperTest < ::ActionView::TestCase
   def setup
     @bogus_item = BogusItem.new
   end
-  
+
   test "attach custom javascript validations to layout" do
     @content_for_validatious = nil
     view_output = form_for(@bogus_item, :url => '/bogus_items') do |f|
@@ -35,12 +35,12 @@ class FormHelperTest < ::ActionView::TestCase
     end
     assert_match /v2.Validator/, @content_for_validatious
   end
-  
+
   test "required :text_field" do
     # Using helper
     assert_has_class 'required', text_field(:bogus_item, :name)
     assert_has_class 'required some_other_class', text_field(:bogus_item, :name, :class => 'some_other_class')
-    
+
     # Using builder
     assert_has_class 'required', form_for(@bogus_item, :url => '/bogus_items') { |f|
         concat f.text_field(:name)

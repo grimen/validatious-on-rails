@@ -13,7 +13,7 @@ module ValidatiousOnRails
           :type => 'text/javascript', :id => 'custom_validatious_validators')
       end
     end
-    
+
   end
 end
 

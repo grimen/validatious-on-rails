@@ -19,9 +19,9 @@ h2. Features & Goals
 ** @validates_format_of@ - <small>partial support: :allow_blank / no support: :on, :if, :unless</small>
 ** @validates_inclusion_of@ - <small>partial support: :allow_blank / no support: :on, :if, :unless</small>
 ** @validates_length_of@ - <small>partial support: :allow_blank / no support: :on, :if, :unless</small>
-** @validates_numericality_of@ - <small>no support: :only_integer, :greater_than, :greater_than_or_equal_to, :equal_to, :less_than, :less_than_or_equal_to, :odd, :even, :on, :if, :unless</small>
+** @validates_numericality_of@ - <small>no support: :on, :if, :unless</small>
 ** @validates_presence_of@ - <small>partial support: :allow_blank / no support: :on, :if, :unless</small>
-** @validates_size_of@ - <small>partly: :allow_blank - not supported: :on, :if, :unless</small>
+** @validates_size_of@ - <small>partial support: :allow_blank / no support: :on, :if, :unless</small>
 ** _(More to come...)_
 * Ruby representation of @v2.Validator@ - for custom validators (public API announced soon)
 * I18n-support (validation error messages) - using Rails conventions
@@ -62,7 +62,7 @@ and in @config/environment.rb@:
 * "validatious 2.0":http://github.com/cjohansen/validatious - the DSL-extension is optional, but I very much recommend the full package (it's so tiny in size anyway)
 * "validation_reflection":http://github.com/redinger/validation_reflection
 
-*Note:* For testing, get "context":http://github.com/jeremymcanally/context, "rr":http://github.com/btakita/rr, "acts_as_fu":http://github.com/nakajima/acts_as_fu.
+*Note:* For testing, get: "context":http://github.com/jeremymcanally/context, "rr":http://github.com/btakita/rr, and "acts_as_fu":http://github.com/nakajima/acts_as_fu.
 
 h2. Configuration
 

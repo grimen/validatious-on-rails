@@ -3,7 +3,7 @@ require File.join(File.dirname(__FILE__), 'validator')
 
 module ValidatiousOnRails
   module Validatious
-    class ServerSideValidator < Validator
+    class RemoteValidator < Validator
       
       def initialize(name, *args)
         super

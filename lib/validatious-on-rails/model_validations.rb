@@ -132,6 +132,8 @@ module ValidatiousOnRails
       # This validation is treated a bit differently in compare
       # to the other validations. See "from_active_record".
       #
+      # TODO: Message should be Rails I18n message, not Validatious.
+      #
       # NOTE: Not supported:
       #   * :on - TODO.
       #   * :if/:unless - hard to port all to client-side JavaScript
@@ -192,7 +194,7 @@ module ValidatiousOnRails
       # Resolve validation from validates_length_of.
       #
       # Example (of generated field classes):
-      #   length-is-5, length-maximum-2, length-minimum-2, length-within-2-10, etc.
+      #   length-is_5, length-maximum_2, length-minimum_2, etc.
       #
       # NOTE: Not supported:
       #   * :tokenizer - see: :if/:unless
@@ -201,48 +203,73 @@ module ValidatiousOnRails
       #                   (impossible: procs, unaccessible valiables, etc.).
       #
       def length_of(validation)
-        validator, min, max = case true
+        # TODO: DRY up this with the neat idea/combo:
+        # Validator#new(name, validation, *args)-idea + Validator#to_class
+        validators, min, max = case true
         when validation.options[:is].present?
-          [Validatious::LengthValidator.new(validation), validation.options[:is], validation.options[:is]]
+          [Validatious::Length::IsValidator.new(validation),
+            validation.options[:is], validation.options[:is]]
         when [:in, :within].any? { |k| validation.options[k].present? } ||
               [:minimum, :maximum].all? { |k| validation.options[k].present? }
           validation.options[:within] ||=
             validation.options[:in] ||
             (validation.options[:minimum].to_i..validation.options[:maximum].to_i)
-          [[Validatious::LengthMinimumValidator.new(validation), Validatious::LengthMaximumValidator.new(validation)],
+          [[Validatious::Length::MinimumValidator.new(validation),
+            Validatious::Length::MaximumValidator.new(validation)],
             validation.options[:within].min, validation.options[:within].max]
         when validation.options[:minimum].present?
-          [Validatious::LengthMinimumValidator.new(validation), validation.options[:minimum], nil]
+          [Validatious::Length::MinimumValidator.new(validation),
+            validation.options[:minimum], nil]
         when validation.options[:maximum].present?
-          [Validatious::LengthMaximumValidator.new(validation), nil, validation.options[:maximum]]
+          [Validatious::Length::MaximumValidator.new(validation),
+            nil, validation.options[:maximum]]
         end
-        validator = [*validator]
+        validators = [*validators]
         # This piece of code is a bit diffuse, but works. =)
         classes = [
-            ("#{validator.first.name}_#{min}" if min),
-            ("#{validator.last.name}_#{max}" if max)
+            ("#{validators.first.name}_#{min}" if min),
+            ("#{validators.last.name}_#{max}" if max)
           ].compact.uniq.join(' ')
-        {:class => classes, :validator => validator}
+        {:class => classes, :validator => validators}
       end
       alias :size_of :length_of
 
       # Resolve validation from validates_numericality_of.
       #
-      # NOTE: Not supported:
-      #   * :only_integer - TODO.
-      #   * :allow_nil - TODO.
-      #   * :greater_than - TODO.
-      #   * :greater_than_or_equal_to - TODO.
-      #   * :equal_to - TODO.
-      #   * :less_than - TODO.
-      #   * :less_than_or_equal_to - TODO.
-      #   * :odd - TODO.
-      #   * :even - TODO.
+      # Example (of generated field classes):
+      #   numericality-odd, numericality-only-integer, numericality-equal-to_5, etc.
       #
-      #   For custom validator, use Rails numericality_of-regex: /A[+-]?d+Z/
+      # NOTE: Not supported:
+      #   * :on - TODO.
+      #   * :if/:unless - hard to port all to client-side JavaScript
+      #                   (impossible: procs, unaccessible valiables, etc.).
       #
       def numericality_of(validation)
-        {:class => 'numeric', :validator => nil}
+        validators = []
+        values = {}
+
+        if validation.options[:odd] && !validation.options[:even]
+          validators << Validatious::Numericality::OddValidator.new(validation)
+        end
+        if validation.options[:even] && !validation.options[:odd]
+          validators << Validatious::Numericality::EvenValidator.new(validation)
+        end
+
+        (validation.options.keys & [:only_integer, :equal_to, :less_than, :less_than_or_equal_to,
+          :greater_than, :greater_than_or_equal_to]).each { |v|
+            klass = "::ValidatiousOnRails::Validatious::Numericality::#{v.to_s.classify}Validator".constantize
+            validators << (validator = klass.new(validation))
+            values.merge!(validator.name.to_sym => validation.options[v]) if validation.options[v].is_a?(::Numeric)
+          }
+
+        # TODO: Needs DRYer solution,
+        # Maybe: validator.args = [...] => validator.to_class => "#{validator.name}_params[0]_params[1]_etc..."
+        classes = validators.collect { |validator|
+            [validator.name,
+              (values[validator.name.to_sym] if values[validator.name.to_sym].present?)
+              ].compact.join('_')
+          }.join(' ')
+        {:class => classes, :validator => validators}
       end
 
       # Resolve validation from validates_presence_of.
