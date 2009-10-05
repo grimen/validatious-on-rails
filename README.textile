@@ -47,11 +47,11 @@ h2. Installation
 
 *Gem:*
 
-<pre>sudo gem install grimen-validatious-on-rails</pre>
+<pre>sudo gem install validatious-on-rails --source http://gemcutter.org</pre>
 
 and in @config/environment.rb@:
 
-<pre>config.gem 'grimen-validatious-on-rails', :lib => 'validatious-on-rails'</pre>
+<pre>config.gem 'validatious-on-rails', :lib => 'validatious-on-rails', :source => 'http://gemcutter.org'</pre>
 
 *Plugin:*
 
