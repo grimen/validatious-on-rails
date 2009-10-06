@@ -117,7 +117,10 @@ module ValidatiousOnRails
       #                   (impossible: procs, unaccessible valiables, etc.).
       #
       def acceptance_of(validation)
-        {:class => 'required', :validator => nil}
+        validator = Validatious::AcceptanceValidator.new(validation)
+        classes = "#{validator.name}_#{validation.options[:accept]}"
+        # Old: {:class => 'required', :validator => nil}
+        {:class => classes, :validator => validator}
       end
 
       # Resolve validation from validates_associated.

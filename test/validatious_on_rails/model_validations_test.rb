@@ -7,17 +7,38 @@ class ModelValidationsTest < ::ActiveSupport::TestCase
 
   include ActionView::Helpers::FormHelper
 
-  test "acceptance_of" do
-    validation = ::ValidatiousOnRails::ModelValidations.acceptance_of(validation(:validates_acceptance_of))
-    assert_equal 'required', validation[:class]
+  context "acceptance_of" do
+    test "with defaults" do
+      validation = ::ValidatiousOnRails::ModelValidations.acceptance_of(
+          validation(:validates_acceptance_of)
+        )
+      assert_equal 'acceptance-accept_1', validation[:class]
+    end
+
+    test "with :accept" do
+      validation = ::ValidatiousOnRails::ModelValidations.acceptance_of(
+          validation(:validates_acceptance_of, :accept => true)
+        )
+      assert_equal 'acceptance-accept_true', validation[:class]
+    end
   end
+
+  # OLD
+  # test "acceptance_of" do
+  #     validation = ::ValidatiousOnRails::ModelValidations.acceptance_of(
+  #         validation(:validates_acceptance_of)
+  #       )
+  #     #assert_equal 'required', validation[:class]
+  #   end
 
   test "associated" do
     # TODO: not implemented
   end
 
   test "confirmation_of" do
-    validation = ::ValidatiousOnRails::ModelValidations.confirmation_of(validation(:validates_confirmation_of))
+    validation = ::ValidatiousOnRails::ModelValidations.confirmation_of(
+        validation(:validates_confirmation_of)
+      )
     assert_equal 'confirmation-of_name', validation[:class]
   end
 

@@ -27,7 +27,7 @@ class HelpersTest < ::ActionView::TestCase
         end
 
         # FIXME: Not sure how to test content_for-helpers...returns nil.
-        concat ::ValidatiousOnRails::Helpers.custom_validatious_validators
+        concat ::ValidatiousOnRails::Helpers.custom_validatious_validators || ''
 
         # In parts...
         # assert_match /<script.+>.*v2.Validator.*<\/script>/, output_buffer
