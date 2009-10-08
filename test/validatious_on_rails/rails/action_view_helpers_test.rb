@@ -38,42 +38,42 @@ class FormHelperTest < ::ActionView::TestCase
 
   test "required :text_field" do
     # Using helper
-    assert_has_class 'required', text_field(:bogus_item, :name)
-    assert_has_class 'required some_other_class', text_field(:bogus_item, :name, :class => 'some_other_class')
+    assert_has_class 'presence', text_field(:bogus_item, :name)
+    assert_has_class 'presence some_other_class', text_field(:bogus_item, :name, :class => 'some_other_class')
 
     # Using builder
-    assert_has_class 'required', form_for(@bogus_item, :url => '/bogus_items') { |f|
+    assert_has_class 'presence', form_for(@bogus_item, :url => '/bogus_items') { |f|
         concat f.text_field(:name)
       }
-    assert_has_class 'required text', form_for(@bogus_item, :url => '/bogus_items') { |f|
+    assert_has_class 'presence text', form_for(@bogus_item, :url => '/bogus_items') { |f|
         concat f.text_field(:name, :class => 'text')
       }
   end
 
   test "required :password_field" do
     # Using helper
-    assert_has_class 'required', password_field(:bogus_item, :name)
-    assert_has_class 'required some_other_class', password_field(:bogus_item, :name, :class => 'some_other_class')
+    assert_has_class 'presence', password_field(:bogus_item, :name)
+    assert_has_class 'presence some_other_class', password_field(:bogus_item, :name, :class => 'some_other_class')
     
     # Using builder
-    assert_has_class 'required', form_for(@bogus_item, :url => '/bogus_items') { |f|
+    assert_has_class 'presence', form_for(@bogus_item, :url => '/bogus_items') { |f|
         concat f.password_field(:name)
       }
-    assert_has_class 'required some_other_class', form_for(@bogus_item, :url => '/bogus_items') { |f|
+    assert_has_class 'presence some_other_class', form_for(@bogus_item, :url => '/bogus_items') { |f|
         concat f.password_field(:name, :class => 'some_other_class')
       }
   end
 
   test "required :text_area" do
     # Using helper
-    assert_has_class 'required', text_area(:bogus_item, :body)
-    assert_has_class 'required some_other_class', text_area(:bogus_item, :body, :class => 'some_other_class')
+    assert_has_class 'presence', text_area(:bogus_item, :body)
+    assert_has_class 'presence some_other_class', text_area(:bogus_item, :body, :class => 'some_other_class')
     
     # Using builder
-    assert_has_class 'required', form_for(@bogus_item, :url => '/bogus_items') { |f|
+    assert_has_class 'presence', form_for(@bogus_item, :url => '/bogus_items') { |f|
         concat f.text_area(:body)
       }
-    assert_has_class 'required some_other_class', form_for(@bogus_item, :url => '/bogus_items') { |f|
+    assert_has_class 'presence some_other_class', form_for(@bogus_item, :url => '/bogus_items') { |f|
         concat f.text_area(:body, :class => 'some_other_class')
       }
   end
@@ -94,13 +94,13 @@ class FormHelperTest < ::ActionView::TestCase
 
   test "required :radio_button" do
     # Using helper
-     assert_has_class 'required', radio_button(:bogus_item, :variant, 1)
-     assert_has_class 'required some_other_class', radio_button(:bogus_item, :variant, 1, :class => 'some_other_class')
+     assert_has_class 'presence', radio_button(:bogus_item, :variant, 1)
+     assert_has_class 'presence some_other_class', radio_button(:bogus_item, :variant, 1, :class => 'some_other_class')
      
-     assert_has_class 'required', form_for(@bogus_item, :url => '/bogus_items') { |f|
+     assert_has_class 'presence', form_for(@bogus_item, :url => '/bogus_items') { |f|
          concat f.radio_button(:variant, 1)
        }
-     assert_has_class 'required some_other_class', form_for(@bogus_item, :url => '/bogus_items') { |f|
+     assert_has_class 'presence some_other_class', form_for(@bogus_item, :url => '/bogus_items') { |f|
          concat f.radio_button(:variant, 1, :class => 'some_other_class')
        }
   end

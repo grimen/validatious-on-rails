@@ -48,13 +48,15 @@ module ValidatiousOnRails
       # name along with a method/field.
       #
       def options_for(object_name, attribute_method, options = {}, existing_validators = nil)
-        validation = self.from_active_record(object_name, attribute_method)
+        validators = self.from_active_record(object_name, attribute_method)
+        validator_classes, validator_js = [options[:class]], []
+        
         # Only attach validators that are not already attached.
-        validator_js = validation[:validators].flatten.compact.uniq.collect { |v|
-            v.to_s unless existing_validators.present? && /#{v.name}/ =~ existing_validators
-          }.join(' ')
-        validator_classes = [options[:class], validation[:classes]].flatten.compact.uniq.join(' ')
-        options.merge!(:class => validator_classes, :js => validator_js)
+        validators.flatten.compact.uniq.each do |v|
+          validator_js << v.to_js unless existing_validators.present? && /#{v.name}/ =~ existing_validators
+          validator_classes << v.to_class
+        end
+        options.merge!(:class => validator_classes.join(' '), :js => validator_js.join(' '))
       end
 
       # Groks Rails validations, and is able to convert a rails validation to
@@ -70,7 +72,7 @@ module ValidatiousOnRails
       #
       def from_active_record(object_or_class, attribute_method)
         klass = object_or_class.to_s.classify.constantize
-        attribute_validation = {:classes => [], :validators => []}
+        validators = []
 
         # Iterate thorugh the validations for the current class,
         # and collect validation options.
@@ -81,10 +83,7 @@ module ValidatiousOnRails
           # needs to be confirmed. Validatious expects this validation rule
           # on the confirmation field. *
           unless validates_type =~ /^confirmation_of$/
-            validation_options = self.send(validates_type.to_sym, validation)
-            attribute_validation[:classes] << validation_options[:class]
-            # One or multiple validators for each validation (possible to combine validators).
-            attribute_validation[:validators] << validation_options[:validator] || validation_options[:validators]
+            validators << self.send(validates_type.to_sym, validation)
           end
         end
 
@@ -95,34 +94,27 @@ module ValidatiousOnRails
           # if :hello_confirmation field exists - just to be safe.
           klass.reflect_on_validations_for(confirm_attribute_method.to_sym).each do |validation|
             if validation.macro.to_s =~ /^validates_confirmation_of$/
-              validation_options = self.confirmation_of(validation)
-              attribute_validation[:classes] << validation_options[:class]
+              validators << self.confirmation_of(validation)
               break
             end
           end
         end
-        attribute_validation
+        validators
       end
 
       # Resolve validation from validates_acceptance_of.
       #
       # Alias, but might change: acceptance_of <=> presence_of
       #
-      # TODO: Make this a custom validator - handle :accept.
-      #
       # NOTE: Not supported:
-      #   * :accept - TODO: not taken into consideration
-      #                 right now (but must have value "true" for db column values)
-      #   * :allow_nil - TODO.
       #   * :on - TODO.
       #   * :if/:unless - hard to port all to client-side JavaScript
       #                   (impossible: procs, unaccessible valiables, etc.).
       #
       def acceptance_of(validation)
-        validation.options[:accept] ||= '1'
-        validator = Validatious::AcceptanceValidator.new(validation)
-        classes = "#{validator.name}_#{validation.options[:accept]}"
-        {:class => classes, :validator => validator}
+        validators = []
+        validation.options[:accept] ||= '1' # Rails default.
+        validators << Validatious::AcceptanceValidator.new(validation, validation.options[:accept])
       end
 
       # Resolve validation from validates_associated.
@@ -130,7 +122,7 @@ module ValidatiousOnRails
       # NOTE: Not supported - low prio.
       #
       def associated(validation)
-        {:class => '', :validator => nil}
+        nil
       end
 
       # Resolve validation from validates_confirmation_of.
@@ -146,12 +138,13 @@ module ValidatiousOnRails
       #                   (impossible: procs, unaccessible valiables, etc.).
       #
       def confirmation_of(validation)
-        field_id_to_confirm = unless validation.active_record.present?
+        validators = []
+        arg = unless validation.active_record.present?
           "#{validation.active_record.name.tableize.singularize.gsub('/', '_')}_#{validation.name}"
         else
           "#{validation.name}"
         end
-        {:class => "confirmation-of_#{field_id_to_confirm}", :validator => nil}
+        validators << Validatious::ConfirmationValidator.new(validation, arg)
       end
 
       # Resolve validation from validates_exclusion_of.
@@ -164,8 +157,8 @@ module ValidatiousOnRails
       #                   (impossible: procs, unaccessible valiables, etc.).
       #
       def exclusion_of(validation)
-        validator = Validatious::ExclusionValidator.new(validation)
-        {:class => validator.name, :validator => validator}
+        validators = []
+        validators << Validatious::ExclusionValidator.new(validation)
       end
 
       # Resolve validation from validates_format_of.
@@ -179,8 +172,8 @@ module ValidatiousOnRails
       #                   (impossible: procs, unaccessible valiables, etc.).
       #
       def format_of(validation)
-        validator = Validatious::FormatValidator.new(validation)
-        {:class => validator.name, :validator => validator}
+        validators = []
+        validators << Validatious::FormatValidator.new(validation)
       end
 
       # Resolve validation from validates_inclusion_of.
@@ -193,8 +186,8 @@ module ValidatiousOnRails
       #                   (impossible: procs, unaccessible valiables, etc.).
       #
       def inclusion_of(validation)
-        validator = Validatious::InclusionValidator.new(validation)
-        {:class => validator.name, :validator => validator}
+        validators = []
+        validators << Validatious::InclusionValidator.new(validation)
       end
 
       # Resolve validation from validates_length_of.
@@ -209,34 +202,21 @@ module ValidatiousOnRails
       #                   (impossible: procs, unaccessible valiables, etc.).
       #
       def length_of(validation)
-        # TODO: DRY up this with the neat idea/combo:
-        # Validator#new(name, validation, *args)-idea + Validator#to_class
-        validators, min, max = case true
-        when validation.options[:is].present?
-          [Validatious::Length::IsValidator.new(validation),
-            validation.options[:is], validation.options[:is]]
-        when [:in, :within].any? { |k| validation.options[k].present? } ||
-              [:minimum, :maximum].all? { |k| validation.options[k].present? }
-          validation.options[:within] ||=
-            validation.options[:in] ||
-            (validation.options[:minimum].to_i..validation.options[:maximum].to_i)
-          [[Validatious::Length::MinimumValidator.new(validation),
-            Validatious::Length::MaximumValidator.new(validation)],
-            validation.options[:within].min, validation.options[:within].max]
-        when validation.options[:minimum].present?
-          [Validatious::Length::MinimumValidator.new(validation),
-            validation.options[:minimum], nil]
-        when validation.options[:maximum].present?
-          [Validatious::Length::MaximumValidator.new(validation),
-            nil, validation.options[:maximum]]
+        validators = []
+        if validation.options[:is].present?
+          validators << Validatious::Length::IsValidator.new(validation, validation.options[:is])
+        elsif [:in, :within, :minimum, :maximum].any? { |k| validation.options[k].present? }
+          validation.options[:within] ||= validation.options[:in]
+          validation.options[:minimum] ||= validation.options[:within].min rescue nil
+          validation.options[:maximum] ||= validation.options[:within].max rescue nil
+          if validation.options[:minimum].present?
+            validators << Validatious::Length::MinimumValidator.new(validation, validation.options[:minimum])
+          end
+          if validation.options[:maximum].present?
+            validators << Validatious::Length::MaximumValidator.new(validation, validation.options[:maximum])
+          end
         end
-        validators = [*validators]
-        # This piece of code is a bit diffuse, but works. =)
-        classes = [
-            ("#{validators.first.name}_#{min}" if min),
-            ("#{validators.last.name}_#{max}" if max)
-          ].compact.uniq.join(' ')
-        {:class => classes, :validator => validators}
+        validators
       end
       alias :size_of :length_of
 
@@ -252,30 +232,19 @@ module ValidatiousOnRails
       #
       def numericality_of(validation)
         validators = []
-        values = {}
-
         if validation.options[:odd] && !validation.options[:even]
           validators << Validatious::Numericality::OddValidator.new(validation)
         end
         if validation.options[:even] && !validation.options[:odd]
           validators << Validatious::Numericality::EvenValidator.new(validation)
         end
-
         (validation.options.keys & [:only_integer, :equal_to, :less_than, :less_than_or_equal_to,
           :greater_than, :greater_than_or_equal_to]).each { |v|
-            klass = "::ValidatiousOnRails::Validatious::Numericality::#{v.to_s.classify}Validator".constantize
-            validators << (validator = klass.new(validation))
-            values.merge!(validator.name.to_sym => validation.options[v]) if validation.options[v].is_a?(::Numeric)
+            validator_klass = "::ValidatiousOnRails::Validatious::Numericality::#{v.to_s.classify}Validator".constantize
+            value = validation.options[v] if validation.options[v].is_a?(::Numeric)
+            validators << validator_klass.new(validation, value)
           }
-
-        # TODO: Needs DRYer solution,
-        # Maybe: validator.args = [...] => validator.to_class => "#{validator.name}_params[0]_params[1]_etc..."
-        classes = validators.collect { |validator|
-            [validator.name,
-              (values[validator.name.to_sym] if values[validator.name.to_sym].present?)
-              ].compact.join('_')
-          }.join(' ')
-        {:class => classes, :validator => validators}
+        validators
       end
 
       # Resolve validation from validates_presence_of.
@@ -288,7 +257,8 @@ module ValidatiousOnRails
       #                   (impossible: procs, unaccessible valiables, etc.).
       #
       def presence_of(validation)
-        {:class => 'required', :validator => nil}
+        validators = []
+        validators << Validatious::PresenceValidator.new(validation)
       end
 
       # Resolve validation from validates_uniqueness_of.
@@ -296,7 +266,7 @@ module ValidatiousOnRails
       # TODO: Implement using RemoteValidator.
       #
       def uniqueness_of(validation)
-        {:class => '', :validator => nil}
+        nil
       end
 
       # Unknown validations - if no matching custom validator is found/registered.
@@ -306,7 +276,7 @@ module ValidatiousOnRails
           " No custom Validatious validator found for this validation makro. " <<
           "Maybe you forgot to register you custom validation using: " <<
           "ValidatiousOnRails::ModelValidations.add(<CustomValidationClass>)", :warn
-        {:class => '', :validator => nil}
+        nil
       end
 
       # TODO: Include custom validations here...

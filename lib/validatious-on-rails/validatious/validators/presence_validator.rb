@@ -3,17 +3,16 @@ require File.expand_path(File.join(File.dirname(__FILE__), *%w[.. validator]))
 
 module ValidatiousOnRails
   module Validatious
-    class ConfirmationValidator < ClientSideValidator
+    class PresenceValidator < ClientSideValidator
 
       def initialize(validation, options = {})
-        name = 'confirmation-of'
+        name = 'presence'
         super name, options
-        self.params = ['field-id']
         self.message = self.class.generate_message(validation)
-        self.accept_empty = true
-        # Identical to Validatious "confirmation-of" validator, but we want Rails I18n message support, so...
+        self.accept_empty = true # Forward to validation methdd to get I18n message.
+        # Identical to Validatious "required" validator, but we want Rails I18n message support, so...
         self.fn = %{
-          return value === v2.$f(params[0]).getValue();
+          return !v2.empty(value) && !(typeof value.length !== 'undefined' && value.length === 0);
         }
         self.fn.freeze
       end

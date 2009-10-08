@@ -28,14 +28,17 @@ module ValidatiousOnRails
                     :params,
                     :aliases,
                     :accept_empty,
-                    :fn
+                    :fn,
+                    :args
 
-      def initialize(name, options = {})
+      def initialize(name, *args)
         raise ValidatorError, "Parameter :name is required for an Validatious validator" unless name.present?
         self.name = name
+        options = args.extract_options!
         options.each do |attr, value|
           self.send(:"#{attr}=", value) if value.present?
         end
+        self.args = args
       end
 
       # The primary name of the validator. This is the name you use with v2.$v('name');
@@ -148,7 +151,8 @@ module ValidatiousOnRails
       # Length::MinimumValidator#to_class(5) => "length-minimum_5", etc.
       #
       def to_class(*args)
-        [self.name, (args if args.present?)].compact.join('_')
+        args = @args if args.blank?
+        [self.name, (args if args.present?)].flatten.compact.join('_')
       end
 
       class << self

@@ -9,108 +9,100 @@ class ModelValidationsTest < ::ActiveSupport::TestCase
 
   context "acceptance_of" do
     test "with defaults" do
-      validation = ::ValidatiousOnRails::ModelValidations.acceptance_of(
+      validators = ::ValidatiousOnRails::ModelValidations.acceptance_of(
           validation(:validates_acceptance_of)
         )
-      assert_equal 'acceptance-accept_1', validation[:class]
+      assert_validator_class 'acceptance-accept_1', validators
     end
 
     test "with :accept" do
-      validation = ::ValidatiousOnRails::ModelValidations.acceptance_of(
+      validators = ::ValidatiousOnRails::ModelValidations.acceptance_of(
           validation(:validates_acceptance_of, :accept => true)
         )
-      assert_equal 'acceptance-accept_true', validation[:class]
+      assert_validator_class 'acceptance-accept_true', validators
     end
   end
-
-  # OLD
-  # test "acceptance_of" do
-  #     validation = ::ValidatiousOnRails::ModelValidations.acceptance_of(
-  #         validation(:validates_acceptance_of)
-  #       )
-  #     #assert_equal 'required', validation[:class]
-  #   end
 
   test "associated" do
     # TODO: not implemented
   end
 
   test "confirmation_of" do
-    validation = ::ValidatiousOnRails::ModelValidations.confirmation_of(
+    validators = ::ValidatiousOnRails::ModelValidations.confirmation_of(
         validation(:validates_confirmation_of)
       )
-    assert_equal 'confirmation-of_name', validation[:class]
+    assert_validator_class 'confirmation-of_name', validators
   end
 
   test "exclusion_of" do
     values = (6..10).to_a
-    validation = ::ValidatiousOnRails::ModelValidations.exclusion_of(
+    validators = ::ValidatiousOnRails::ModelValidations.exclusion_of(
         validation(:validates_exclusion_of, :in => values)
       )
-    assert_match /^exclusion-in-(\d+)/, validation[:class]
-    assert_match /#{values.to_json}/, validation[:validator].fn
+    assert_validator_class /^exclusion-in-(\d+)/, validators
+    assert_match /#{values.to_json}/, validators.first.fn
   end
 
   test "format_of" do
     pattern = /^(http|https|ftp):\/\/(([A-Z0-9][A-Z0-9_-]*)(\.[A-Z0-9][A-Z0-9_-]*)+)(:(\d+))?\/?/i
-    validation = ::ValidatiousOnRails::ModelValidations.format_of(
+    validators = ::ValidatiousOnRails::ModelValidations.format_of(
         validation(:validates_format_of, :with => pattern)
       )
-    assert_match /^format-with-(\d+)/, validation[:class]
-    assert_match /#{pattern.inspect[1,-1]}/, validation[:validator].fn
+    assert_validator_class /^format-with-(\d+)/, validators
+    assert_match /#{pattern.inspect[1,-1]}/, validators.first.fn
   end
 
   test "inclusion_of" do
     values = (1..5).to_a
-    validation = ::ValidatiousOnRails::ModelValidations.inclusion_of(
+    validators = ::ValidatiousOnRails::ModelValidations.inclusion_of(
         validation(:validates_inclusion_of, :in => values)
       )
-    assert_match /^inclusion-in-(\d+)/, validation[:class]
-    assert_match /#{values.to_json}/, validation[:validator].fn
+    assert_validator_class /^inclusion-in-(\d+)/, validators
+    assert_match /#{values.to_json}/, validators.first.fn
   end
 
   context "length_of" do
 
     test "with :is" do
-      validation = ::ValidatiousOnRails::ModelValidations.length_of(
+      validators = ::ValidatiousOnRails::ModelValidations.length_of(
           validation(:validates_length_of, :is => 2)
         )
-      assert_equal 'length-is_2', validation[:class]
+      assert_validator_class 'length-is_2', validators
     end
 
     test "with :in" do
-      validation = ::ValidatiousOnRails::ModelValidations.length_of(
+      validators = ::ValidatiousOnRails::ModelValidations.length_of(
           validation(:validates_length_of, :in => 2..10)
         )
-      assert_equal 'length-minimum_2 length-maximum_10', validation[:class]
+      assert_validator_class 'length-minimum_2 length-maximum_10', validators
     end
 
     test "with :within" do
-      validation = ::ValidatiousOnRails::ModelValidations.length_of(
+      validators = ::ValidatiousOnRails::ModelValidations.length_of(
           validation(:validates_length_of, :within => 2..10)
         )
-      assert_equal 'length-minimum_2 length-maximum_10', validation[:class]
+      assert_validator_class 'length-minimum_2 length-maximum_10', validators
     end
 
     test "with :minimum" do
-      validation = ::ValidatiousOnRails::ModelValidations.length_of(
+      validators = ::ValidatiousOnRails::ModelValidations.length_of(
           validation(:validates_length_of, :minimum => 2)
         )
-      assert_equal 'length-minimum_2', validation[:class]
+      assert_validator_class 'length-minimum_2', validators
     end
 
     test "with :maximum" do
-      validation = ::ValidatiousOnRails::ModelValidations.length_of(
+      validators = ::ValidatiousOnRails::ModelValidations.length_of(
           validation(:validates_length_of, :maximum => 10)
         )
-      assert_equal 'length-maximum_10', validation[:class]
+      assert_validator_class 'length-maximum_10', validators
     end
 
     test "with :minimum + :maximum" do
-      validation = ::ValidatiousOnRails::ModelValidations.length_of(
+      validators = ::ValidatiousOnRails::ModelValidations.length_of(
           validation(:validates_length_of, :minimum => 2, :maximum => 10)
         )
-      assert_equal 'length-minimum_2 length-maximum_10', validation[:class]
+      assert_validator_class 'length-minimum_2 length-maximum_10', validators
     end
   end
 
@@ -118,81 +110,81 @@ class ModelValidationsTest < ::ActiveSupport::TestCase
 
     context ":odd/:even" do
       test "with :odd only" do
-        validation = ::ValidatiousOnRails::ModelValidations.numericality_of(
+        validators = ::ValidatiousOnRails::ModelValidations.numericality_of(
             validation(:validates_numericality_of, :even => false, :odd => true)
           )
-        assert_equal 'numericality-odd', validation[:class]
+        assert_validator_class 'numericality-odd', validators
       end
 
       test "with :even only" do
-        validation = ::ValidatiousOnRails::ModelValidations.numericality_of(
+        validators = ::ValidatiousOnRails::ModelValidations.numericality_of(
             validation(:validates_numericality_of, :even => true, :odd => false)
           )
-        assert_equal 'numericality-even', validation[:class]
+        assert_validator_class 'numericality-even', validators
       end
 
       test "with :odd and :even" do
-        validation = ::ValidatiousOnRails::ModelValidations.numericality_of(
+        validators = ::ValidatiousOnRails::ModelValidations.numericality_of(
             validation(:validates_numericality_of, :even => true, :odd => true)
           )
-        assert_equal '', validation[:class]
+        assert_validator_class '', validators
       end
 
       test "with neither :odd or :even" do
-        validation = ::ValidatiousOnRails::ModelValidations.numericality_of(
+        validators = ::ValidatiousOnRails::ModelValidations.numericality_of(
             validation(:validates_numericality_of)
           )
-        assert_equal '', validation[:class]
+        assert_validator_class '', validators
       end
     end
 
     test "with :only_integer" do
-      validation = ::ValidatiousOnRails::ModelValidations.numericality_of(
+      validators = ::ValidatiousOnRails::ModelValidations.numericality_of(
           validation(:validates_numericality_of, :only_integer => true)
         )
-      # Alt. more generic idea: assert_equal 'numericality-precision_0', validation[:class]
-      assert_equal 'numericality-only_integer', validation[:class]
+      # Alt. more generic idea: assert_equal 'numericality-precision_0', validator.to_class
+      assert_validator_class 'numericality-only_integer', validators
     end
 
     test "with :greater_than" do
-      validation = ::ValidatiousOnRails::ModelValidations.numericality_of(
+      validators = ::ValidatiousOnRails::ModelValidations.numericality_of(
           validation(:validates_numericality_of, :greater_than => 2)
         )
-      assert_equal 'numericality-greater-than_2', validation[:class]
+      assert_validator_class 'numericality-greater-than_2', validators
     end
 
     test "with :greater_than_or_equal_to" do
-      validation = ::ValidatiousOnRails::ModelValidations.numericality_of(
+      validators = ::ValidatiousOnRails::ModelValidations.numericality_of(
           validation(:validates_numericality_of, :greater_than_or_equal_to => 2)
         )
-      assert_equal 'numericality-greater-than-or-equal-to_2', validation[:class]
+      assert_validator_class 'numericality-greater-than-or-equal-to_2', validators
     end
 
     test "with :equal_to" do
-      validation = ::ValidatiousOnRails::ModelValidations.numericality_of(
+      validators = ::ValidatiousOnRails::ModelValidations.numericality_of(
           validation(:validates_numericality_of, :equal_to => 2)
         )
-      assert_equal 'numericality-equal-to_2', validation[:class]
+      assert_validator_class 'numericality-equal-to_2', validators
     end
 
     test "with :less_than" do
-      validation = ::ValidatiousOnRails::ModelValidations.numericality_of(
+      validators = ::ValidatiousOnRails::ModelValidations.numericality_of(
           validation(:validates_numericality_of, :less_than => 10)
         )
-      assert_equal 'numericality-less-than_10', validation[:class]
+      assert_validator_class 'numericality-less-than_10', validators
     end
 
     test "with :less_than_or_equal_to" do
-      validation = ::ValidatiousOnRails::ModelValidations.numericality_of(
+      validators = ::ValidatiousOnRails::ModelValidations.numericality_of(
           validation(:validates_numericality_of, :less_than_or_equal_to => 10)
         )
-      assert_equal 'numericality-less-than-or-equal-to_10', validation[:class]
+      assert_validator_class 'numericality-less-than-or-equal-to_10', validators
     end
   end
 
   test "presence_of" do
-    validation = ::ValidatiousOnRails::ModelValidations.presence_of(validation(:validates_presence_of))
-    assert_equal 'required', validation[:class]
+    validators = ::ValidatiousOnRails::ModelValidations.presence_of(validation(:validates_presence_of))
+    assert_validator_class 'presence', validators
   end
 
   test "uniqueness_of" do
@@ -205,6 +197,14 @@ class ModelValidationsTest < ::ActiveSupport::TestCase
     #
     def validation(macro, options = {})
       ::ActiveRecord::Reflection::MacroReflection.new(macro, :name, options, BogusItem.new)
+    end
+
+    def assert_validator_class(expected, actual)
+      if expected.is_a?(::Regexp)
+        assert_match expected, [*actual].collect { |v| v.to_class }.join(' ')
+      else
+        assert_equal expected, [*actual].collect { |v| v.to_class }.join(' ')
+      end
     end
 
 end
