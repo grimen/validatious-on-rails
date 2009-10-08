@@ -80,14 +80,14 @@ class FormHelperTest < ::ActionView::TestCase
 
   test "required :check_box" do # a.k.a. "acceptance required"
     # Using helper
-    assert_has_class 'required', check_box(:bogus_item, :signed)
-    assert_has_class 'required some_other_class', check_box(:bogus_item, :signed, :class => 'some_other_class')
+    assert_has_class 'acceptance-accept_true', check_box(:bogus_item, :signed)
+    assert_has_class 'acceptance-accept_true some_other_class', check_box(:bogus_item, :signed, :class => 'some_other_class')
     
     # Using builder
-    assert_has_class 'required', form_for(@bogus_item, :url => '/bogus_items') { |f|
+    assert_has_class 'acceptance-accept_true', form_for(@bogus_item, :url => '/bogus_items') { |f|
         concat f.check_box(:signed)
       }
-    assert_has_class 'required some_other_class', form_for(@bogus_item, :url => '/bogus_items') { |f|
+    assert_has_class 'acceptance-accept_true some_other_class', form_for(@bogus_item, :url => '/bogus_items') { |f|
         concat f.check_box(:signed, :class => 'some_other_class')
       }
   end

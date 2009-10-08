@@ -70,7 +70,7 @@ build_model :bogus_items do
   
   validates_presence_of :name, :body, :variant
   validates_confirmation_of :name
-  validates_acceptance_of :signed
+  validates_acceptance_of :signed, :accept => true 
   validates_format_of :url,
     :with => /^(http|https|ftp):\/\/(([A-Z0-9][A-Z0-9_-]*)(\.[A-Z0-9][A-Z0-9_-]*)+)(:(\d+))?\/?/i,
     :name => 'url', :message => 'Invalid URL.'
