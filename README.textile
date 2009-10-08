@@ -13,7 +13,7 @@ h2. Features & Goals
 *Current Features:*
 
 * Rails core validations
-** @validates_acceptance_of@ - <small>no support: :accept, :allow_nil, :on, :if, :unless / Hint: To avoid issues, check Rails API for :accept-option - if this is incorrectly set, your validations may act very strange. *validates_presence_of* always works though.</small>
+** @validates_acceptance_of@ - <small>no support: :on, :if, :unless</small>
 ** @validates_confirmation_of@ - <small>partial support: :allow_blank / no support: :on, :if, :unless</small>
 ** @validates_exclusion_of@ - <small>partial support: :allow_blank / no support: :on, :if, :unless</small>
 ** @validates_format_of@ - <small>partial support: :allow_blank / no support: :on, :if, :unless</small>
@@ -23,8 +23,9 @@ h2. Features & Goals
 ** @validates_presence_of@ - <small>partial support: :allow_blank / no support: :on, :if, :unless</small>
 ** @validates_size_of@ - <small>partial support: :allow_blank / no support: :on, :if, :unless</small>
 ** _(More to come...)_
-* Ruby representation of @v2.Validator@ - for custom validators (public API announced soon)
+* Supports all Rails core form field helpers
 * I18n-support (validation error messages) - using Rails conventions
+* Ruby representation of @v2.Validator@ - for custom validators (public API announced soon)
 * Generator for getting started - easy as 1-2-3 (see below)
 * Test-suit
 * Ruby 1.9.x support
@@ -34,12 +35,13 @@ _*Note:* Just started so...expect the list to expand - especially validations. S
 
 *Goals:*
 
-* Should be very easy to extend with custom validations (plugins, e.g. @Validatious::Validators.add MyCustomValidator@), but within the domain of *Validatious* (focus) - no vision of support multiple libraries (only makes the code base unnecessary big and complex)
 * Should support all Rails core validations (using preferably *client-side* validation, or last-resort solution using *server-side* validation - backed by Validatious)
+* Should be very easy to extend with custom validations (plugins, e.g. @Validatious::Validators.add MyCustomValidator@), but within the domain of *Validatious* (focus) - no vision of support multiple libraries (only makes the code base unnecessary big and complex)
+* Should be very easy to extend with custom form field helpers.
 * Should not only perform the validations, but also respect the Rails validation conditionals (such as :on, :allow_blank, etc.)
 * Support all Rails core form helpers, but also new ones using pluggable interface
-* Full I18n-support - backed by Rails I18n
-* Full coverage tests
+* Full I18n-support - backed by Rails I18n API
+* Solid test suit
 
 _*Note:* Somethings fundamental is missing? Let me know! =)_
 
