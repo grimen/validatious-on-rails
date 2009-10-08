@@ -47,12 +47,13 @@ module ValidatiousOnRails
       # Input may be an ActiveRecord class, a class name (string), or an object
       # name along with a method/field.
       #
-      def options_for(object_name, attribute_method, options = {})
+      def options_for(object_name, attribute_method, options = {}, existing_validators = nil)
         validation = self.from_active_record(object_name, attribute_method)
-        options.merge!(
-            :class => [options[:class], validation[:classes]].flatten.compact.uniq.join(' '),
-            :validators => validation[:validators].flatten.compact.uniq
-          )
+        validator_js = validation[:validators].flatten.compact.uniq.collect { |v|
+            v.to_s unless existing_validators.present? && /#{v.name}/ =~ existing_validators
+          }.join(' ')
+        validator_classes = [options[:class], validation[:classes]].flatten.compact.uniq.join(' ')
+        options.merge!(:class => validator_classes, :js => validator_js)
       end
 
       # Groks Rails validations, and is able to convert a rails validation to

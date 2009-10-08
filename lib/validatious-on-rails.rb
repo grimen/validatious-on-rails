@@ -33,7 +33,7 @@ module ValidatiousOnRails # :nodoc:
   # Alias method for: ValidatiousOnRails::Helpers#custom_validatious_validators
   #
   def custom_validators
-    Helpers.custom_validatious_validators
+    Helpers.attached_validators
   end
   alias :include_custom_validators :custom_validators
   ::ActionController::Base.helper_method :custom_validators, :include_custom_validators
