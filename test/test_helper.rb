@@ -4,43 +4,32 @@
 # convenience methods.
 #
 
+def smart_require(lib_name, gem_name, gem_version = '>= 0.0.0')
+  begin
+    require lib_name
+  rescue LoadError
+    gem gem_name, gem_version
+    require lib_name
+  end
+end
+
 begin
   require File.expand_path(File.join(File.dirname(__FILE__), *%w(.. .. .. .. config environment)))
 rescue LoadError
   require 'rubygems'
   
-  gem 'test-unit', '1.2.3'
-  gem 'activerecord', '>= 1.2.3'
-  gem 'actionpack', '>= 1.2.3'
-  gem 'sqlite3-ruby', '>= 1.2.0'
-  
-  require 'test/unit'
-  require 'active_record'
-  require 'action_controller'
-  require 'sqlite3'
+  smart_require 'test/unit', 'test-unit', '= 1.2.3'
+  smart_require 'active_record', 'activerecord', '>= 1.2.3'
+  smart_require 'action_controller', 'actionpack', '>= 1.2.3'
+  smart_require 'sqlite3', 'sqlite3-ruby', '>= 1.2.0'
 end
 
-begin
-  require 'context'
-rescue LoadError
-  gem 'jeremymcanally-context', '>= 0.5.5'
-  require 'context'
-end
+smart_require 'redgreen', 'redgreen', '>= 0.10.4'
+smart_require 'context', 'jeremymcanally-context', '>= 0.5.5'
+smart_require 'rr', 'rr', '>= 0.10.0'
+smart_require 'acts_as_fu', 'nakajima-acts_as_fu', '>= 0.0.5'
 
-begin
-  require 'rr'
-rescue LoadError
-  gem 'rr', '>= 0.0.0'
-  require 'rr'
-end
 extend RR::Adapters::RRMethods
-
-begin
-  require 'acts_as_fu'
-rescue LoadError
-  gem 'nakajima-acts_as_fu', '>= 0.0.5'
-  require 'acts_as_fu'
-end
 
 require 'validatious-on-rails'
 
