@@ -16,7 +16,7 @@ class ValidatorTest < ::ActiveSupport::TestCase
     end
   end
 
-  test "creating an empty validator - and generate valid v2.Validator (using #to_s)" do
+  test "creating an empty validator - and generate valid v2.Validator and class call" do
     assert_equal 'dummie', @empty_validator.name
     assert_equal '', @empty_validator.message
     assert_equal ([]), @empty_validator.params
@@ -30,10 +30,12 @@ class ValidatorTest < ::ActiveSupport::TestCase
       name: "dummie"
     });'
 
-    assert_equal expected_v2_validator.gsub(/[\n\s\t]/, ''), @empty_validator.to_s.gsub(/[\n\s\t]/, '')
+    assert_equal @custom_validator.name, @custom_validator.to_class
+    assert_equal "#{@custom_validator.name}_1_hello_2", @custom_validator.to_class(1, "hello", 2)
+    assert_equal expected_v2_validator.gsub(/[\n\s\t]/, ''), @empty_validator.to_js.gsub(/[\n\s\t]/, '')
   end
 
-  test "creating a custom validator - and generate valid v2.Validator (using #to_s)" do
+  test "creating a custom validator - and generate valid v2.Validator and class call" do
     assert_equal 'dummie', @custom_validator.name
     assert_equal 'Fail, fail, fail!', @custom_validator.message
     assert_equal (["some", "params"]), @custom_validator.params
@@ -50,7 +52,9 @@ class ValidatorTest < ::ActiveSupport::TestCase
       params: ["some", "params"]
     });'
 
-    assert_equal expected_v2_validator.gsub(/[\n\s\t]/, ''), @custom_validator.to_s.gsub(/[\n\s\t]/, '')
+    assert_equal @custom_validator.name, @custom_validator.to_class
+    assert_equal "#{@custom_validator.name}_1_hello_2", @custom_validator.to_class(1, "hello", 2)
+    assert_equal expected_v2_validator.gsub(/[\n\s\t]/, ''), @custom_validator.to_js.gsub(/[\n\s\t]/, '')
   end
 
 end

@@ -49,6 +49,7 @@ module ValidatiousOnRails
       #
       def options_for(object_name, attribute_method, options = {}, existing_validators = nil)
         validation = self.from_active_record(object_name, attribute_method)
+        # Only attach validators that are not already attached.
         validator_js = validation[:validators].flatten.compact.uniq.collect { |v|
             v.to_s unless existing_validators.present? && /#{v.name}/ =~ existing_validators
           }.join(' ')
@@ -139,6 +140,7 @@ module ValidatiousOnRails
       # TODO: Message should be Rails I18n message, not Validatious.
       #
       # NOTE: Not supported:
+      #   * :message - TODO: Explicit or Rails I18n/default message.
       #   * :on - TODO.
       #   * :if/:unless - hard to port all to client-side JavaScript
       #                   (impossible: procs, unaccessible valiables, etc.).

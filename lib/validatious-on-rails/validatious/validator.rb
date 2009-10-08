@@ -125,7 +125,7 @@ module ValidatiousOnRails
         (@fn ||= "function(field, value, params) {return true;}").gsub(/[\n\t]/, '')
       end
 
-      def to_s
+      def to_js
         options = {
             :name => self.name,
             :message => self.message,
@@ -141,6 +141,14 @@ module ValidatiousOnRails
             ("#{k}: #{k.to_sym == :fn ? v : v.to_json}" if [false, true].include?(v) || v.present?)
           }.compact.join(', ')
         "v2.Validator.add({#{js_options}});"
+      end
+      alias :to_s :to_js
+
+      # Generate a full Validatious-style "class function call" to generic validators, e.g.
+      # Length::MinimumValidator#to_class(5) => "length-minimum_5", etc.
+      #
+      def to_class(*args)
+        [self.name, (args if args.present?)].compact.join('_')
       end
 
       class << self
