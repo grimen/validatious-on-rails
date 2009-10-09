@@ -17,7 +17,7 @@ class HelpersTest < ::ActionView::TestCase
     context "custom_validatious_validators" do
 
       test "should not output custom validators if there are none" do
-        helper_output = ::ValidatiousOnRails::Helpers.attached_validators
+        helper_output = javascript_for_validatious
         assert_equal '', helper_output.to_s
       end
 
@@ -27,12 +27,12 @@ class HelpersTest < ::ActionView::TestCase
         end
 
         # FIXME: Not sure how to test content_for-helpers...returns nil.
-        concat ::ValidatiousOnRails::Helpers.attached_validators
+        concat javascript_for_validatious
 
         # In parts...
-        # assert_match /<script.+>.*v2.Validator.*<\/script>/, output_buffer
-        # assert_match /<script.*id="custom_validatious_validators".*>/, helper_output
-        # assert_match /<script.*type="text\/javascript".*>/, helper_output
+        assert_match /<script.+>.*v2.Validator.*<\/script>/, output_buffer
+        assert_match /<script.*id="custom_validators".*>/, output_buffer
+        assert_match /<script.*type="text\/javascript".*>/, output_buffer
       end
 
     end
