@@ -84,7 +84,7 @@ h3. 2. Include the javascripts in your layout
 <head>
   ...
   <%= javascript_include_tag 'v2.standalone.full.min.js', 'validatious.config.js' # 1) %>
-  <%= ValidatiousOnRails.custom_validators # 2) %>
+  <%= javascript_for_validatious # 2) %>
   ...
 </head>
 </pre>

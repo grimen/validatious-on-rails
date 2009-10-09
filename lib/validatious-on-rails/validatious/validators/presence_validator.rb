@@ -9,7 +9,7 @@ module ValidatiousOnRails
         name = 'presence'
         super name, options
         self.message = self.class.generate_message(validation)
-        self.accept_empty = true # Forward to validation methdd to get I18n message.
+        self.accept_empty = false
         # Identical to Validatious "required" validator, but we want Rails I18n message support, so...
         self.fn = %{
           return !v2.empty(value) && !(typeof value.length !== 'undefined' && value.length === 0);

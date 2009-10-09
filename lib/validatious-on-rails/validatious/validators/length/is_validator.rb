@@ -10,7 +10,6 @@ module ValidatiousOnRails
           name, alias_name = self.class.generate_name(validation, :is, validation.options[:is])
           name = 'length-is'
           super name, options
-          self.aliases = [alias_name] - [name]
           self.params = ['count']
           self.message = self.class.generate_message(validation, :key => :wrong_length)
           self.accept_empty = validation.options[:allow_blank] || validation.options[:allow_nil]

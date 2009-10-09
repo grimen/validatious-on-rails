@@ -50,13 +50,15 @@ module ValidatiousOnRails
       def options_for(object_name, attribute_method, options = {}, existing_validators = nil)
         validators = self.from_active_record(object_name, attribute_method)
         validator_classes, validator_js = [options[:class]], []
-        
+
         # Only attach validators that are not already attached.
         validators.flatten.compact.uniq.each do |v|
           validator_js << v.to_js unless existing_validators.present? && /#{v.name}/ =~ existing_validators
           validator_classes << v.to_class
         end
-        options.merge!(:class => validator_classes.join(' '), :js => validator_js.join(' '))
+        classes = validator_classes.compact.join(' ').strip
+        js = validator_js.compact.join(' ').strip
+        options.merge!(:class => (classes unless classes.blank?), :js => (js unless js.blank?))
       end
 
       # Groks Rails validations, and is able to convert a rails validation to
@@ -203,19 +205,23 @@ module ValidatiousOnRails
       #
       def length_of(validation)
         validators = []
+
         if validation.options[:is].present?
           validators << Validatious::Length::IsValidator.new(validation, validation.options[:is])
         elsif [:in, :within, :minimum, :maximum].any? { |k| validation.options[k].present? }
           validation.options[:within] ||= validation.options[:in]
           validation.options[:minimum] ||= validation.options[:within].min rescue nil
           validation.options[:maximum] ||= validation.options[:within].max rescue nil
+
           if validation.options[:minimum].present?
             validators << Validatious::Length::MinimumValidator.new(validation, validation.options[:minimum])
           end
+
           if validation.options[:maximum].present?
             validators << Validatious::Length::MaximumValidator.new(validation, validation.options[:maximum])
           end
         end
+
         validators
       end
       alias :size_of :length_of
@@ -226,24 +232,28 @@ module ValidatiousOnRails
       #   numericality-odd, numericality-only-integer, numericality-equal-to_5, etc.
       #
       # NOTE: Not supported:
-      #   * :on - TODO.
+      #   * :on - TODO.en
       #   * :if/:unless - hard to port all to client-side JavaScript
       #                   (impossible: procs, unaccessible valiables, etc.).
       #
       def numericality_of(validation)
         validators = []
+
         if validation.options[:odd] && !validation.options[:even]
           validators << Validatious::Numericality::OddValidator.new(validation)
         end
+
         if validation.options[:even] && !validation.options[:odd]
           validators << Validatious::Numericality::EvenValidator.new(validation)
         end
+
         (validation.options.keys & [:only_integer, :equal_to, :less_than, :less_than_or_equal_to,
           :greater_than, :greater_than_or_equal_to]).each { |v|
             validator_klass = "::ValidatiousOnRails::Validatious::Numericality::#{v.to_s.classify}Validator".constantize
             value = validation.options[v] if validation.options[v].is_a?(::Numeric)
             validators << validator_klass.new(validation, value)
           }
+
         validators
       end
 
