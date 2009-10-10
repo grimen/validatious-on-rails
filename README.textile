@@ -57,7 +57,7 @@ h2. Installation
 
 and in @config/environment.rb@:
 
-<pre>config.gem 'validatious-on-rails', :lib => 'validatious-on-rails', :source => 'http://gemcutter.org'</pre>
+<pre>config.gem 'validatious-on-rails', :source => 'http://gemcutter.org'</pre>
 
 *Plugin:*
 
