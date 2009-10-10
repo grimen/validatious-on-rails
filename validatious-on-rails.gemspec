@@ -14,6 +14,8 @@ Gem::Specification.new do |s|
   s.email = %q{christian@cjohansen.no}
   s.extra_rdoc_files = [
     "Rakefile",
+     "app/controllers/validates_controller.rb",
+     "config/routes.rb",
      "generators/validatious/templates/initializer.rb",
      "generators/validatious/templates/v2.standalone.full.min.js",
      "generators/validatious/templates/validatious.config.js",
@@ -55,6 +57,8 @@ Gem::Specification.new do |s|
   ]
   s.files = [
     "Rakefile",
+     "app/controllers/validates_controller.rb",
+     "config/routes.rb",
      "generators/validatious/templates/initializer.rb",
      "generators/validatious/templates/v2.standalone.full.min.js",
      "generators/validatious/templates/validatious.config.js",
