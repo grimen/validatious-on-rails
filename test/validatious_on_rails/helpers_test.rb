@@ -25,8 +25,6 @@ class HelpersTest < ::ActionView::TestCase
         form_for(::BogusItem.new, :url => '/bogus_items') do |f|
           concat f.text_field(:url)
         end
-
-        # FIXME: Not sure how to test content_for-helpers...returns nil.
         concat javascript_for_validatious
 
         # In parts...

@@ -157,6 +157,15 @@ module ValidatiousOnRails
 
       class << self
 
+        def validate_blank(validation)
+          %{
+            var isBlank = /^[\s\t\n]*$/.test(value);
+            if (#{validation.options[:allow_blank] == true} && isBlank) {
+              return true;
+            };
+          }
+        end
+
         # Generate a unique valdiator ID to avoid clashes.
         # Note: Ruby #hash is way faster than SHA1 (etc.) - just replace any negative sign.
         #

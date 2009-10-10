@@ -13,18 +13,18 @@ h2. Features & Goals
 *Current Features:*
 
 * Rails core validations
-** @validates_acceptance_of@ - <small>no support: :on, :if, :unless</small>
-** @validates_confirmation_of@ - <small>partial support: :allow_blank / no support: :on, :if, :unless</small>
-** @validates_exclusion_of@ - <small>partial support: :allow_blank / no support: :on, :if, :unless</small>
-** @validates_format_of@ - <small>partial support: :allow_blank / no support: :on, :if, :unless</small>
-** @validates_inclusion_of@ - <small>partial support: :allow_blank / no support: :on, :if, :unless</small>
-** @validates_length_of@ - <small>partial support: :allow_blank / no support: :on, :if, :unless</small>
-** @validates_numericality_of@ - <small>no support: :on, :if, :unless</small>
-** @validates_presence_of@ - <small>partial support: :allow_blank / no support: :on, :if, :unless</small>
-** @validates_size_of@ - <small>partial support: :allow_blank / no support: :on, :if, :unless</small>
+** @validates_acceptance_of@ - <small>except: :on, :if/:unless</small>
+** @validates_confirmation_of@ - <small>except: :on, :if/:unless</small>
+** @validates_exclusion_of@ - <small>except: :on, :if/:unless</small>
+** @validates_format_of@ - <small>except: :on, :if/:unless</small>
+** @validates_inclusion_of@ - <small>except: :on, :if/:unless</small>
+** @validates_length_of@ - <small>except: :on, :if/:unless</small>
+** @validates_numericality_of@ - <small>except: :on, :if/:unless</small>
+** @validates_presence_of@ - <small>except :on, :if/:unless</small>
+** @validates_size_of@ - <small>except :on, :if/:unless</small>
 ** _(More to come...)_
 * Supports all Rails core form field helpers
-* I18n-support (validation error messages) - using Rails conventions
+* Rails I18n integration (validation error messages)
 * Ruby representation of @v2.Validator@ - for custom validators (public API announced soon)
 * Generator for getting started - easy as 1-2-3 (see below)
 * Test-suit

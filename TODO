@@ -3,7 +3,6 @@
 === validatious-on-rails
 
 * Make Rails core validations basic options fully supported
-  * :allow_blank - for all validations (implemented for format/inclusion/exclusion already)
   * :on => :<action> (i.e. if current form action is ACTION)
   * :if/:unless => true|false (doubt this is even possible for all cases though - like Ruby procs)
 * Tighten up the tests more.
