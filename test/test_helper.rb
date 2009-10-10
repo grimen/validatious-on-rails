@@ -57,14 +57,22 @@ build_model :bogus_items do
   integer :variant
   boolean :signed
   
+  string :field_with_defaults
+  string :field_with_client_side_validations
+  string :field_without_client_side_validations
+  
   validates_presence_of :name, :body, :variant
   validates_confirmation_of :name
-  validates_acceptance_of :signed, :accept => true 
+  validates_acceptance_of :signed, :accept => true
   validates_format_of :url,
     :with => /^(http|https|ftp):\/\/(([A-Z0-9][A-Z0-9_-]*)(\.[A-Z0-9][A-Z0-9_-]*)+)(:(\d+))?\/?/i,
     :name => 'url', :message => 'Invalid URL.'
   validates_inclusion_of :variant, :in => (1..5).to_a
   validates_exclusion_of :variant, :in => (6..10).to_a
+  
+  validates_presence_of :field_with_defaults
+  validates_presence_of :field_with_client_side_validations, :client_side => true
+  validates_presence_of :field_without_client_side_validations, :client_side => false
   
   # TODO: Test: If this is a validator makro, then it should not cause any issues.
   validates_craziness_of :name

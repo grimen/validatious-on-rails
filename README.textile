@@ -1,4 +1,4 @@
-h1. VALIDATIOUS-ON-RAILS ~ concept version ~
+h1. VALIDATIOUS-ON-RAILS
 
 _Rails plugin that maps model validations to class names on form elements to integrate with *Validatious*._
 
@@ -29,7 +29,8 @@ h2. Features & Goals
 * Generator for getting started - easy as 1-2-3 (see below)
 * Test-suit
 * Ruby 1.9.x support
-* For the near fanatic "Formtastic":http://github.com/justinfrench/formtastic form-builder users like me: With default config, it's compatible with the Formtastic semantic HTML structure. 
+* For the near fanatic "Formtastic":http://github.com/justinfrench/formtastic form-builder users like me: With default config, it's compatible with the Formtastic semantic HTML structure.
+* Client-side validations can easily be disabled for specific fields.
 
 _*Note:* Just started so...expect the list to expand - especially validations. See the "TODO":http://github.com/grimen/validatious-on-rails/blob/master/TODO for more info._
 
@@ -104,6 +105,7 @@ Consider you got some model validations:
 class Post < ActiveRecord::Base
   validates_presence_of :title
   validates_length_of :title, :within => 3..20
+  validates_length_of :body, :within => 3..20, :client_side => false
 end
 </pre>
 

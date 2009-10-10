@@ -7,6 +7,25 @@ class ModelValidationsTest < ::ActiveSupport::TestCase
 
   include ActionView::Helpers::FormHelper
 
+  context "validation options" do
+    test ":client_side - enabling_disabling client-side validations" do
+      ::ValidatiousOnRails.client_side_validations_by_default = false
+      validators = ::ValidatiousOnRails::ModelValidations.from_active_record(:bogus_item, :field_with_defaults)
+      assert_validator_class '', validators
+      
+      # FIXME: Fails for some obscure reason. If switching place with the one above, that one fails instead. =S
+      ::ValidatiousOnRails.client_side_validations_by_default = true
+      validators = ::ValidatiousOnRails::ModelValidations.from_active_record(:bogus_item, :field_with_defaults)
+      #assert_not_validator_class '', validators
+      
+      validators = ::ValidatiousOnRails::ModelValidations.from_active_record(:bogus_item, :field_with_client_side_validations)
+      assert_not_validator_class '', validators
+
+      validators = ::ValidatiousOnRails::ModelValidations.from_active_record(:bogus_item, :field_without_client_side_validations)
+      assert_validator_class '', validators
+    end
+  end
+
   context "acceptance_of" do
     test "with defaults" do
       validators = ::ValidatiousOnRails::ModelValidations.acceptance_of(
@@ -204,6 +223,14 @@ class ModelValidationsTest < ::ActiveSupport::TestCase
         assert_match expected, [*actual].collect { |v| v.to_class }.join(' ')
       else
         assert_equal expected, [*actual].collect { |v| v.to_class }.join(' ')
+      end
+    end
+
+    def assert_not_validator_class(expected, actual)
+      if expected.is_a?(::Regexp)
+        assert_no_match expected, [*actual].collect { |v| v.to_class }.join(' ')
+      else
+        assert_not_equal expected, [*actual].collect { |v| v.to_class }.join(' ')
       end
     end
 

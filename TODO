@@ -1,18 +1,11 @@
 == TODO
 
-=== validatious-on-rails
-
-* Make Rails core validations basic options fully supported
-  * :on => :<action> (i.e. if current form action is ACTION)
-  * :if/:unless => true|false (doubt this is even possible for all cases though - like Ruby procs)
-* Tighten up the tests more.
-* Adapter-interface (API) for custom client-side Validatious-validators
-* Additional helpers: Support 3rd party form helpers
-* Initializer (generate with the generator) - most probably needed for making ValidationReflection to reflect on custom validations (defined upon project basis).
 * Server-side (custom) Validatious-validator support (v2.Validator)
   * validates_uniqueness_of (RemoteValidator)
   * validates_association (?)
-
-=== validatious
-
-* Make the submit button be disabled (non-clickable) while the form contains invalid values (maybe)
+* Validator API: Custom validators (client-side + remote)
+* Form Input Helper API: Custom form helpers (non-"core helper" based)
+* Make Rails core validations basic options fully supported
+  * :on => :create|:save|:update (not easy - RemoteValidator?)
+  * :if/:unless => true|false (not easy - RemoteValidator?)
+* Tighten up the tests more.

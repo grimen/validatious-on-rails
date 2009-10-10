@@ -17,9 +17,11 @@ module ValidatiousOnRails # :nodoc:
     end
   end
 
-  mattr_accessor :verbose
-
   @@verbose = ::Object.const_defined?(:RAILS_ENV) ? (::RAILS_ENV.to_sym == :development) : true
+  @@client_side_validations_by_default = true
+
+  mattr_accessor  :verbose,
+                  :client_side_validations_by_default
 
   # Logging helper: Internal debug-logging for the plugin.
   #

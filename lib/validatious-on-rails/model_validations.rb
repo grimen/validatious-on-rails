@@ -73,19 +73,22 @@ module ValidatiousOnRails
       # form markup.
       #
       def from_active_record(object_or_class, attribute_method)
-        klass = object_or_class.to_s.classify.constantize
         validators = []
+        klass = object_or_class.to_s.classify.constantize
 
         # Iterate thorugh the validations for the current class,
         # and collect validation options.
         klass.reflect_on_validations_for(attribute_method.to_sym).each do |validation|
           validates_type = validation.macro.to_s.sub(/^validates?_/, '')
+          if validation.options[:client_side].nil?
+            validation.options[:client_side] = ::ValidatiousOnRails.client_side_validations_by_default
+          end
 
           # Skip "confirmation_of"-validation info for the attribute that
           # needs to be confirmed. Validatious expects this validation rule
           # on the confirmation field. *
           unless validates_type =~ /^confirmation_of$/
-            validators << self.send(validates_type.to_sym, validation)
+            validators << self.send(validates_type.to_sym, validation) if validation.options[:client_side]
           end
         end
 
@@ -95,13 +98,17 @@ module ValidatiousOnRails
           # Check if validates_confirmation_of(:hello) actually exists,
           # if :hello_confirmation field exists - just to be safe.
           klass.reflect_on_validations_for(confirm_attribute_method.to_sym).each do |validation|
+            if validation.options[:client_side].nil?
+              validation.options[:client_side] = ::ValidatiousOnRails.client_side_validations_by_default
+            end
+
             if validation.macro.to_s =~ /^validates_confirmation_of$/
-              validators << self.confirmation_of(validation)
+              validators << self.confirmation_of(validation) if validation.options[:client_side]
               break
             end
           end
         end
-        validators
+        validators.flatten.compact
       end
 
       # Resolve validation from validates_acceptance_of.
