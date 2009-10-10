@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{validatious-on-rails}
-  s.version = "0.3.3"
+  s.version = "0.3.4"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Christian Johansen", "Jonas Grimfelt"]
@@ -14,6 +14,7 @@ Gem::Specification.new do |s|
   s.email = %q{christian@cjohansen.no}
   s.extra_rdoc_files = [
     "Rakefile",
+     "generators/validatious/templates/initializer.rb",
      "generators/validatious/templates/v2.standalone.full.min.js",
      "generators/validatious/templates/validatious.config.js",
      "generators/validatious/validatious_generator.rb",
@@ -54,6 +55,7 @@ Gem::Specification.new do |s|
   ]
   s.files = [
     "Rakefile",
+     "generators/validatious/templates/initializer.rb",
      "generators/validatious/templates/v2.standalone.full.min.js",
      "generators/validatious/templates/validatious.config.js",
      "generators/validatious/validatious_generator.rb",
