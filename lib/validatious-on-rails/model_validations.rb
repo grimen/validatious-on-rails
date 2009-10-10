@@ -2,19 +2,11 @@
 begin
   require 'validation_reflection'
 rescue LoadError
-  gem 'redinger-validation_reflection', '>= 0.3.2'
+  gem 'validation_reflection', '>= 0.3.5'
   require 'validation_reflection'
 end
 
 require File.join(File.dirname(__FILE__), *%w[validatious validators])
-
-# Force this, as it seems ValidationReflection don't do this correctly. =S
-#
-ActiveRecord::Base.class_eval do
-  include ::ActiveRecordExtensions::ValidationReflection
-  ::ActiveRecordExtensions::ValidationReflection.load_config
-  ::ActiveRecordExtensions::ValidationReflection.install(self)
-end
 
 # Validatious-Rails validation translator.
 #
