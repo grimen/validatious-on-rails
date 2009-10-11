@@ -66,7 +66,7 @@ module ValidatiousOnRails
       #
       def from_active_record(object_or_class, attribute_method)
         validators = []
-        klass = object_or_class.to_s.classify.constantize
+        klass = object_or_class.to_s.classify.constantize # BUG: NameError for nested forms
 
         # Iterate thorugh the validations for the current class,
         # and collect validation options.
