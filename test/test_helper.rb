@@ -33,6 +33,9 @@ extend RR::Adapters::RRMethods
 
 require 'validatious-on-rails'
 
+require File.expand_path(File.join(File.dirname(__FILE__), *%w[.. app controllers validates_controller]))
+require File.expand_path(File.join(File.dirname(__FILE__), *%w[.. config routes]))
+
 # TODO: Should extend Rails validators with this - to test respond_to.
 module ActiveRecord
   module Validations
@@ -83,6 +86,8 @@ end
 # if it's tested outside of a Rails project. So, just set it to something random.
 #
 RAILS_ROOT = File.join(File.dirname(__FILE__)) unless defined?(RAILS_ROOT)
+
+::ValidatiousOnRails.verbose = true
 
 #
 # Log file for testing only.

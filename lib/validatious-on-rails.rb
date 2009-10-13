@@ -3,6 +3,7 @@ require File.join(File.dirname(__FILE__), *%w[validatious-on-rails validatious])
 require File.join(File.dirname(__FILE__), *%w[validatious-on-rails model_validations])
 require File.join(File.dirname(__FILE__), *%w[validatious-on-rails rails])
 require File.join(File.dirname(__FILE__), *%w[validatious-on-rails helpers])
+require File.join(File.dirname(__FILE__), *%w[validatious-on-rails controller])
 
 module ValidatiousOnRails # :nodoc:
 
@@ -29,7 +30,7 @@ module ValidatiousOnRails # :nodoc:
     return unless @@verbose
     level = :info if level.blank?
     @@logger ||= ::Logger.new(::STDOUT)
-    @@logger.send(level.to_sym, message)
+    @@logger.send(level.to_sym, "[validatiou-on-rails:]  #{level.to_s.upcase}  #{message}")
   end
 
 end
