@@ -13,10 +13,11 @@ module ValidatiousOnRails # :nodoc:
   #
   class ValidatiousOnRailsError < ::StandardError
     def initialize(message)
-      ::Validatious.log message, :debug
+      ::ValidatiousOnRails.log message, :error
       super message
     end
   end
+  RemoteValidationInvalid = ::Class.new(::ValidatiousOnRails::ValidatiousOnRailsError)
 
   @@verbose = ::Object.const_defined?(:RAILS_ENV) ? (::RAILS_ENV.to_sym == :development) : true
   @@client_side_validations_by_default = true
@@ -30,7 +31,7 @@ module ValidatiousOnRails # :nodoc:
     return unless @@verbose
     level = :info if level.blank?
     @@logger ||= ::Logger.new(::STDOUT)
-    @@logger.send(level.to_sym, "[validatiou-on-rails:]  #{level.to_s.upcase}  #{message}")
+    @@logger.send(level.to_sym, "[validatious-on-rails:]  #{level.to_s.upcase}  #{message}")
   end
 
 end

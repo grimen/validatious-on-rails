@@ -16,14 +16,6 @@ module ValidatiousOnRails
         super
       end
 
-      def message
-        @message ||= ''
-      end
-
-      def accept_empty
-        @accept_empty.nil? ? true : @accept_empty
-      end
-
       def fn=(value)
         # Handle either full function definition, or just the function body - just because.
         @fn = if (value =~ /function\(\w*,\w*,\w*\).*\{.*\}/i)
@@ -79,8 +71,9 @@ module ValidatiousOnRails
       # Requires an instance of the class to validate, the attribute that
       #  needs to be validated, and the current (input) value to validate.
       #
-      def perform_validation(object, attribute_name, value)
+      def self.perform_validation(object, attribute_name, value)
         # TODO: Perform server side validation
+        true
       end
 
     end

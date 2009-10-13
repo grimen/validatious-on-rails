@@ -21,7 +21,6 @@ class ControllerTest < ::ActionController::TestCase
     context "invalid validation" do
       test "without any params - should fail" do
         get :bananas
-        #puts @response.inspect
         assert_response 405
         assert_equal 'false', @response.body
       end
