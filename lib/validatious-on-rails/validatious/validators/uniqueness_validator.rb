@@ -18,6 +18,15 @@ module ValidatiousOnRails
       end
 
       # TODO: Implement AJAX, etc.
+      
+      def self.perform_validation(object, attribute_name, value, params = {})
+        # TODO: Replace with real implementation.
+        if /unique/ =~ value.to_s
+          true
+        else
+          false
+        end
+      end
 
     end
   end

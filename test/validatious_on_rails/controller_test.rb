@@ -9,6 +9,7 @@ class ControllerTest < ::ActionController::TestCase
   
   before do
     @controller = ::ValidatesController.new
+    @bogus_item = ::BogusItem.new
   end
   
   context "routes" do
@@ -58,29 +59,29 @@ class ControllerTest < ::ActionController::TestCase
           end
           
           context "without :value" do
-            test ":value is not allowed to be blank - should fail" do
-              get :uniqueness_of, :model => 'bogus_item', :attribute => 'name'
-              assert_response 405
-              assert_equal 'false', @response.body
-            end
+            # test ":value is not allowed to be blank - should fail" do
+            #   get :uniqueness_of, :model => 'bogus_item', :attribute => 'name'
+            #   assert_response 405
+            #   assert_equal 'false', @response.body
+            # end
             
-            test ":value is allowed to be blank - should succeed" do
-              get :uniqueness_of, :model => 'bogus_item', :attribute => 'name'
-              assert_response :success
-              assert_equal 'true', @response.body
-            end
+             # test ":value is allowed to be blank - should succeed" do
+             #   get :uniqueness_of, :model => 'bogus_item', :attribute => 'name'
+             #   assert_response 200
+             #   assert_equal 'true', @response.body
+             # end
           end
           
           context "with :value" do
             test "invalid value - should fail" do
-              get :uniqueness_of, :model => 'bogus_item', :attribute => 'name'
-              assert_response 405
+              get :uniqueness_of, :model => 'bogus_item', :attribute => 'name', :value => 'carrot' 
+              assert_response 200
               assert_equal 'false', @response.body
             end
             
             test "valid :value - should succeed" do
-              get :uniqueness_of, :model => 'bogus_item', :attribute => 'name'
-              assert_response :success
+              get :uniqueness_of, :model => 'bogus_item', :attribute => 'name', :value => 'unique carrot' 
+              assert_response 200
               assert_equal 'true', @response.body
             end
           end

@@ -71,7 +71,7 @@ module ValidatiousOnRails
       # Requires an instance of the class to validate, the attribute that
       #  needs to be validated, and the current (input) value to validate.
       #
-      def self.perform_validation(object, attribute_name, value)
+      def self.perform_validation(object, attribute_name, value, params = {})
         # TODO: Perform server side validation
         true
       end
