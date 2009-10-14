@@ -40,7 +40,7 @@ module ValidatiousOnRails
       # name along with a method/field.
       #
       def options_for(object_name, attribute_method, options = {}, existing_validators = nil)
-        validators = self.from_active_record(object_name, attribute_method)
+        validators = self.from_active_record(options[:object] ? options[:object].class.name : object_name, attribute_method)
         validator_classes, validator_js = [options[:class]], []
 
         # Only attach validators that are not already attached.
