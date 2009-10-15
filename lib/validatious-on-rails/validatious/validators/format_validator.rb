@@ -23,7 +23,7 @@ module ValidatiousOnRails
         self.accept_empty = validation.options[:allow_nil]
         self.fn = %{
           #{self.class.validate_blank(validation)}
-          return #{validation.options[:with].inspect}.test(value);
+          return #{validation.options[:with].inspect.gsub(/\\A/,'^').gsub(/\\z/,'$')}.test(value);
         }
         self.fn.freeze
       end
