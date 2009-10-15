@@ -8,7 +8,7 @@ module ValidatiousOnRails
       def initialize(validation, options = {})
         name = 'presence'
         super name, options
-        self.message = self.class.generate_message(validation)
+        self.message = self.class.generate_message(validation, {:key => :blank})
         self.accept_empty = false
         # Identical to Validatious "required" validator, but we want Rails I18n message support, so...
         self.fn = %{
