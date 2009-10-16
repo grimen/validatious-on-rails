@@ -65,6 +65,7 @@ build_model :bogus_items do
   string :field_without_client_side_validations
   
   validates_presence_of :name, :body, :variant
+  validates_uniqueness_of :name
   validates_confirmation_of :name
   validates_acceptance_of :signed, :accept => true
   validates_format_of :url,
@@ -87,7 +88,9 @@ end
 #
 RAILS_ROOT = File.join(File.dirname(__FILE__)) unless defined?(RAILS_ROOT)
 
-::ValidatiousOnRails.verbose = true
+# To show debug messages in test output, set this to true.
+#
+::ValidatiousOnRails.verbose = false
 
 #
 # Log file for testing only.

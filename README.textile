@@ -33,6 +33,7 @@ h3. Current Features:
 * Ruby representation of @v2.Validator@ - for custom validators (public API announced soon)
 * Client-side validations can easily be disabled for specific fields.
 * Ruby 1.9.x support (note: Rails 2.3.4 + Ruby 1.9.1 + validatious-on-rails don't work - because of a known Rails 2.3.4-bug)
+* JavaScript framework agnostic
 * For the near fanatic "Formtastic":http://github.com/justinfrench/formtastic form-builder users like me: With default config, it's compatible with the Formtastic semantic HTML structure.
 * Test-suit
 
@@ -67,6 +68,7 @@ and in @config/environment.rb@:
 
 * "validatious 2.0":http://github.com/cjohansen/validatious - the DSL-extension is optional, but I very much recommend the full package (it's so tiny in size anyway)
 * "validation_reflection":http://github.com/redinger/validation_reflection
+* "XMLHttpRequest":http://code.google.com/p/xmlhttprequest/ - unobtrusive cross-browser implementation of the native XMLHttpRequest (remote validations only, not required for client-side validations)
 
 *Note:* For testing, get: "context":http://github.com/jeremymcanally/context, "rr":http://github.com/btakita/rr, "acts_as_fu":http://github.com/nakajima/acts_as_fu, and "redgreen":http://gemcutter.org/gems/redgreen.
 
@@ -75,10 +77,12 @@ h2. Configuration
 h3. 1. Generate required javascript files
 
 <pre>
-$ ./script/generate validatious                                                                                                                                                              
+$ ./script/generate validatious
+      create  config/initializers/validatious-on-rails.rb
+      create  public/javascripts/XMLHttpRequest.js
       create  public/javascripts/v2.standalone.full.min.js
       create  public/javascripts/validatious.config.js
-      create  config/initializers/validatious-on-rails.rb
+      create  public/javascripts/validatious-on-rails.js
 </pre>
 
 h3. 2. Include the javascripts in your layout

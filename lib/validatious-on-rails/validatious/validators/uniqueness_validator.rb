@@ -6,26 +6,16 @@ module ValidatiousOnRails
     class UniquenessValidator < RemoteValidator
 
       def initialize(validation, options = {})
-        name = 'uniqueness'
-        super name, options
-        self.message = self.class.generate_message(validation)
+        super
         self.accept_empty = false
-        # Identical to Validatious "required" validator, but we want Rails I18n message support, so...
-        self.fn = %{
-          return true;
-        }
-        self.fn.freeze
       end
 
-      # TODO: Implement AJAX, etc.
-      
-      def self.perform_validation(object, attribute_name, value, params = {})
-        # TODO: Replace with real implementation.
-        if /unique/ =~ value.to_s
-          true
-        else
-          false
+      class << self
+
+        def generate_message(validation)
+          super(validation, :key => :taken)
         end
+
       end
 
     end

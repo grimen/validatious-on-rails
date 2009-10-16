@@ -4,76 +4,69 @@ require File.join(File.dirname(__FILE__), 'validator')
 module ValidatiousOnRails
   module Validatious
     class RemoteValidator < Validator
-      
-      attr_accessor :name
-      attr_writer   :message,
-                    :accept_empty,
-                    :fn,
-                    :callbakc_fn,
-                    :args
-                    
-      def initialize(name, *args)
-        super
+
+      def initialize(validation, *args)
+        name = self.class.name.split('::').last.underscore.gsub(/_validator$/, '')
+        super name, *args
+        self.message = self.class.generate_message(validation)
       end
 
-      def fn=(value)
-        # Handle either full function definition, or just the function body - just because.
-        @fn = if (value =~ /function\(\w*,\w*,\w*\).*\{.*\}/i)
-          value
-        else
-          value ||= ''
-          # If no function specified yet, always validate true by default.
-          value << "\nreturn true;" unless value =~ /return (.+)/i
-          "function(field, value, params) {#{value}}"
-        end
-      end
-
+      # Override default Validator-fn, with default a RemoteValidator-fn.
+      #
+      #   1. Perform AJAX request (dependencies: validatious-on-rails.js, XMLHttpRequest.js).
+      #   2. Always return true, callback-function should perform the actual client side validation.
+      #
       def fn
-        (@fn ||= "function(field, value, params) {return true;}").gsub(/[\n\t]/, '')
+        (@fn ||= %{function(field, value, params) {
+              return !!performRemoteValidation('#{self.name}', field, value, params);
+            }
+          }).gsub(/[\n\t]/, '')
       end
 
-      # TODO: Callback-method on the client-side - handles the AJAX response..
-      #
-      def callback_fn=
-      end
+      class << self
 
-      # TODO: Callback-method on the client-side - handles the AJAX response.
-      #
-      def callback_fn
-        (@callback_fn ||= "function() {return true;}").gsub(/[\n\t]/, '')
-      end
+        # Perform the actual validation on the server-side.
+        # Requires an instance of the class to validate, the attribute that
+        #  needs to be validated, and the current (input) value to validate.
+        #
+        # Base case: Return "true".
+        #
+        def perform_validation(record, attribute_name, value, params = {})
+          return true if record.blank?
+          record.send :"#{attribute_name}=", value
+          
+          if record.valid?
+            ValidatiousOnRails.log "Validation: SUCCESS"
+            true
+          else
+            return true if record.errors[attribute_name.to_sym].blank?
+            
+            # TODO: Refactor this when "the better" namin convention is used (see TODO).
+            validation_macro = ("validates_%s" % self.name.split('::').last.underscore.gsub(/_validator$/, ''))
+            validation = record.class.reflect_on_validations_for(attribute_name.to_sym).select { |v|
+                v.macro.to_s == validation_macro || v.macro.to_s == "#{validation_macro}_of"
+              }.first
+            return true if validation.blank?
+            
+            # {{variable}} => .*
+            validation_error_message = self.new(validation).message.gsub(/\{\{.*\}\}/, '.*')
+            
+            # Ugly, but probably the only way (?) to identify a certain error without open
+            # up rails core validation methods - not scalable.
+            is_invalid = record.errors[attribute_name.to_sym].any? do |error_message|
+              ValidatiousOnRails.log  error_message + " =~ " + /^#{validation_error_message}$/.inspect
+              error_message =~ /^#{validation_error_message}$/u
+            end
 
-      # TODO: Make Validatious trigger the validation on the client-side,
-      # which will be a AJAX call to the server-side with enough info to 
-      # be able to perform the validation and respond with result that will
-      # be handles by the client-side callback function.
-      #
-      def to_js
-        options = {
-            :name => self.name,
-            :message => self.message,
-            :params => self.params,
-            :aliases => self.aliases,
-            :acceptEmpty => self.accept_empty,
-            :fn => self.fn
-          }
-        # Just to make the tests much DRYer and maintanable on Ruby 1.8
-        # - hash ordered by key only 1.9. ='(
-        js_options = options.keys.collect(&:to_s).sort.collect { |k|
-            v = options[k.to_sym]
-            ("#{k}: #{k.to_sym == :fn ? v : v.to_json}" if [false, true].include?(v) || v.present?)
-          }.compact.join(', ')
-        "v2.Validator.add({#{js_options}});"
-      end
-      alias :to_s :to_js
+            if is_invalid
+              ValidatiousOnRails.log "Validation: FAIL: " + record.errors[attribute_name.to_sym].to_s
+              false
+            else
+              true
+            end
+          end
+        end
 
-      # Perform the actual validation on the server-side.
-      # Requires an instance of the class to validate, the attribute that
-      #  needs to be validated, and the current (input) value to validate.
-      #
-      def self.perform_validation(object, attribute_name, value, params = {})
-        # TODO: Perform server side validation
-        true
       end
 
     end

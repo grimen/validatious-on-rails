@@ -275,7 +275,9 @@ module ValidatiousOnRails
       # TODO: Implement using RemoteValidator.
       #
       def uniqueness_of(validation)
-        nil
+        #nil
+        validators = []
+        validators << Validatious::UniquenessValidator.new(validation)
       end
 
       # Unknown validations - if no matching custom validator is found/registered.

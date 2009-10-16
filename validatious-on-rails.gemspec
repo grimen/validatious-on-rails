@@ -9,18 +9,21 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Christian Johansen", "Jonas Grimfelt"]
-  s.date = %q{2009-10-10}
+  s.date = %q{2009-10-15}
   s.description = %q{Rails plugin that maps model validations to class names on form elements to integrate with Validatious.}
   s.email = %q{christian@cjohansen.no}
   s.extra_rdoc_files = [
     "Rakefile",
      "app/controllers/validates_controller.rb",
      "config/routes.rb",
+     "generators/validatious/templates/XMLHttpRequest.js",
      "generators/validatious/templates/initializer.rb",
      "generators/validatious/templates/v2.standalone.full.min.js",
+     "generators/validatious/templates/validatious-on-rails.js",
      "generators/validatious/templates/validatious.config.js",
      "generators/validatious/validatious_generator.rb",
      "lib/validatious-on-rails.rb",
+     "lib/validatious-on-rails/controller.rb",
      "lib/validatious-on-rails/helpers.rb",
      "lib/validatious-on-rails/model_validations.rb",
      "lib/validatious-on-rails/rails.rb",
@@ -47,8 +50,10 @@ Gem::Specification.new do |s|
      "lib/validatious-on-rails/validatious/validators/numericality/odd_validator.rb",
      "lib/validatious-on-rails/validatious/validators/numericality/only_integer_validator.rb",
      "lib/validatious-on-rails/validatious/validators/presence_validator.rb",
+     "lib/validatious-on-rails/validatious/validators/uniqueness_validator.rb",
      "rails/init.rb",
      "test/test_helper.rb",
+     "test/validatious_on_rails/controller_test.rb",
      "test/validatious_on_rails/helpers_test.rb",
      "test/validatious_on_rails/model_validations_test.rb",
      "test/validatious_on_rails/rails/action_view_helpers_test.rb",
@@ -59,11 +64,14 @@ Gem::Specification.new do |s|
     "Rakefile",
      "app/controllers/validates_controller.rb",
      "config/routes.rb",
+     "generators/validatious/templates/XMLHttpRequest.js",
      "generators/validatious/templates/initializer.rb",
      "generators/validatious/templates/v2.standalone.full.min.js",
+     "generators/validatious/templates/validatious-on-rails.js",
      "generators/validatious/templates/validatious.config.js",
      "generators/validatious/validatious_generator.rb",
      "lib/validatious-on-rails.rb",
+     "lib/validatious-on-rails/controller.rb",
      "lib/validatious-on-rails/helpers.rb",
      "lib/validatious-on-rails/model_validations.rb",
      "lib/validatious-on-rails/rails.rb",
@@ -90,8 +98,10 @@ Gem::Specification.new do |s|
      "lib/validatious-on-rails/validatious/validators/numericality/odd_validator.rb",
      "lib/validatious-on-rails/validatious/validators/numericality/only_integer_validator.rb",
      "lib/validatious-on-rails/validatious/validators/presence_validator.rb",
+     "lib/validatious-on-rails/validatious/validators/uniqueness_validator.rb",
      "rails/init.rb",
      "test/test_helper.rb",
+     "test/validatious_on_rails/controller_test.rb",
      "test/validatious_on_rails/helpers_test.rb",
      "test/validatious_on_rails/model_validations_test.rb",
      "test/validatious_on_rails/rails/action_view_helpers_test.rb",
@@ -105,6 +115,7 @@ Gem::Specification.new do |s|
   s.summary = %q{Rails plugin that maps model validations to class names on form elements to integrate with Validatious.}
   s.test_files = [
     "test/test_helper.rb",
+     "test/validatious_on_rails/controller_test.rb",
      "test/validatious_on_rails/helpers_test.rb",
      "test/validatious_on_rails/model_validations_test.rb",
      "test/validatious_on_rails/rails/action_view_helpers_test.rb",

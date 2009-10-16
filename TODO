@@ -1,5 +1,7 @@
 == TODO
 
+* Better validator naming convention: UniquenessValidator => UniquenessOfValidator, etc.
+* validatious-on-rails.js-helpers should be namespaced, i.e. v2.Rails.xxx, or similar
 * Server-side (custom) Validatious-validator support (v2.Validator)
   * validates_uniqueness_of (RemoteValidator)
   * validates_association (?)

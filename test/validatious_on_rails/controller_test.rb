@@ -73,7 +73,11 @@ class ControllerTest < ::ActionController::TestCase
           end
           
           context "with :value" do
+            # FIXME: Fails, but why? Works "in practice".
             test "invalid value - should fail" do
+              @existing_bogus_item = ::BogusItem.new(:name => 'carrot')
+              @existing_bogus_item.save(false)
+              
               get :uniqueness_of, :model => 'bogus_item', :attribute => 'name', :value => 'carrot' 
               assert_response 200
               assert_equal 'false', @response.body
