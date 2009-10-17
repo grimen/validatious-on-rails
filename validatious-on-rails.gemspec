@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{validatious-on-rails}
-  s.version = "0.3.5"
+  s.version = "0.3.6"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Christian Johansen", "Jonas Grimfelt"]
-  s.date = %q{2009-10-10}
+  s.date = %q{2009-10-17}
   s.description = %q{Rails plugin that maps model validations to class names on form elements to integrate with Validatious.}
   s.email = %q{christian@cjohansen.no}
   s.extra_rdoc_files = [
