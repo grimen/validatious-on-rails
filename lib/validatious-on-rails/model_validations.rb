@@ -69,7 +69,12 @@ module ValidatiousOnRails
       #
       def from_active_record(object_or_class, attribute_method)
         validators = []
-        klass = object_or_class.to_s.classify.constantize
+        begin
+          klass = object_or_class.to_s.classify.constantize
+        rescue
+          ::ValidatiousOnRails.log "Missing constant: #{object_or_class}", :debug
+          return validators
+        end
 
         # Iterate thorugh the validations for the current class,
         # and collect validation options.

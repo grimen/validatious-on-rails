@@ -26,6 +26,15 @@ class ModelValidationsTest < ::ActiveSupport::TestCase
     end
   end
 
+  context "from_active_record" do
+    test "non concrete models" do
+      assert_nothing_raised(NameError) do
+        ::ValidatiousOnRails::ModelValidations.from_active_record(:thing, :field_with_defaults)
+      end
+      assert_equal [], ::ValidatiousOnRails::ModelValidations.from_active_record(:thing, :field_with_defaults)
+    end
+  end
+  
   context "acceptance_of" do
     test "with defaults" do
       validators = ::ValidatiousOnRails::ModelValidations.acceptance_of(
