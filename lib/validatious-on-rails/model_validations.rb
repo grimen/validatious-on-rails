@@ -68,6 +68,8 @@ module ValidatiousOnRails
         validators = []
         klass = object_or_class.to_s.classify.constantize # BUG: NameError for nested forms
 
+        ::ValidatiousOnRails.log attribute_method
+
         # Iterate thorugh the validations for the current class,
         # and collect validation options.
         klass.reflect_on_validations_for(attribute_method.to_sym).each do |validation|
@@ -275,9 +277,9 @@ module ValidatiousOnRails
       # TODO: Implement using RemoteValidator.
       #
       def uniqueness_of(validation)
-        #nil
         validators = []
         validators << Validatious::UniquenessValidator.new(validation)
+        validators << Validatious::RemoteClientValidator.new(validation, true)
       end
 
       # Unknown validations - if no matching custom validator is found/registered.

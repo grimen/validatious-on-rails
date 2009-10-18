@@ -17,7 +17,8 @@ module ValidatiousOnRails
       #   2. Always return true, callback-function should perform the actual client side validation.
       #
       def fn
-        (@fn ||= %{function(field, value, params) {
+        (@fn ||= %{
+            function(field, value, params) {
               return !!performRemoteValidation('#{self.name}', field, value, params);
             }
           }).gsub(/[\n\t]/, '')
