@@ -7,12 +7,12 @@ require 'rake/rdoctask'
 NAME = "validatious-on-rails"
 SUMMARY = %Q{Rails plugin that maps model validations to class names on form elements to integrate with Validatious.}
 HOMEPAGE = "http://github.com/grimen/#{NAME}"
-AUTHORS = ["Christian Johansen", "Jonas Grimfelt"]
-EMAIL = "christian@cjohansen.no"
+AUTHORS = ["Jonas Grimfelt", "Christian Johansen"]
+EMAIL = "grimen@gmail.com"
 SUPPORT_FILES = %w(README)
 
 begin
-  gem 'technicalpickles-jeweler', '>= 1.2.1'
+  gem 'jeweler', '>= 1.2.1'
   require 'jeweler'
   Jeweler::Tasks.new do |gemspec|
     gemspec.name        = NAME
