@@ -16,12 +16,7 @@ module ActionView # :nodoc:
       # so the hooking of these helpers don't have to be very explicit.
       #
       FIELD_TYPES.each do |field_type|
-        define_method :"#{field_type}_with_validation" do |*args|
-          args, tail = ::ValidatiousOnRails::Helpers.extract_args!(*args)
-          options = self.attach_validator_for(args.first, args.second, args.extract_options!)
-          self.send :"#{field_type}_without_validation", *((args << options) + tail)
-        end
-        alias_method_chain field_type, :validation
+        define_with_validatious_support(field_type)
       end
 
       # Adds the title attribute to label tags when there is no title
@@ -35,36 +30,26 @@ module ActionView # :nodoc:
 
     end
 
-    module FormOptionsHelper
+    module FormOptionsHelper # :nodoc:
 
       include ::ValidatiousOnRails::Helpers
 
       FIELD_TYPES = [:time_zone_select, :select, :collection_select, :grouped_collection_select].freeze
 
       FIELD_TYPES.each do |field_type|
-        define_method :"#{field_type}_with_validation" do |*args|
-          args, tail = ::ValidatiousOnRails::Helpers.extract_args!(*args)
-          options = self.attach_validator_for(args.first, args.second, args.extract_options!)
-          self.send :"#{field_type}_without_validation", *((args << options) + tail)
-        end
-        alias_method_chain field_type, :validation
+        define_with_validatious_support(field_type)
       end
 
     end
 
-    module DateHelper
+    module DateHelper # :nodoc:
 
       include ::ValidatiousOnRails::Helpers
 
       FIELD_TYPES = [:date_select, :datetime_select, :time_select].freeze
 
       FIELD_TYPES.each do |field_type|
-        define_method :"#{field_type}_with_validation" do |*args|
-          args, tail = ::ValidatiousOnRails::Helpers.extract_args!(*args)
-          options = self.attach_validator_for(args.first, args.second, args.extract_options!)
-          self.send :"#{field_type}_without_validation", *((args << options) + tail)
-        end
-        alias_method_chain field_type, :validation
+        define_with_validatious_support(field_type)
       end
 
     end

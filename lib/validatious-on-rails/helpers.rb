@@ -1,6 +1,12 @@
 module ValidatiousOnRails
   module Helpers
 
+    def self.included(base)
+      base.class_eval do
+        extend ClassMethods
+      end
+    end
+
     def attach_validator_for(object_name, method, options = {})
       options = ::ValidatiousOnRails::ModelValidations.options_for(object_name, method, options, @content_for_validatious)
       custom_js = options.delete(:js)
@@ -28,6 +34,19 @@ module ValidatiousOnRails
         tail = []
       end
       return args, tail
+    end
+
+    module ClassMethods
+      
+      def define_with_validatious_support(field_type)
+        define_method :"#{field_type}_with_validation" do |*args|
+          args, tail = ::ValidatiousOnRails::Helpers.extract_args!(*args)
+          options = self.attach_validator_for(args.first, args.second, args.extract_options!)
+          self.send :"#{field_type}_without_validation", *((args << options) + tail)
+        end
+        alias_method_chain field_type, :validation
+      end
+
     end
 
   end
