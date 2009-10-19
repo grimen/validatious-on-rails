@@ -39,12 +39,16 @@ module ValidatiousOnRails
     module ClassMethods
       
       def define_with_validatious_support(field_type)
-        define_method :"#{field_type}_with_validation" do |*args|
-          args, tail = ::ValidatiousOnRails::Helpers.extract_args!(*args)
-          options = self.attach_validator_for(args.first, args.second, args.extract_options!)
-          self.send :"#{field_type}_without_validation", *((args << options) + tail)
+        begin
+          define_method :"#{field_type}_with_validation" do |*args|
+            args, tail = ::ValidatiousOnRails::Helpers.extract_args!(*args)
+            options = self.attach_validator_for(args.first, args.second, args.extract_options!)
+            self.send :"#{field_type}_without_validation", *((args << options) + tail)
+          end
+          alias_method_chain field_type, :validation
+        rescue
+          # Rails version compability. Note: :respond_to? don't seems to work...
         end
-        alias_method_chain field_type, :validation
       end
 
     end
