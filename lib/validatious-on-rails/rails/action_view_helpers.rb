@@ -23,7 +23,11 @@ module ActionView # :nodoc:
       # set, and the label text is provided. The title is set to object_name.humanize
       #
       def label_with_title(object_name, method, text = nil, options = {})
-        options[:title] ||= object_name.to_s.classify.constantize.human_attribute_name(method.to_s) unless text.nil?
+        begin
+          options[:title] ||= object_name.to_s.classify.constantize.human_attribute_name(method.to_s) unless text.nil?
+        rescue
+          # skip
+        end
         label_without_title(object_name, method, text, options)
       end
       alias_method_chain :label, :title
