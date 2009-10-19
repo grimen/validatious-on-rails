@@ -3,8 +3,8 @@
 //
 
 // Perform a remote validation on a given field the Validatious way, slightly modified
-///
-function performRemoteValidation(name, field, value, params) {
+//
+function performRemoteValidation(name, field, value, params, message) {
   var field_element = field.__elements[0];
   var url = remoteValidationUrlFor(name, field_element, value, params);
   
@@ -13,8 +13,9 @@ function performRemoteValidation(name, field, value, params) {
   xmlHttpRequest.onreadystatechange = function() {
     if (this.readyState == XMLHttpRequest.DONE) {
       var validationResult = this.responseText;
-      // Trigger a failing client-side uniqueness validation.
-      // console.log('Validation result:' + validationResult);
+      /* console.log('Validation result:' + validationResult); */
+      var v = field_element.id.is('remote-client', validationResult).explain(message);
+      v.item.validate();
     };
   };
   xmlHttpRequest.send(null);

@@ -10,31 +10,35 @@ h2. What Is Validatious?
 
 h2. ...So What Is Validatious-On-Rails?
 
-*Elevator pitch:* A (kick-ass) seamless "glue" between ActiveRecord and Validatious: Automatically maps models validations to client-side Validatious-validators on form elements in a obtrusive way using DOM classes. Makes your form-filling users happier, and you code cleaner and more scalable (tjing-tjing!). Why define client-side validations "once-again", when they already defined in the model?
+*Elevator pitch:* A (kick-ass) seamless "glue" between ActiveRecord and Validatious: Automatically maps models validations to client-side Validatious-validators - and when client-side won't work: Validatious-backed AJAX validators - on form elements in a obtrusive way using DOM classes. Makes your form-filling users happier, and you code cleaner and more scalable (tjing-tjing!). Why define client-side validations "once-again", when they already defined in the model?
 
 h2. Features & Goals
 
 h3. Current Features:
 
 * Rails core validations
-** @validates_acceptance_of@ - <small>except: :on, :if/:unless</small>
-** @validates_confirmation_of@ - <small>except: :on, :if/:unless</small>
-** @validates_exclusion_of@ - <small>except: :on, :if/:unless</small>
-** @validates_format_of@ - <small>except: :on, :if/:unless</small>
-** @validates_inclusion_of@ - <small>except: :on, :if/:unless</small>
-** @validates_length_of@ - <small>except: :on, :if/:unless</small>
-** @validates_numericality_of@ - <small>except: :on, :if/:unless</small>
-** @validates_presence_of@ - <small>except :on, :if/:unless</small>
-** @validates_size_of@ - <small>except :on, :if/:unless</small>
-** @uniqueness_of@ - <small>AJAX-based *new*</small>
-* Supports all Rails core form field helpers
-* Seamless Rails I18n integration (validation error messages)
-* Generator for getting started - easy as 1-2-3 (see below)
-* Custom client-side and AJAX validators API (announced soon, not documented yet)
+** Client-side
+*** @validates_acceptance_of@ - <small>except: :on, :if/:unless</small>
+*** @validates_confirmation_of@ - <small>except: :on, :if/:unless</small>
+*** @validates_exclusion_of@ - <small>except: :on, :if/:unless</small>
+*** @validates_format_of@ - <small>except: :on, :if/:unless</small>
+*** @validates_inclusion_of@ - <small>except: :on, :if/:unless</small>
+*** @validates_length_of@ - <small>except: :on, :if/:unless</small>
+*** @validates_numericality_of@ - <small>except: :on, :if/:unless</small>
+*** @validates_presence_of@ - <small>except :on, :if/:unless</small>
+*** @validates_size_of@ - <small>except :on, :if/:unless</small>
+** Remote (AJAX)
+*** @validates_uniqueness_of@ *new*
+* Client-side & remote (AJAX) validations hand-in-hand: You won't notice, it's all taken care of seamlessly. When it works client-side; that is used. When more complex stuff is happening; an AJAX request is performed under the hood.
+* Supports all Rails core form field helpers.
+* Remote validators (AJAX) use Rails core validations, so the API for additional validations is very clean - seamless actually.
+* Seamless Rails I18n integration (validation error messages).
+* Generator for getting started - easy as 1-2-3 (see below).
+* Custom client-side and AJAX validators API (announced soon, not documented yet).
 * Client-side validations can easily be disabled for specific fields.
 * Ruby 1.9.x support (note: Rails 2.3.4 + Ruby 1.9.1 + validatious-on-rails don't work - because of a known Rails 2.3.4-bug)
-* JavaScript framework agnostic
-* Test-suit
+* JavaScript framework agnostic.
+* Test-suit.
 * Bonus: For "Formtastic":http://github.com/justinfrench/formtastic form-builder users like me: With default config, it's compatible with the Formtastic semantic HTML structure.
 
 _*Note:* This project is under heavy development; a lot of experimenting going on - things might change under the hood. See the "TODO":http://github.com/grimen/validatious-on-rails/blob/master/TODO for more info. Please help out file any issues/problems._
@@ -66,9 +70,9 @@ and in @config/environment.rb@:
 
 *Dependencies:*
 
-* "validatious 2.0":http://github.com/cjohansen/validatious - the DSL-extension is optional, but I very much recommend the full package (it's so tiny in size anyway)
+* "validatious 2.0":http://github.com/cjohansen/validatious
 * "validation_reflection":http://github.com/redinger/validation_reflection
-* "XMLHttpRequest":http://code.google.com/p/xmlhttprequest/ - unobtrusive cross-browser implementation of the native XMLHttpRequest (remote validations only, not required for client-side validations)
+* "XMLHttpRequest":http://code.google.com/p/xmlhttprequest/ - unobtrusive cross-browser implementation of the native XMLHttpRequest (remote validations only, not required for client-side validations).
 
 *Note:* For testing, get: "context":http://github.com/jeremymcanally/context, "rr":http://github.com/btakita/rr, "acts_as_fu":http://github.com/nakajima/acts_as_fu, and "redgreen":http://gemcutter.org/gems/redgreen.
 
@@ -92,8 +96,8 @@ h3. 2. Include the javascripts in your layout
 <pre>
 <head>
   ...
-  <%= javascript_include_tag 'v2.standalone.full.min.js', 'validatious.config.js' # 1) %>
-  <%= javascript_for_validatious # 2) %>
+  <%= javascript_include_tag 'v2.standalone.full.min', 'validatious.config', 'XMLHttpRequest', 'validatious-on-rails' %>
+  <%= javascript_for_validatious %>
   ...
 </head>
 </pre>
@@ -151,7 +155,7 @@ v2.Field.prototype.successClass = '';
 
 h2. Limitations
 
-This is very much work-in-progress, so there are some known limitations that should work very soon. For example some validations are not supported yet - either because it takes some tricks, or it's not scalable without AJAX. See "TODO":http://github.com/grimen/validatious-on-rails/blob/master/TODO.
+This is very much work-in-progress, so there are some known limitations that should work very soon. See "TODO":http://github.com/grimen/validatious-on-rails/blob/master/TODO.
 
 h2. Origin
 

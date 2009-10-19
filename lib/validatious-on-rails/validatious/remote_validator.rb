@@ -19,7 +19,7 @@ module ValidatiousOnRails
       def fn
         (@fn ||= %{
             function(field, value, params) {
-              return !!performRemoteValidation('#{self.name}', field, value, params);
+              return !!performRemoteValidation('#{self.name}', field, value, params, '#{self.message}');
             }
           }).gsub(/[\n\t]/, '')
       end
