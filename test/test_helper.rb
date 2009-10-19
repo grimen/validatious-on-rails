@@ -52,6 +52,8 @@ build_model :bogus_items do
   string :url
   string :name
   string :email
+  string :file_path
+  string :dummie
   
   text    :body
   integer :variant
@@ -61,7 +63,7 @@ build_model :bogus_items do
   string :field_with_client_side_validations
   string :field_without_client_side_validations
   
-  validates_presence_of :name, :body, :variant
+  validates_presence_of :name, :body, :variant, :file_path, :dummie
   validates_confirmation_of :name
   validates_acceptance_of :signed, :accept => true
   validates_format_of :url,
@@ -88,3 +90,20 @@ RAILS_ROOT = File.join(File.dirname(__FILE__)) unless defined?(RAILS_ROOT)
 # Log file for testing only.
 #
 ActiveRecord::Base.logger = Logger.new(File.join(File.dirname(__FILE__), 'debug.log'))
+
+module Test::Unit::Assertions
+
+  #
+  # Assert that a piece of HTML includes the class name.
+  #
+  def assert_has_class(class_name, html, message = nil)
+    # Might need to consider this...but works a bit better.
+    classes = html.scan(/class="([^"]*)"/).collect { |c| c.to_s.split(' ') }.flatten
+    full_message = build_message(message, "<?>\nexpected to include class(es) <?>.\n", html, class_name)
+
+    assert_block(full_message) do
+      class_name.split(' ').all? { |cname| classes.include?(cname) }
+    end
+  end
+
+end

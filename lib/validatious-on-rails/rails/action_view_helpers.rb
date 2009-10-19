@@ -39,7 +39,7 @@ module ActionView # :nodoc:
 
       include ::ValidatiousOnRails::Helpers
 
-      FIELD_TYPES = [:time_zone_select, :select, :collection_select, :grouped_options_for_select].freeze
+      FIELD_TYPES = [:time_zone_select, :select, :collection_select, :grouped_collection_select].freeze
 
       FIELD_TYPES.each do |field_type|
         define_method :"#{field_type}_with_validation" do |*args|
