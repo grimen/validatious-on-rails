@@ -4,21 +4,72 @@ require File.join(File.dirname(__FILE__), 'validator')
 module ValidatiousOnRails
   module Validatious
     class RemoteValidator < Validator
-      
-      def initialize(name, *args)
-        super
+
+      def initialize(validation, *args)
+        name = self.class.name.split('::').last.underscore.gsub(/_validator$/, '')
+        super name, *args
+        self.message = self.class.generate_message(validation)
       end
-      
-      # TODO: Implement server side validator class, i.e. for validatios that requires AJAX
-      
-      # Idea:
-      #   
-      #   Perform AJAX-request to a specified/generated URL
-      #   (e.g. /validatious/unique?model=article&attribute=...&value=...), with an attached
-      #   callback-method that should trigger a client-side validation.
-      #   Well, this is one possible approach...
+
+      # Override default Validator-fn, with default a RemoteValidator-fn.
       #
-      
+      #   1. Perform AJAX request (dependencies: validatious-on-rails.js, XMLHttpRequest.js).
+      #   2. Always return true, callback-function should perform the actual client side validation.
+      #
+      def fn
+        (@fn ||= %{
+            function(field, value, params) {
+              return !!v2.Rails.performRemoteValidation('#{self.name}', field, value, params, '#{self.message}');
+            }
+          }).gsub(/[\n\t]/, '')
+      end
+
+      class << self
+
+        # Perform the actual validation on the server-side.
+        # Requires an instance of the class to validate, the attribute that
+        #  needs to be validated, and the current (input) value to validate.
+        #
+        # Base case: Return "true".
+        #
+        def perform_validation(record, attribute_name, value, params = {})
+          return true if record.blank?
+          record.send :"#{attribute_name}=", value
+          
+          if record.valid?
+            ValidatiousOnRails.log "Validation: SUCCESS"
+            true
+          else
+            return true if record.errors[attribute_name.to_sym].blank?
+            
+            # TODO: Refactor this when "the better" namin convention is used (see TODO).
+            validation_macro = ("validates_%s" % self.name.split('::').last.underscore.gsub(/_validator$/, ''))
+            validation = record.class.reflect_on_validations_for(attribute_name.to_sym).select { |v|
+                v.macro.to_s == validation_macro || v.macro.to_s == "#{validation_macro}_of"
+              }.first
+            return true if validation.blank?
+            
+            # {{variable}} => .*
+            validation_error_message = self.new(validation).message.gsub(/\{\{.*\}\}/, '.*')
+            
+            # Ugly, but probably the only way (?) to identify a certain error without open
+            # up rails core validation methods - not scalable.
+            is_invalid = record.errors[attribute_name.to_sym].any? do |error_message|
+              #ValidatiousOnRails.log error_message + " =~ " + /^#{validation_error_message}$/.inspect
+              error_message =~ /^#{validation_error_message}$/u
+            end
+
+            if is_invalid
+              ValidatiousOnRails.log "Validation: FAIL: " + record.errors[attribute_name.to_sym].to_s
+              false
+            else
+              true
+            end
+          end
+        end
+
+      end
+
     end
   end
 end

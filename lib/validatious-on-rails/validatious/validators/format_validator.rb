@@ -19,7 +19,7 @@ module ValidatiousOnRails
       def initialize(validation, options = {})
         name, alias_name = self.class.generate_name(validation, :with, self.class.generate_id(validation.options[:with].inspect))
         super name, options
-        self.message = self.class.generate_message(validation)
+        self.message = self.class.generate_message(validation, :key => :invalid)
         self.accept_empty = validation.options[:allow_nil]
         self.fn = %{
           #{self.class.validate_blank(validation)}

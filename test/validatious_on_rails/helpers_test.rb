@@ -28,9 +28,9 @@ class HelpersTest < ::ActionView::TestCase
         concat javascript_for_validatious
 
         # In parts...
-        assert_match /<script.+>.*v2.Validator.*<\/script>/, output_buffer
-        assert_match /<script.*id="custom_validators".*>/, output_buffer
-        assert_match /<script.*type="text\/javascript".*>/, output_buffer
+        assert_match /<script.+>.*v2.Validator.*<\/script>/m, output_buffer
+        assert_match /<script.*id="custom_validators".*>/m, output_buffer
+        assert_match /<script.*type="text\/javascript".*>/m, output_buffer
       end
 
     end

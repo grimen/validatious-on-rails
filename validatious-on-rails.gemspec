@@ -5,20 +5,25 @@
 
 Gem::Specification.new do |s|
   s.name = %q{validatious-on-rails}
-  s.version = "0.3.9"
+  s.version = "0.4.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Jonas Grimfelt", "Christian Johansen"]
-  s.date = %q{2009-10-19}
+  s.date = %q{2009-10-20}
   s.description = %q{Rails plugin that maps model validations to class names on form elements to integrate with Validatious.}
   s.email = %q{grimen@gmail.com}
   s.extra_rdoc_files = [
     "Rakefile",
+     "app/controllers/validates_controller.rb",
+     "config/routes.rb",
+     "generators/validatious/templates/XMLHttpRequest.js",
      "generators/validatious/templates/initializer.rb",
+     "generators/validatious/templates/v2.config.js",
+     "generators/validatious/templates/v2.rails.js",
      "generators/validatious/templates/v2.standalone.full.min.js",
-     "generators/validatious/templates/validatious.config.js",
      "generators/validatious/validatious_generator.rb",
      "lib/validatious-on-rails.rb",
+     "lib/validatious-on-rails/controller.rb",
      "lib/validatious-on-rails/helpers.rb",
      "lib/validatious-on-rails/model_validations.rb",
      "lib/validatious-on-rails/rails.rb",
@@ -33,6 +38,7 @@ Gem::Specification.new do |s|
      "lib/validatious-on-rails/validatious/validators/exclusion_validator.rb",
      "lib/validatious-on-rails/validatious/validators/format_validator.rb",
      "lib/validatious-on-rails/validatious/validators/inclusion_validator.rb",
+     "lib/validatious-on-rails/validatious/validators/invalid_validator.rb",
      "lib/validatious-on-rails/validatious/validators/length/is_validator.rb",
      "lib/validatious-on-rails/validatious/validators/length/maximum_validator.rb",
      "lib/validatious-on-rails/validatious/validators/length/minimum_validator.rb",
@@ -45,8 +51,11 @@ Gem::Specification.new do |s|
      "lib/validatious-on-rails/validatious/validators/numericality/odd_validator.rb",
      "lib/validatious-on-rails/validatious/validators/numericality/only_integer_validator.rb",
      "lib/validatious-on-rails/validatious/validators/presence_validator.rb",
+     "lib/validatious-on-rails/validatious/validators/remote_client_validator.rb",
+     "lib/validatious-on-rails/validatious/validators/uniqueness_validator.rb",
      "rails/init.rb",
      "test/test_helper.rb",
+     "test/validatious_on_rails/controller_test.rb",
      "test/validatious_on_rails/helpers_test.rb",
      "test/validatious_on_rails/model_validations_test.rb",
      "test/validatious_on_rails/rails/action_view_helpers_test.rb",
@@ -55,11 +64,16 @@ Gem::Specification.new do |s|
   ]
   s.files = [
     "Rakefile",
+     "app/controllers/validates_controller.rb",
+     "config/routes.rb",
+     "generators/validatious/templates/XMLHttpRequest.js",
      "generators/validatious/templates/initializer.rb",
+     "generators/validatious/templates/v2.config.js",
+     "generators/validatious/templates/v2.rails.js",
      "generators/validatious/templates/v2.standalone.full.min.js",
-     "generators/validatious/templates/validatious.config.js",
      "generators/validatious/validatious_generator.rb",
      "lib/validatious-on-rails.rb",
+     "lib/validatious-on-rails/controller.rb",
      "lib/validatious-on-rails/helpers.rb",
      "lib/validatious-on-rails/model_validations.rb",
      "lib/validatious-on-rails/rails.rb",
@@ -74,6 +88,7 @@ Gem::Specification.new do |s|
      "lib/validatious-on-rails/validatious/validators/exclusion_validator.rb",
      "lib/validatious-on-rails/validatious/validators/format_validator.rb",
      "lib/validatious-on-rails/validatious/validators/inclusion_validator.rb",
+     "lib/validatious-on-rails/validatious/validators/invalid_validator.rb",
      "lib/validatious-on-rails/validatious/validators/length/is_validator.rb",
      "lib/validatious-on-rails/validatious/validators/length/maximum_validator.rb",
      "lib/validatious-on-rails/validatious/validators/length/minimum_validator.rb",
@@ -86,8 +101,11 @@ Gem::Specification.new do |s|
      "lib/validatious-on-rails/validatious/validators/numericality/odd_validator.rb",
      "lib/validatious-on-rails/validatious/validators/numericality/only_integer_validator.rb",
      "lib/validatious-on-rails/validatious/validators/presence_validator.rb",
+     "lib/validatious-on-rails/validatious/validators/remote_client_validator.rb",
+     "lib/validatious-on-rails/validatious/validators/uniqueness_validator.rb",
      "rails/init.rb",
      "test/test_helper.rb",
+     "test/validatious_on_rails/controller_test.rb",
      "test/validatious_on_rails/helpers_test.rb",
      "test/validatious_on_rails/model_validations_test.rb",
      "test/validatious_on_rails/rails/action_view_helpers_test.rb",
@@ -101,6 +119,7 @@ Gem::Specification.new do |s|
   s.summary = %q{Rails plugin that maps model validations to class names on form elements to integrate with Validatious.}
   s.test_files = [
     "test/test_helper.rb",
+     "test/validatious_on_rails/controller_test.rb",
      "test/validatious_on_rails/helpers_test.rb",
      "test/validatious_on_rails/model_validations_test.rb",
      "test/validatious_on_rails/rails/action_view_helpers_test.rb",

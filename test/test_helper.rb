@@ -33,6 +33,9 @@ extend RR::Adapters::RRMethods
 
 require 'validatious-on-rails'
 
+require File.expand_path(File.join(File.dirname(__FILE__), *%w[.. app controllers validates_controller]))
+require File.expand_path(File.join(File.dirname(__FILE__), *%w[.. config routes]))
+
 # TODO: Should extend Rails validators with this - to test respond_to.
 module ActiveRecord
   module Validations
@@ -64,6 +67,7 @@ build_model :bogus_items do
   string :field_without_client_side_validations
   
   validates_presence_of :name, :body, :variant, :file_path, :dummie
+  validates_uniqueness_of :name
   validates_confirmation_of :name
   validates_acceptance_of :signed, :accept => true
   validates_format_of :url,
@@ -85,6 +89,10 @@ end
 # if it's tested outside of a Rails project. So, just set it to something random.
 #
 RAILS_ROOT = File.join(File.dirname(__FILE__)) unless defined?(RAILS_ROOT)
+
+# To show debug messages in test output, set this to true.
+#
+::ValidatiousOnRails.verbose = false
 
 #
 # Log file for testing only.

@@ -15,13 +15,14 @@
 #     }
 #   });
 # 
+# Reference: http://validatious.org/learn/features/core/custom_validators
+#
 module ValidatiousOnRails
   module Validatious
+
+    ValidatorError = ::Class.new(::StandardError) unless defined?(ValidatorError)
+
     class Validator
-
-      # Reference: http://validatious.org/learn/features/core/custom_validators
-
-      ValidatorError = ::Class.new(::StandardError) unless defined?(ValidatorError)
 
       attr_accessor :name
       attr_writer   :message,
@@ -30,7 +31,7 @@ module ValidatiousOnRails
                     :accept_empty,
                     :fn,
                     :args
-
+                    
       def initialize(name, *args)
         raise ValidatorError, "Parameter :name is required for an Validatious validator" unless name.present?
         self.name = name
@@ -84,6 +85,7 @@ module ValidatiousOnRails
         @aliases ||= []
       end
 
+      
       # Decides if the validator should pass (return true) when the value is empty.
       # This is usually a good idea because you can leave it up to the required validator
       # to specifically check for emptiness. One benefit of this approach is more 
@@ -122,10 +124,6 @@ module ValidatiousOnRails
           value << "\nreturn true;" unless value =~ /return (.+)/i
           "function(field, value, params) {#{value}}"
         end
-      end
-
-      def fn
-        (@fn ||= "function(field, value, params) {return true;}").gsub(/[\n\t]/, '')
       end
 
       def to_js
@@ -191,8 +189,6 @@ module ValidatiousOnRails
         # Generate proper error message using explicit message, or I18n-lookup.
         # Core validations gets treated by Rails - unless explicit message is set that is.
         #
-        # NOTE: Might refactor this into a even more abstract class/module.
-        #
         def generate_message(validation, *args)
           options = args.extract_options!
           explicit_message = validation.options[:message]
@@ -218,31 +214,13 @@ module ValidatiousOnRails
           message.gsub(/\{\{/, '${').gsub(/\}\}/, '}')
         end
 
-        # Rails core validation messages:
-        #
-        # messages:
-        #   inclusion: "is not included in the list"
-        #   exclusion: "is reserved"
-        #   invalid: "is invalid"
-        #   confirmation: "doesn't match confirmation"
-        #   accepted: "must be accepted"
-        #   empty: "can't be empty"
-        #   blank: "can't be blank"
-        #   too_long: "is too long (maximum is {{count}} characters)"
-        #   too_short: "is too short (minimum is {{count}} characters)"
-        #   wrong_length: "is the wrong length (should be {{count}} characters)"
-        #   taken: "has already been taken"
-        #   not_a_number: "is not a number"
-        #   greater_than: "must be greater than {{count}}"
-        #   greater_than_or_equal_to: "must be greater than or equal to {{count}}"
-        #   equal_to: "must be equal to {{count}}"
-        #   less_than: "must be less than {{count}}"
-        #   less_than_or_equal_to: "must be less than or equal to {{count}}"
-        #   odd: "must be odd"
-        #   even: "must be even"
-        #   record_invalid: "is invalid"
-
       end
+
+      protected
+        
+        def generic_name
+          self.class.name.split('::').last.underscore.gsub(/_validator$/, '')
+        end
 
     end
   end
