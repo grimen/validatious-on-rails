@@ -3,7 +3,6 @@
 == Should
 
 * Better validator naming convention: UniquenessValidator => UniquenessOfValidator, etc.
-* validatious-on-rails.js-helpers should be namespaced, i.e. v2.Rails.xxx, or similar
 * Validator API: Custom validators (client-side + remote)
 * Form Input Helper API: Custom form helpers (non-"core helper" based)
 * Make Rails core validations basic options fully supported
