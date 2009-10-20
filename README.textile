@@ -96,7 +96,7 @@ h3. 2. Include the javascripts in your layout
 <pre>
 <head>
   ...
-  <%= javascript_include_tag 'v2.standalone.full.min', 'validatious.config', 'XMLHttpRequest', 'validatious-on-rails' %>
+  <%= javascript_include_tag 'XMLHttpRequest' ,'v2.standalone.full.min', 'v2.config', 'v2.rails' %>
   <%= javascript_for_validatious %>
   ...
 </head>
@@ -116,6 +116,7 @@ Consider you got some model validations:
 <pre>
 class Post < ActiveRecord::Base
   validates_presence_of :title
+  validates_uniqueness_of :title
   validates_length_of :title, :within => 3..20
   validates_length_of :body, :within => 3..20, :client_side => false
 end
