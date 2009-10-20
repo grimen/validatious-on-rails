@@ -104,7 +104,8 @@ h3. 2. Include the javascripts in your layout
 
 *Notes:*
 
-# @validatious.config.js@ is optional, but contains some default Valdiatious-configuration that easily can be tweaked or extended - see "Validatious documentation":http://validatious.org/learn.
+# @v2.config.js@ - optional, but contains some default Valdiatious-configuration that easily can be tweaked or extended - see "Validatious documentation":http://validatious.org/learn.
+# @v2.rails.js@ - in theory optional, but you want it. Helpers to get remote AJAX validations to work without any configuration.
 # FYI, this is where custom validations gets inserted. No worries; the plugin is doing the magic!
 
 h2. Usage
