@@ -57,15 +57,15 @@ build_model :bogus_items do
   string :email
   string :file_path
   string :dummie
-  
+
   text    :body
   integer :variant
   boolean :signed
-  
+
   string :field_with_defaults
   string :field_with_client_side_validations
   string :field_without_client_side_validations
-  
+
   validates_presence_of :name, :body, :variant, :file_path, :dummie
   validates_uniqueness_of :name
   validates_confirmation_of :name
@@ -75,11 +75,12 @@ build_model :bogus_items do
     :name => 'url', :message => 'Invalid URL.'
   validates_inclusion_of :variant, :in => (1..5).to_a
   validates_exclusion_of :variant, :in => (6..10).to_a
-  
+  validates_length_of :url, :minimum => 10 
+
   validates_presence_of :field_with_defaults
   validates_presence_of :field_with_client_side_validations, :client_side => true
   validates_presence_of :field_without_client_side_validations, :client_side => false
-  
+
   # TODO: Test: If this is a validator makro, then it should not cause any issues.
   validates_craziness_of :name
 end

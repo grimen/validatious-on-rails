@@ -10,7 +10,7 @@ module ValidatiousOnRails
           name = 'numericality-less-than-or-equal-to'
           super name, options
           self.params = ['count']
-          self.message = self.class.generate_message(validation, :key => :less_than_or_equal_to)
+          self.message = self.class.generate_message(validation, :key => :less_than_or_equal_to, :count => '{{count}}')
           self.accept_empty = validation.options[:allow_nil]
           self.fn = %{
             value = +value;

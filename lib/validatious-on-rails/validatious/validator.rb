@@ -189,9 +189,10 @@ module ValidatiousOnRails
         # Generate proper error message using explicit message, or I18n-lookup.
         # Core validations gets treated by Rails - unless explicit message is set that is.
         #
-        def generate_message(validation, *args)
+        def generate_message(*args)
           options = args.extract_options!
-          explicit_message = validation.options[:message]
+          validation = args.shift if args.first.is_a?(::ActiveRecord::Reflection::MacroReflection)
+          explicit_message = validation.options[:message] if validation
           key = options.delete(:key) || (explicit_message if explicit_message.is_a?(::Symbol))
 
           message = if key.present?
@@ -199,7 +200,7 @@ module ValidatiousOnRails
               :default => "activerecord.errors.messages.#{key}"))
           elsif explicit_message.is_a?(::String)
             explicit_message
-          else
+          elsif validation.present?
             unless ::ValidatiousOnRails::ModelValidations::CORE_VALIDATIONS.include?(validation.macro.to_sym)
               # No core validation, try to make up a descent I18n lookup path using conventions.
               key ||= validation.macro.to_s.tr('-', '_').gsub(/^validates?_/, '').gsub(/_of/, '').to_sym

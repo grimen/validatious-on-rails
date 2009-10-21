@@ -57,4 +57,17 @@ class ValidatorTest < ::ActiveSupport::TestCase
     assert_equal expected_v2_validator.gsub(/[\n\s\t]/, ''), @custom_validator.to_js.gsub(/[\n\s\t]/, '')
   end
 
+  context "Message" do
+    test "I18n lookup" do
+      validator_klass = ValidatiousOnRails::Validatious::Validator
+      # For some reason can't raise this in tests. =S
+      # assert_raise(::I18n::MissingInterpolationArgument) {
+      #    validator_klass.generate_message :key => :too_short
+      #   }
+      assert_nothing_raised(::I18n::MissingInterpolationArgument) {
+          validator_klass.generate_message :key => :too_short, :count => '{{count}}'
+        }
+    end
+  end
+
 end

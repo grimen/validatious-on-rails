@@ -11,7 +11,7 @@ module ValidatiousOnRails
           name = 'length-is'
           super name, options
           self.params = ['count']
-          self.message = self.class.generate_message(validation, :key => :wrong_length)
+          self.message = self.class.generate_message(validation, :key => :wrong_length, :count => '{{count}}')
           self.accept_empty = validation.options[:allow_nil]
           self.fn = %{
             #{self.class.validate_blank(validation)}

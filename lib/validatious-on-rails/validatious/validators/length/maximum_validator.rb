@@ -11,7 +11,7 @@ module ValidatiousOnRails
           name = 'length-maximum'
           super name, options
           self.params = ['count']
-          self.message = self.class.generate_message(validation, :key => :too_long)
+          self.message = self.class.generate_message(validation, :key => :too_long, :count => '{{count}}')
           self.accept_empty = validation.options[:allow_nil]
           self.fn = %{
             #{self.class.validate_blank(validation)}
