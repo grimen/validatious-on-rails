@@ -70,7 +70,14 @@ module ValidatiousOnRails
       def from_active_record(object_or_class, attribute_method)
         validators = []
         begin
-          klass = object_or_class.to_s.classify.constantize
+          klass = if [::String, ::Symbol].any? { |c| object_or_class.is_a?(c) }
+                    object_or_class.to_s.classify.constantize
+                  elsif object_or_class.is_a?(::Object)
+                    object_or_class.class
+                  else
+                    object_or_class
+                  end
+          return validators if klass.is_a?(::ActiveRecord::Base)
         rescue
           ::ValidatiousOnRails.log "Missing constant: #{object_or_class}", :debug
           return validators
