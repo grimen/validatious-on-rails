@@ -77,7 +77,8 @@ module ValidatiousOnRails
                   else
                     object_or_class
                   end
-          return validators if klass.is_a?(::ActiveRecord::Base)
+          # FIXME: Forgot how to check this on the class instead of an instance of the class.
+          return validators unless klass.new.is_a?(::ActiveRecord::Base)
         rescue
           ::ValidatiousOnRails.log "Missing constant: #{object_or_class}", :debug
           return validators
