@@ -18,11 +18,14 @@ v2.Rails.performRemoteValidation = function performRemoteValidation(name, field,
   var field_element = field.__elements[0];
   var url = v2.Rails.remoteValidationUrlFor(name, field_element, value, params);
 
+  v2.Rails.initializeLastResult(name, field_element.id);
+
   var xmlHttpRequest = new XMLHttpRequest;
   xmlHttpRequest.open('GET', url, true);
   xmlHttpRequest.onreadystatechange = function() {
     if (this.readyState == XMLHttpRequest.DONE) {
       var validationResult = (this.responseText == 'true' || this.responseText == '1') ? true : false;
+      v2.Rails.lastRemoteValidationResult[name][field_element.id] = validationResult;
       /* console.log('Validation result: ' + validationResult); */
 
       /* Get all validators for this field, except the current validator. */
@@ -36,7 +39,23 @@ v2.Rails.performRemoteValidation = function performRemoteValidation(name, field,
     };
   };
   xmlHttpRequest.send(null);
-  return true;
+  return v2.Rails.lastRemoteValidationResult[name][field_element.id];
+};
+
+/**
+ *  Initialize data structure for holding info about last remote AJAX validation result.
+ *  We need this to make Validatious play well with remote validations.
+ */
+v2.Rails.initializeLastResult = function initializeLastResult(validator_name, field_id) {
+  if (typeof v2.Rails.lastRemoteValidationResult == 'undefined') {
+    v2.Rails.lastRemoteValidationResult = new Array();
+  }
+  if (typeof v2.Rails.lastRemoteValidationResult[validator_name] == 'undefined') {
+    v2.Rails.lastRemoteValidationResult[validator_name] = new Array();
+  };
+  if (typeof v2.Rails.lastRemoteValidationResult[validator_name][field_id] == 'undefined') {
+    v2.Rails.lastRemoteValidationResult[validator_name][field_id] = false;
+  };
 };
 
 /** 
