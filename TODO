@@ -2,7 +2,8 @@
 
 == Should
 
-* Better validator naming convention: UniquenessValidator => UniquenessOfValidator, etc.
+* Fix the validates_uniqueness_of-bugs:
+  * Make it impossible to submit the form when this validation haven't passed
 * Validator API: Custom validators (client-side + remote)
 * Form Input Helper API: Custom form helpers (non-"core helper" based)
 * Make Rails core validations basic options fully supported

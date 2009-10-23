@@ -34,7 +34,7 @@ module ValidatiousOnRails
 
         if validator_klass.present?
           # Perform validation.
-          if record = ((params[:id].present? && params[:id] > 0) ? record_klass.find(params[:id]) : record_klass.new)
+          if record = (((params[:id].present? && params[:id].to_i > 0) ? record_klass.find(params[:id]) : record_klass.new) rescue nil)
             validation_result = validator_klass.perform_validation(record, params[:attribute].to_sym, params[:value], params)
             ::ValidatiousOnRails.log "#{validator_klass} validation result: #{validation_result.to_s.upcase}. #{record_klass}##{params[:attribute]} => #{params[:value].inspect}", :info
             # validation_result = (validation_result ? 1 : 0)
