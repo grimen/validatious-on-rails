@@ -230,26 +230,6 @@ class FormHelperTest < ::ActionView::TestCase
     # TODO: The other validators...
   end
 
-  # TODO: Re-visit label - needed still?
-  context "label" do
-    test "regular" do
-      # Using helper
-      assert_equal "<label for=\"bogus_item_name\">Name</label>", label(:bogus_item, :name)
-    end
-    
-    test "with title" do
-      # Using helper
-      assert_equal "<label for=\"bogus_item_name\" title=\"craaazy\">Name</label>",
-                   label(:bogus_item, :name, nil, :title => "craaazy")
-    end
-    
-    test "without title" do
-      # Using helper
-      assert_equal "<label for=\"bogus_item_name\" title=\"Name\">Your name</label>",
-                   label(:bogus_item, :name, "Your name")
-    end
-  end
-
   private
 
     def protect_against_forgery?
