@@ -8,7 +8,7 @@ module ValidatiousOnRails
       def initialize(validation, options = {})
         name = 'acceptance-accept'
         super name, options
-        self.message = self.class.generate_message(validation)
+        self.message = self.class.generate_message(validation, :key => :accepted)
         self.accept_empty = validation.options[:allow_nil]
         self.fn = %{
           var accept_value = params[0] + '';
