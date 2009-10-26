@@ -156,12 +156,6 @@ module ValidatiousOnRails
       class << self
 
         def truncate_whitespace(string)
-          # string.gsub(/[\n\t]/, ' ').
-          #             gsub(/\s*\{\s*/, '{').
-          #             gsub(/\s*\}\s*/, '}').
-          #             gsub(/\s*;\s*/, ';').
-          #             gsub(/\s*,\s+/, ', ').
-          #             gsub(/:\s+/, ': ')
           string.gsub(/[\n]+[\s]+/, '')
         end
 
