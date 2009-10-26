@@ -14,7 +14,7 @@ module ValidatiousOnRails
           self.message = self.class.generate_message(validation, :key => :too_long, :count => '{{count}}')
           self.accept_empty = validation.options[:allow_nil]
           self.fn = %{
-            #{self.class.validate_blank(validation)}
+            #{self.class.validate_blank(validation.options[:allow_blank])}
             value += '';
             return value.length <= params[0];
           }

@@ -159,10 +159,10 @@ module ValidatiousOnRails
           string.gsub(/[\n]+[\s]+/, '')
         end
 
-        def validate_blank(validation)
+        def validate_blank(allow_blank)
           %{
             var isBlank = /^[#{'\s\t\n'}]*$/.test(value);
-            if (#{validation.options[:allow_blank] == true} && isBlank) {
+            if (#{allow_blank == true} && isBlank) {
               return true;
             };
           }

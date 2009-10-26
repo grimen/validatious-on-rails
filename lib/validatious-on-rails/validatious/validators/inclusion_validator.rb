@@ -13,7 +13,7 @@ module ValidatiousOnRails
         self.message = self.class.generate_message(validation)
         self.accept_empty = validation.options[:allow_nil]
         self.fn = %{
-          #{self.class.validate_blank(validation)}
+          #{self.class.validate_blank(validation.options[:allow_blank])}
           var inclusion_values = #{validation.options[:in].to_json};
           for (var i = 0; i < inclusion_values.length; i++) {
             if (inclusion_values[i] == value) { return true; }

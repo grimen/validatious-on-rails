@@ -12,7 +12,7 @@ module ValidatiousOnRails
         self.accept_empty = false
         # Identical to Validatious "required" validator, but we want Rails I18n message support, so...
         self.fn = %{
-          return !v2.empty(value) && !(typeof value.length !== 'undefined' && value.length === 0);
+          return !v2.empty(value) && !(typeof value.length !== 'undefined' && value.length === 0) && !/^[#{'\s\t\n'}]*$/.test(value);
         }
         self.fn.freeze
       end
