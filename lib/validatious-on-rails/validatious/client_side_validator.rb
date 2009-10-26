@@ -12,7 +12,7 @@ module ValidatiousOnRails
       # Override default Validator-fn, with default a ClientSideValidator-fn.
       #
       def fn
-        self.class.truncate_whitespace(@fn ||= "function(field, value, params) { return true; }")
+        self.class.truncate_whitespace(@fn ||= "function(field, value, params){return true;}")
       end
 
     end

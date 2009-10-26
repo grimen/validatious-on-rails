@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Jonas Grimfelt", "Christian Johansen"]
-  s.date = %q{2009-10-23}
+  s.date = %q{2009-10-26}
   s.description = %q{Rails plugin that maps model validations to class names on form elements to integrate with Validatious.}
   s.email = %q{grimen@gmail.com}
   s.extra_rdoc_files = [
@@ -38,7 +38,6 @@ Gem::Specification.new do |s|
      "lib/validatious-on-rails/validatious/validators/exclusion_validator.rb",
      "lib/validatious-on-rails/validatious/validators/format_validator.rb",
      "lib/validatious-on-rails/validatious/validators/inclusion_validator.rb",
-     "lib/validatious-on-rails/validatious/validators/invalid_validator.rb",
      "lib/validatious-on-rails/validatious/validators/length/is_validator.rb",
      "lib/validatious-on-rails/validatious/validators/length/maximum_validator.rb",
      "lib/validatious-on-rails/validatious/validators/length/minimum_validator.rb",
@@ -51,7 +50,6 @@ Gem::Specification.new do |s|
      "lib/validatious-on-rails/validatious/validators/numericality/odd_validator.rb",
      "lib/validatious-on-rails/validatious/validators/numericality/only_integer_validator.rb",
      "lib/validatious-on-rails/validatious/validators/presence_validator.rb",
-     "lib/validatious-on-rails/validatious/validators/remote_client_validator.rb",
      "lib/validatious-on-rails/validatious/validators/uniqueness_validator.rb",
      "rails/init.rb",
      "test/test_helper.rb",
@@ -88,7 +86,6 @@ Gem::Specification.new do |s|
      "lib/validatious-on-rails/validatious/validators/exclusion_validator.rb",
      "lib/validatious-on-rails/validatious/validators/format_validator.rb",
      "lib/validatious-on-rails/validatious/validators/inclusion_validator.rb",
-     "lib/validatious-on-rails/validatious/validators/invalid_validator.rb",
      "lib/validatious-on-rails/validatious/validators/length/is_validator.rb",
      "lib/validatious-on-rails/validatious/validators/length/maximum_validator.rb",
      "lib/validatious-on-rails/validatious/validators/length/minimum_validator.rb",
@@ -101,7 +98,6 @@ Gem::Specification.new do |s|
      "lib/validatious-on-rails/validatious/validators/numericality/odd_validator.rb",
      "lib/validatious-on-rails/validatious/validators/numericality/only_integer_validator.rb",
      "lib/validatious-on-rails/validatious/validators/presence_validator.rb",
-     "lib/validatious-on-rails/validatious/validators/remote_client_validator.rb",
      "lib/validatious-on-rails/validatious/validators/uniqueness_validator.rb",
      "rails/init.rb",
      "test/test_helper.rb",

@@ -45,11 +45,11 @@ class ValidatorTest < ::ActiveSupport::TestCase
 
     expected_v2_validator = 'v2.Validator.add({
       acceptEmpty: false,
-      aliases: ["some", "aliases"],
+      aliases: ["some","aliases"],
       fn: function(field, value, params){return false;},
       message: "Fail, fail, fail!",
       name: "dummie",
-      params: ["some", "params"]
+      params: ["some","params"]
     });'
 
     assert_equal @custom_validator.name, @custom_validator.to_class
@@ -69,21 +69,21 @@ class ValidatorTest < ::ActiveSupport::TestCase
         }
     end
   end
-  
+
   context "JavaScript" do
     test "truncation of whitespace characters" do
       duck_validator = ::ValidatiousOnRails::Validatious::ClientSideValidator.new('duck')
       # Well... =)
       duck_validator.fn = %{
         var duck_says = "Quack!";
-        
+
         if (duck_says != "Quack!") {
-          return (duck_says == "Quack! Quack!");
+          return (duck_says == "Quack! ${{interpolation}} Quack!");
         }
-        
+
         return true;
       }
-      compact_fn = %{function(field, value, params){var duck_says = "Quack!";if (duck_says != "Quack!"){return (duck_says == "Quack! Quack!");}return true;}}
+      compact_fn = %{function(field, value, params){var duck_says = "Quack!";if (duck_says != "Quack!") {return (duck_says == "Quack! ${{interpolation}} Quack!");}return true;}}
       assert_equal(compact_fn, duck_validator.fn)
     end
   end

@@ -224,7 +224,7 @@ class FormHelperTest < ::ActionView::TestCase
       assert_has_class 'url some_other_class', form_for(@bogus_item, :url => '/bogus_items') { |f|
           concat f.text_field(:url, :class => 'some_other_class')
         }
-      assert_match /v2.Validator\.add\(.*\{.*"url"/, @content_for_validatious
+      assert_match /v2.Validator\.add\(\{.*\"url\"/m, @content_for_validatious
     end
     
     # TODO: The other validators...

@@ -35,23 +35,23 @@ module ValidatiousOnRails
         def perform_validation(record, attribute_name, value, params = {})
           return true if record.blank?
           record.send :"#{attribute_name}=", value
-          
+
           if record.valid?
             ValidatiousOnRails.log "Validation: SUCCESS"
             true
           else
             return true if record.errors[attribute_name.to_sym].blank?
-            
+
             # TODO: Refactor this when "the better" namin convention is used (see TODO).
             validation_macro = ("validates_%s" % self.name.split('::').last.underscore.gsub(/_validator$/, ''))
             validation = record.class.reflect_on_validations_for(attribute_name.to_sym).select { |v|
                 v.macro.to_s == validation_macro || v.macro.to_s == "#{validation_macro}_of"
               }.first
             return true if validation.blank?
-            
+
             # {{variable}} => .*
             validation_error_message = self.new(validation).message.gsub(/\{\{.*\}\}/, '.*')
-            
+
             # Ugly, but probably the only way (?) to identify a certain error without open
             # up rails core validation methods - not scalable.
             is_invalid = record.errors[attribute_name.to_sym].any? do |error_message|

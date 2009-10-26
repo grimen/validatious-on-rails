@@ -122,7 +122,7 @@ module ValidatiousOnRails
           value ||= ''
           # If no function specified yet, always validate true by default.
           value << "\nreturn true;" unless value =~ /return (.+)/i
-          "function(field, value, params) {#{value}}"
+          "function(field, value, params){#{value}}"
         end
       end
 
@@ -140,7 +140,7 @@ module ValidatiousOnRails
         js_options = options.keys.collect(&:to_s).sort.collect { |k|
             v = options[k.to_sym]
             ("#{k}: #{k.to_sym == :fn ? v : v.to_json}" if [false, true].include?(v) || v.present?)
-          }.compact.join(', ')
+          }.compact.join(',')
         self.class.truncate_whitespace("v2.Validator.add({#{js_options}});")
       end
       alias :to_s :to_js
@@ -156,12 +156,18 @@ module ValidatiousOnRails
       class << self
 
         def truncate_whitespace(string)
-          string.gsub(/[\n\t]/, ' ').gsub(/\s*\{\s*/, '{').gsub(/\s*\}\s*/, '}').gsub(/\s*;\s*/, ';').gsub(/,\s*/, ', ').gsub(/:\s*/, ': ')
+          # string.gsub(/[\n\t]/, ' ').
+          #             gsub(/\s*\{\s*/, '{').
+          #             gsub(/\s*\}\s*/, '}').
+          #             gsub(/\s*;\s*/, ';').
+          #             gsub(/\s*,\s+/, ', ').
+          #             gsub(/:\s+/, ': ')
+          string.gsub(/[\n]+[\s]+/, '')
         end
 
         def validate_blank(validation)
           %{
-            var isBlank = /^[\s\t\n]*$/.test(value);
+            var isBlank = /^[#{'\s\t\n'}]*$/.test(value);
             if (#{validation.options[:allow_blank] == true} && isBlank) {
               return true;
             };
