@@ -17,11 +17,11 @@ module ValidatiousOnRails
       #   2. Always return true, callback-function should perform the actual client side validation.
       #
       def fn
-        (@fn ||= %{
+        self.class.truncate_whitespace(@fn ||= %{
             function(field, value, params) {
               return !!v2.Rails.performRemoteValidation('#{self.name}', field, value, params, '#{self.message}');
             }
-          }).gsub(/[\n\t]/, '')
+          })
       end
 
       class << self

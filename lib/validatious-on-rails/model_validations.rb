@@ -52,7 +52,7 @@ module ValidatiousOnRails
           validator_classes << v.to_class
         end
         classes = validator_classes.compact.join(' ').strip
-        js = validator_js.compact.join(' ').strip
+        js = validator_js.compact.join("\n").strip
         options.merge!(:class => (classes unless classes.blank?), :js => (js unless js.blank?))
       end
 

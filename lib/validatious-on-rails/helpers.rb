@@ -12,7 +12,7 @@ module ValidatiousOnRails
     def attach_validator_for(object_name, method, options = {})
       options = ::ValidatiousOnRails::ModelValidations.options_for(object_name, method, options, @content_for_validatious)
       custom_js = options.delete(:js)
-      content_for :validatious, custom_js if custom_js.present?
+      content_for :validatious, custom_js << "\n" if custom_js.present?
       options
     end
 

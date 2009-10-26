@@ -141,7 +141,7 @@ module ValidatiousOnRails
             v = options[k.to_sym]
             ("#{k}: #{k.to_sym == :fn ? v : v.to_json}" if [false, true].include?(v) || v.present?)
           }.compact.join(', ')
-        "v2.Validator.add({#{js_options}});"
+        self.class.truncate_whitespace("v2.Validator.add({#{js_options}});")
       end
       alias :to_s :to_js
 
@@ -154,6 +154,10 @@ module ValidatiousOnRails
       end
 
       class << self
+
+        def truncate_whitespace(string)
+          string.gsub(/[\n\t]/, ' ').gsub(/\s*\{\s*/, '{').gsub(/\s*\}\s*/, '}').gsub(/\s*;\s*/, ';').gsub(/,\s*/, ', ').gsub(/:\s*/, ': ')
+        end
 
         def validate_blank(validation)
           %{
