@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{validatious-on-rails}
-  s.version = "0.4.5"
+  s.version = "0.4.6"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Jonas Grimfelt", "Christian Johansen"]
-  s.date = %q{2009-10-26}
+  s.date = %q{2009-10-29}
   s.description = %q{Rails plugin that maps model validations to class names on form elements to integrate with Validatious.}
   s.email = %q{grimen@gmail.com}
   s.extra_rdoc_files = [
@@ -33,11 +33,11 @@ Gem::Specification.new do |s|
      "lib/validatious-on-rails/validatious/remote_validator.rb",
      "lib/validatious-on-rails/validatious/validator.rb",
      "lib/validatious-on-rails/validatious/validators.rb",
-     "lib/validatious-on-rails/validatious/validators/acceptance_validator.rb",
-     "lib/validatious-on-rails/validatious/validators/confirmation_validator.rb",
-     "lib/validatious-on-rails/validatious/validators/exclusion_validator.rb",
-     "lib/validatious-on-rails/validatious/validators/format_validator.rb",
-     "lib/validatious-on-rails/validatious/validators/inclusion_validator.rb",
+     "lib/validatious-on-rails/validatious/validators/acceptance_accept_validator.rb",
+     "lib/validatious-on-rails/validatious/validators/confirmation_of_validator.rb",
+     "lib/validatious-on-rails/validatious/validators/exclusion_in_validator.rb",
+     "lib/validatious-on-rails/validatious/validators/format_with_validator.rb",
+     "lib/validatious-on-rails/validatious/validators/inclusion_in_validator.rb",
      "lib/validatious-on-rails/validatious/validators/length/is_validator.rb",
      "lib/validatious-on-rails/validatious/validators/length/maximum_validator.rb",
      "lib/validatious-on-rails/validatious/validators/length/minimum_validator.rb",
@@ -81,11 +81,11 @@ Gem::Specification.new do |s|
      "lib/validatious-on-rails/validatious/remote_validator.rb",
      "lib/validatious-on-rails/validatious/validator.rb",
      "lib/validatious-on-rails/validatious/validators.rb",
-     "lib/validatious-on-rails/validatious/validators/acceptance_validator.rb",
-     "lib/validatious-on-rails/validatious/validators/confirmation_validator.rb",
-     "lib/validatious-on-rails/validatious/validators/exclusion_validator.rb",
-     "lib/validatious-on-rails/validatious/validators/format_validator.rb",
-     "lib/validatious-on-rails/validatious/validators/inclusion_validator.rb",
+     "lib/validatious-on-rails/validatious/validators/acceptance_accept_validator.rb",
+     "lib/validatious-on-rails/validatious/validators/confirmation_of_validator.rb",
+     "lib/validatious-on-rails/validatious/validators/exclusion_in_validator.rb",
+     "lib/validatious-on-rails/validatious/validators/format_with_validator.rb",
+     "lib/validatious-on-rails/validatious/validators/inclusion_in_validator.rb",
      "lib/validatious-on-rails/validatious/validators/length/is_validator.rb",
      "lib/validatious-on-rails/validatious/validators/length/maximum_validator.rb",
      "lib/validatious-on-rails/validatious/validators/length/minimum_validator.rb",

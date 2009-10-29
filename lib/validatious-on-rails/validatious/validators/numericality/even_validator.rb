@@ -6,16 +6,15 @@ module ValidatiousOnRails
     module Numericality
       class EvenValidator < ClientSideValidator
 
-        def initialize(validation, options = {})
-          name = 'numericality-even'
-          super name, options
-          self.message = self.class.generate_message(validation, :key => :even)
-          self.accept_empty = validation.options[:allow_nil]
+        def initialize(*args)
+          super
+          self.message = self.class.generate_message(:even)
+          self.params = %w[allow_nil]
           self.fn = %{
+            #{self.class.handle_nil(0)}
             value = +value;
             return (value % 2) == 0;
           }
-          self.fn.freeze
         end
 
       end

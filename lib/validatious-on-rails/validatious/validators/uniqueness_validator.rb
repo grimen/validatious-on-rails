@@ -5,17 +5,10 @@ module ValidatiousOnRails
   module Validatious
     class UniquenessValidator < RemoteValidator
 
-      def initialize(validation, options = {})
+      def initialize(*args)
         super
-        self.accept_empty = false
-      end
-
-      class << self
-
-        def generate_message(validation)
-          super(validation, :key => :taken)
-        end
-
+        self.params = %w[]
+        self.message = self.class.generate_message(:blank)
       end
 
     end

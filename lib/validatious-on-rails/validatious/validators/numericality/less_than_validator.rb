@@ -6,17 +6,15 @@ module ValidatiousOnRails
     module Numericality
       class LessThanValidator < ClientSideValidator
 
-        def initialize(validation, options = {})
-          name = 'numericality-less-than'
-          super name, options
-          self.params = ['count']
-          self.message = self.class.generate_message(validation, :key => :less_than, :count => '{{count}}')
-          self.accept_empty = validation.options[:allow_nil]
+        def initialize(*args)
+          super
+          self.message = self.class.generate_message(:less_than, :count => '{{count}}')
+          self.params = %w[count allow_nil]
           self.fn = %{
+            #{self.class.handle_nil}
             value = +value;
             return value < params[0];
           }
-          self.fn.freeze
         end
 
       end

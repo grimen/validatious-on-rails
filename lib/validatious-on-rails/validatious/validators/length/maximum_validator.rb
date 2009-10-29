@@ -6,19 +6,16 @@ module ValidatiousOnRails
     module Length
       class MaximumValidator < ClientSideValidator
 
-        def initialize(validation, options = {})
-          name, alias_name = self.class.generate_name(validation, :maximum, validation.options[:maximum])
-          name = 'length-maximum'
-          super name, options
-          self.params = ['count']
-          self.message = self.class.generate_message(validation, :key => :too_long, :count => '{{count}}')
-          self.accept_empty = validation.options[:allow_nil]
+        def initialize(*args)
+          super
+          self.message = self.class.generate_message(:too_long, :count => '{{count}}')
+          self.params = %w[count allow_nil allow_blank]
           self.fn = %{
-            #{self.class.validate_blank(validation.options[:allow_blank])}
             value += '';
+            #{self.class.handle_nil}
+            #{self.class.handle_blank}
             return value.length <= params[0];
           }
-          self.fn.freeze
         end
 
       end

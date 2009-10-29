@@ -2,23 +2,27 @@
 
 == High
 
+* issue: Make messages not be bound to a specific validator, rather to a field. Tricky, but important.
+* tests: make them pass again after all the new changes.
 * validates_uniqueness_of/AJAX-bugs:
   * bug: Make it impossible to submit the form when this validation haven't passed
 
 == Medium
 
-* refactor: Validator#allow_blank => v2.Rails.js, and refactor the validators
+* bug: if same validation is specified on same field, and it's ajax/remote - it'll trigger an infinite calling loop. Even though it's avoidable, it's bad.
+* feature: Make any validation be validated remotely if requested, i.e. :ajax => true/false. Add "Remote"-prefix to affected classes. **
 * feature: Validator API: Custom validators (client-side + remote)
 * feature: Form Input Helper API: Custom form helpers (non-"core helper" based)
 * doc: Documentation of the above
 
 == Low
 
-* feature: Make Rails core validations basic options fully supported
+* feature: Make Rails core validations basic options fully supported **
   * :on => :create|:save|:update (not easy - RemoteValidator?)
   * :if/:unless => true|false (not easy - RemoteValidator?)
 * test: Tighten up the tests more.
 
 == Not sure
 
+* feature: Consider filter/masking of invalid input (e.g. validates_numericality_of).
 * feature: validates_association

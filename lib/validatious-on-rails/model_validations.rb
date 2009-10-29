@@ -129,8 +129,10 @@ module ValidatiousOnRails
       #
       def acceptance_of(validation)
         validators = []
+        validation.options[:allow_nil] = false if validation.options[:allow_nil].nil?
         validation.options[:accept] ||= '1' # Rails default.
-        validators << Validatious::AcceptanceValidator.new(validation, validation.options[:accept])
+        validators << Validatious::AcceptanceAcceptValidator.new(validation.options[:accept],
+          validation.options[:allow_nil])
       end
 
       # Resolve validation from validates_associated.
@@ -145,22 +147,19 @@ module ValidatiousOnRails
       # This validation is treated a bit differently in compare
       # to the other validations. See "from_active_record".
       #
-      # TODO: Message should be Rails I18n message, not Validatious.
-      #
       # NOTE: Not supported:
-      #   * :message - TODO: Explicit or Rails I18n/default message.
       #   * :on - TODO.
       #   * :if/:unless - hard to port all to client-side JavaScript
       #                   (impossible: procs, unaccessible valiables, etc.).
       #
       def confirmation_of(validation)
         validators = []
-        arg = unless validation.active_record.present?
+        field_id = unless validation.active_record.present?
           "#{validation.active_record.name.tableize.singularize.gsub('/', '_')}_#{validation.name}"
         else
           "#{validation.name}"
         end
-        validators << Validatious::ConfirmationValidator.new(validation, arg)
+        validators << Validatious::ConfirmationOfValidator.new(field_id)
       end
 
       # Resolve validation from validates_exclusion_of.
@@ -174,7 +173,10 @@ module ValidatiousOnRails
       #
       def exclusion_of(validation)
         validators = []
-        validators << Validatious::ExclusionValidator.new(validation)
+        validation.options[:allow_nil] = false if validation.options[:allow_nil].nil?
+        validation.options[:allow_blank] = false if validation.options[:allow_blank].nil?
+        validators << Validatious::ExclusionInValidator.new(validation.options[:in],
+          validation.options[:allow_nil], validation.options[:allow_blank])
       end
 
       # Resolve validation from validates_format_of.
@@ -189,7 +191,10 @@ module ValidatiousOnRails
       #
       def format_of(validation)
         validators = []
-        validators << Validatious::FormatValidator.new(validation)
+        validation.options[:allow_nil] = false if validation.options[:allow_nil].nil?
+        validation.options[:allow_blank] = false if validation.options[:allow_blank].nil?
+        validators << Validatious::FormatWithValidator.new(validation.options[:with],
+          validation.options[:allow_nil], validation.options[:allow_blank])
       end
 
       # Resolve validation from validates_inclusion_of.
@@ -203,7 +208,10 @@ module ValidatiousOnRails
       #
       def inclusion_of(validation)
         validators = []
-        validators << Validatious::InclusionValidator.new(validation)
+        validation.options[:allow_nil] = false if validation.options[:allow_nil].nil?
+        validation.options[:allow_blank] = false if validation.options[:allow_blank].nil?
+        validators << Validatious::InclusionInValidator.new(validation.options[:in],
+          validation.options[:allow_nil], validation.options[:allow_blank])
       end
 
       # Resolve validation from validates_length_of.
@@ -219,23 +227,30 @@ module ValidatiousOnRails
       #
       def length_of(validation)
         validators = []
+        validation.options[:allow_nil] = false if validation.options[:allow_nil].nil?
+        validation.options[:allow_blank] = false if validation.options[:allow_blank].nil?
 
         if validation.options[:is].present?
-          validators << Validatious::Length::IsValidator.new(validation, validation.options[:is])
+          validators << Validatious::Length::IsValidator.new(validation.options[:is],
+            (validation.options[:allow_nil] || false),
+            (validation.options[:allow_blank] || false))
         elsif [:in, :within, :minimum, :maximum].any? { |k| validation.options[k].present? }
           validation.options[:within] ||= validation.options[:in]
           validation.options[:minimum] ||= validation.options[:within].min rescue nil
           validation.options[:maximum] ||= validation.options[:within].max rescue nil
 
           if validation.options[:minimum].present?
-            validators << Validatious::Length::MinimumValidator.new(validation, validation.options[:minimum])
+            validators << Validatious::Length::MinimumValidator.new(validation.options[:minimum],
+              (validation.options[:allow_nil] || false),
+              (validation.options[:allow_blank] || false))
           end
 
           if validation.options[:maximum].present?
-            validators << Validatious::Length::MaximumValidator.new(validation, validation.options[:maximum])
+            validators << Validatious::Length::MaximumValidator.new(validation.options[:maximum],
+              (validation.options[:allow_nil] || false),
+              (validation.options[:allow_blank] || false))
           end
         end
-
         validators
       end
       alias :size_of :length_of
@@ -252,22 +267,28 @@ module ValidatiousOnRails
       #
       def numericality_of(validation)
         validators = []
+        validation.options[:allow_nil] = false if validation.options[:allow_nil].nil?
 
         if validation.options[:odd] && !validation.options[:even]
-          validators << Validatious::Numericality::OddValidator.new(validation)
+          validators << Validatious::Numericality::OddValidator.new(validation.options[:allow_nil])
         end
 
         if validation.options[:even] && !validation.options[:odd]
-          validators << Validatious::Numericality::EvenValidator.new(validation)
+          validators << Validatious::Numericality::EvenValidator.new(validation.options[:allow_nil])
         end
 
-        (validation.options.keys & [:only_integer, :equal_to, :less_than, :less_than_or_equal_to,
-          :greater_than, :greater_than_or_equal_to]).each { |v|
-            validator_klass = "::ValidatiousOnRails::Validatious::Numericality::#{v.to_s.classify}Validator".constantize
-            value = validation.options[v] if validation.options[v].is_a?(::Numeric)
-            validators << validator_klass.new(validation, value)
-          }
+        if validation.options[:only_integer]
+          validators << Validatious::Numericality::OnlyIntegerValidator.new(validation.options[:allow_nil])
+        end
 
+        (validation.options.keys & [:equal_to, :less_than, :less_than_or_equal_to,
+          :greater_than, :greater_than_or_equal_to]).each { |name|
+            validator_klass = "::ValidatiousOnRails::Validatious::Numericality::#{name.to_s.classify}Validator".constantize
+            value = validation.options[name]
+            if value.is_a?(::Numeric)
+              validators << validator_klass.new(validation.options[name], validation.options[:allow_nil])
+            end
+          }
         validators
       end
 
@@ -282,31 +303,23 @@ module ValidatiousOnRails
       #
       def presence_of(validation)
         validators = []
-        validators << Validatious::PresenceValidator.new(validation)
+        validators << Validatious::PresenceValidator.new
       end
 
       # Resolve validation from validates_uniqueness_of.
       #
-      # TODO: Implement using RemoteValidator.
-      #
       def uniqueness_of(validation)
         validators = []
-        validators << Validatious::UniquenessValidator.new(validation)
+        validators << Validatious::UniquenessValidator.new
       end
 
       # Unknown validations - if no matching custom validator is found/registered.
       #
       def method_missing(sym, *args, &block)
         ::ValidatiousOnRails.log "Unknown validation: #{sym}." <<
-          " No custom Validatious validator found for this validation makro. " <<
-          "Maybe you forgot to register you custom validation using: " <<
-          "ValidatiousOnRails::ModelValidations.add(<CustomValidationClass>)", :warn
+          " No custom Validatious validator found for this validation makro. ", :warn
         nil
       end
-
-      # TODO: Include custom validations here...
-      #
-      # @custom_validators.each { |validator_class| ... }
 
     end
   end

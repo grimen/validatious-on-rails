@@ -5,7 +5,7 @@ module ValidatiousOnRails
   module Validatious
     class ClientSideValidator < Validator
 
-      def initialize(name, *args)
+      def initialize(*args)
         super
       end
 

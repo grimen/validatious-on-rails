@@ -4,7 +4,42 @@
  
 if (typeof v2.Rails === 'undefined' || v2.Rails === null) {
   v2.Rails = {};
+  v2.Rails.params = {};
+  v2.Rails.messages = {};
 }
+
+/**
+* Checks if a string is blank (or undefined).
+*/
+v2.blank = function blank(value) {
+  return v2.empty(value) || /^[\s\t\n]*$/.test(value);
+};
+
+/**
+* Checks if a string is blank (or undefined).
+*/
+v2.bool = function bool(value) {
+  value += '';
+  return (value === true) || (value === 'true');
+};
+
+/**
+* Trim value - fast implementation.
+*/
+v2.trim = function trim(value) {
+  var str = value.replace(/^\s\s*/, ''), ws = /\s/, i = str.length;
+  while (ws.test(str.charAt(--i)));
+  return str.slice(0, i + 1);
+};
+
+/**
+* Trim Field elements and their values.
+*/
+v2.trimField = function trimField(field) {
+  for (var i = 0; i < field.__elements.length; i++) {
+    field.__elements[i].value = v2.trim(field.__elements[i].value);
+  };
+};
 
 /**
  *  Generic validator that acts as a client-side validator/helper for remote validator responses.

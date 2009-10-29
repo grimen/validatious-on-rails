@@ -1,0 +1,5 @@
+h1. 0.4.6
+
+* enhancement: :allow_nil/:allow_blank now should work *exactly* as Rails core validations.
+* disabled feature: Explicit validation messages are temporarily ignored - re-structured the validator internals, and messages is a bit tricky to alter dynamically. *TODO*
+* refactor: refactored the validator internals 

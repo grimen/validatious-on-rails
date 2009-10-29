@@ -6,8 +6,8 @@ require 'active_support/test_case'
 class ValidatorTest < ::ActiveSupport::TestCase
 
   def setup
-    @empty_validator = ValidatiousOnRails::Validatious::ClientSideValidator.new('dummie')
-    @custom_validator = returning ValidatiousOnRails::Validatious::ClientSideValidator.new('dummie') do |v|
+    @empty_validator = ValidatiousOnRails::Validatious::ClientSideValidator.new
+    @custom_validator = returning ValidatiousOnRails::Validatious::ClientSideValidator.new do |v|
       v.message = 'Fail, fail, fail!'
       v.params = ['some', 'params']
       v.aliases = ['some', 'aliases']
@@ -17,26 +17,26 @@ class ValidatorTest < ::ActiveSupport::TestCase
   end
 
   test "creating an empty validator - and generate valid v2.Validator and class call" do
-    assert_equal 'dummie', @empty_validator.name
+    assert_equal 'client-side', @empty_validator.name
     assert_equal '', @empty_validator.message
     assert_equal ([]), @empty_validator.params
     assert_equal ([]), @empty_validator.aliases
-    assert_equal true, @empty_validator.accept_empty
+    assert_equal false, @empty_validator.accept_empty
     assert_equal "function(field, value, params){return true;}", @empty_validator.fn
 
     expected_v2_validator = 'v2.Validator.add({
-      acceptEmpty: true,
+      acceptEmpty: false,
       fn: function(field, value, params){return true;},
-      name: "dummie"
+      name: "client-side"
     });'
 
     assert_equal @custom_validator.name, @custom_validator.to_class
     assert_equal "#{@custom_validator.name}_1_hello_2", @custom_validator.to_class(1, "hello", 2)
-    assert_equal ::ValidatiousOnRails::Validatious::Validator.truncate_whitespace(expected_v2_validator), @empty_validator.to_js
+    assert_equal ::ValidatiousOnRails::Validatious::Validator.truncate_whitespace(expected_v2_validator), @empty_validator.to_js.strip
   end
 
   test "creating a custom validator - and generate valid v2.Validator and class call" do
-    assert_equal 'dummie', @custom_validator.name
+    assert_equal 'client-side', @custom_validator.name
     assert_equal 'Fail, fail, fail!', @custom_validator.message
     assert_equal (["some", "params"]), @custom_validator.params
     assert_equal (["some", "aliases"]), @custom_validator.aliases
@@ -48,13 +48,13 @@ class ValidatorTest < ::ActiveSupport::TestCase
       aliases: ["some","aliases"],
       fn: function(field, value, params){return false;},
       message: "Fail, fail, fail!",
-      name: "dummie",
+      name: "client-side",
       params: ["some","params"]
     });'
 
     assert_equal @custom_validator.name, @custom_validator.to_class
     assert_equal "#{@custom_validator.name}_1_hello_2", @custom_validator.to_class(1, "hello", 2)
-    assert_equal ::ValidatiousOnRails::Validatious::Validator.truncate_whitespace(expected_v2_validator), @custom_validator.to_js
+    assert_equal ::ValidatiousOnRails::Validatious::Validator.truncate_whitespace(expected_v2_validator), @custom_validator.to_js.strip
   end
 
   context "Message" do
@@ -84,7 +84,7 @@ class ValidatorTest < ::ActiveSupport::TestCase
         return true;
       }
       compact_fn = %{function(field, value, params){var duck_says = "Quack!";if (duck_says != "Quack!") {return (duck_says == "Quack! ${{interpolation}} Quack!");}return true;}}
-      assert_equal(compact_fn, duck_validator.fn)
+      assert_equal(compact_fn, duck_validator.fn.strip)
     end
   end
 

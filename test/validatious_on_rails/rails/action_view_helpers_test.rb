@@ -65,13 +65,13 @@ class FormHelperTest < ::ActionView::TestCase
 
       test ":check_box" do # a.k.a. "acceptance required"
         # Using +helper+
-        assert_has_class 'acceptance-accept_true', check_box(:bogus_item, :signed, {}, '1', '0')
-        assert_has_class 'acceptance-accept_true some_other_class', check_box(:bogus_item, :signed, :class => 'some_other_class')
+        assert_has_class 'acceptance-accept_true_false', check_box(:bogus_item, :signed, {}, '1', '0')
+        assert_has_class 'acceptance-accept_true_false some_other_class', check_box(:bogus_item, :signed, :class => 'some_other_class')
         # Using builder
-        assert_has_class 'acceptance-accept_true', form_for(@bogus_item, :url => '/bogus_items') { |f|
+        assert_has_class 'acceptance-accept_true_false', form_for(@bogus_item, :url => '/bogus_items') { |f|
             concat f.check_box(:signed, {})
           }
-        assert_has_class 'acceptance-accept_true some_other_class', form_for(@bogus_item, :url => '/bogus_items') { |f|
+        assert_has_class 'acceptance-accept_true_false some_other_class', form_for(@bogus_item, :url => '/bogus_items') { |f|
             concat f.check_box(:signed, :class => 'some_other_class')
           }
       end
@@ -214,17 +214,19 @@ class FormHelperTest < ::ActionView::TestCase
     end
 
     test "format_of" do
+      url_param_id = ValidatiousOnRails::Validatious::Validator.generate_id(/^(http|https|ftp):\/\/(([A-Z0-9][A-Z0-9_-]*)(\.[A-Z0-9][A-Z0-9_-]*)+)(:(\d+))?\/?/i.inspect)
+      validator_class = "format-with_#{url_param_id}_false_false"
       # Using helper
-      assert_has_class 'url', text_field(:bogus_item, :url, {})
-      assert_has_class 'url some_other_class', text_field(:bogus_item, :url, :class => 'some_other_class')
+      assert_has_class "#{validator_class}", text_field(:bogus_item, :url, {})
+      assert_has_class "#{validator_class} some_other_class", text_field(:bogus_item, :url, :class => 'some_other_class')
       # Using builder
-      assert_has_class 'url', form_for(@bogus_item, :url => '/bogus_items') { |f|
+      assert_has_class "#{validator_class}", form_for(@bogus_item, :url => '/bogus_items') { |f|
           concat f.text_field(:url, {})
         }
-      assert_has_class 'url some_other_class', form_for(@bogus_item, :url => '/bogus_items') { |f|
+      assert_has_class "#{validator_class} some_other_class", form_for(@bogus_item, :url => '/bogus_items') { |f|
           concat f.text_field(:url, :class => 'some_other_class')
         }
-      assert_match /v2.Validator\.add\(\{.*\"url\"/m, @content_for_validatious
+      assert_match /v2.Validator\.add\(\{.*\"format-with\"/m, @content_for_validatious
     end
     
     # TODO: The other validators...

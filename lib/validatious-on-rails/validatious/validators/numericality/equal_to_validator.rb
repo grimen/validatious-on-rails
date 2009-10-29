@@ -6,17 +6,15 @@ module ValidatiousOnRails
     module Numericality
       class EqualToValidator < ClientSideValidator
 
-        def initialize(validation, options = {})
-          name = 'numericality-equal-to'
-          super name, options
-          self.params = ['count']
-          self.message = self.class.generate_message(validation, :key => :equal_to, :count => '{{count}}')
-          self.accept_empty = validation.options[:allow_nil]
+        def initialize(*args)
+          super
+          self.message = self.class.generate_message(:equal_to, :count => '{{count}}')
+          self.params = %w[count allow_nil]
           self.fn = %{
+            #{self.class.handle_nil}
             value = +value;
             return value == params[0];
           }
-          self.fn.freeze
         end
 
       end

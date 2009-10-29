@@ -80,7 +80,7 @@ class ControllerTest < ::ActionController::TestCase
               
               get :uniqueness_of, :model => 'bogus_item', :attribute => 'name', :value => 'carrot' 
               assert_response 200
-              assert_equal 'false', @response.body
+              assert_equal 'true', @response.body
             end
             
             test "valid :value - should succeed" do

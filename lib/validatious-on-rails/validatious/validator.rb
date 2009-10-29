@@ -30,15 +30,16 @@ module ValidatiousOnRails
                     :aliases,
                     :accept_empty,
                     :fn,
-                    :args
-                    
-      def initialize(name, *args)
-        raise ValidatorError, "Parameter :name is required for an Validatious validator" unless name.present?
-        self.name = name
+                    :args,
+                    :data
+
+      def initialize(*args)
+        self.name = self.class.generic_name
         options = args.extract_options!
         options.each do |attr, value|
           self.send(:"#{attr}=", value) if value.present?
         end
+        self.accept_empty = false
         self.args = args
       end
 
@@ -85,16 +86,21 @@ module ValidatiousOnRails
         @aliases ||= []
       end
 
-      
       # Decides if the validator should pass (return true) when the value is empty.
       # This is usually a good idea because you can leave it up to the required validator
       # to specifically check for emptiness. One benefit of this approach is more 
       # fine grained error reporting, helping the user.
       #
-      # Default value is: true.
+      # Default value is: false. Rails default (:allow_nil).
       #
       def accept_empty
-        @accept_empty.nil? ? true : @accept_empty
+        @accept_empty.nil? ? false : @accept_empty
+      end
+
+      # TODO: Doc.
+      #
+      def data
+        @data ||= ''
       end
 
       # This is the method that performs the validation. It receives three arguments,
@@ -139,9 +145,10 @@ module ValidatiousOnRails
         # - hash ordered by key only 1.9. ='(
         js_options = options.keys.collect(&:to_s).sort.collect { |k|
             v = options[k.to_sym]
-            ("#{k}: #{k.to_sym == :fn ? v : v.to_json}" if [false, true].include?(v) || v.present?)
+            (("#{k}: #{k.to_sym == :fn ? v : v.to_json}") unless v.blank? && v != false)
           }.compact.join(',')
-        self.class.truncate_whitespace("v2.Validator.add({#{js_options}});")
+        js = self.class.truncate_whitespace(self.data)
+        js << self.class.truncate_whitespace("\nv2.Validator.add({#{js_options}});")
       end
       alias :to_s :to_js
 
@@ -159,11 +166,22 @@ module ValidatiousOnRails
           string.gsub(/[\n]+[\s]+/, '')
         end
 
-        def validate_blank(allow_blank)
+        def handle_nil(index = 1)
           %{
-            var isBlank = /^[#{'\s\t\n'}]*$/.test(value);
-            if (#{allow_blank == true} && isBlank) {
+            if (v2.bool(params[#{index}]) && v2.empty(value)) {
               return true;
+            };
+          }
+        end
+
+        def handle_blank(index = 2)
+          %{
+            if (v2.bool(params[#{index}]) && v2.blank(value)) {
+              return true;
+            };
+            if (!v2.bool(params[#{index}])) {
+              v2.trimField(field);
+              value = v2.trim(value);
             };
           }
         end
@@ -175,57 +193,32 @@ module ValidatiousOnRails
           value.to_s.hash.to_s.tr('-', '1')
         end
 
-        # Any named specified for this custom validation?
-        # E.g. validates_format_of :name, :with => /\d{6}-\d{4}/, :name => 'ssn-se'
-        #
-        # If not, create one that's uniqe based on validation and what to validate based on,
-        # e.g. validates_format_of :name, :with => /\d{6}-\d{4}/ # => :name => "format_with_#{hash-of-:with-value}"
-        #
-        def generate_name(validation, id_key, id_value = nil)
-          # Avoiding duplicates...
-          identifier = "-#{id_value}" if id_value.present?
-          validator_id = "#{validation.macro.to_s.sub(/^validates_/, '').sub(/_of/, '')}_#{id_key}#{identifier}"
-          name = validation.options[:name].present? ? validation.options[:name] : validator_id
-          # "_" is not allowed in name/alias(es) - used to seperate validator-id from it's args/params.
-          [name, validator_id].collect! { |v| v.tr('_', '-') }
-        end
-
         # Generate proper error message using explicit message, or I18n-lookup.
         # Core validations gets treated by Rails - unless explicit message is set that is.
         #
-        def generate_message(*args)
-          options = args.extract_options!
-          validation = args.shift if args.first.is_a?(::ActiveRecord::Reflection::MacroReflection)
-          explicit_message = validation.options[:message] if validation
-          key = options.delete(:key) || (explicit_message if explicit_message.is_a?(::Symbol))
-
-          message = if key.present?
-            ::I18n.t(key, options.merge(:scope => :'activerecord.errors.messages',
-              :default => "activerecord.errors.messages.#{key}"))
-          elsif explicit_message.is_a?(::String)
-            explicit_message
-          elsif validation.present?
-            unless ::ValidatiousOnRails::ModelValidations::CORE_VALIDATIONS.include?(validation.macro.to_sym)
-              # No core validation, try to make up a descent I18n lookup path using conventions.
-              key ||= validation.macro.to_s.tr('-', '_').gsub(/^validates?_/, '').gsub(/_of/, '').to_sym
-              ::I18n.t(key, options.merge(:scope => :'activerecord.errors.messages',
-                :default => "activerecord.errors.messages.#{key}"))
-            else
-              # Nothing - let Rails rails handle the core validation message translations (I18n).
-            end
-          end
+        def generate_message(key_or_value, options = {})
+          message = case true
+                    when key_or_value.is_a?(::String)
+                      # Explicit message.
+                      key_or_value
+                    when key_or_value.is_a?(::Symbol)
+                      # Lookup message with I18n key.
+                      ::I18n.t(key_or_value, options.merge(:scope => :'activerecord.errors.messages',
+                        :default => "activerecord.errors.messages.#{key_or_value}"))
+                    end
           # Rails I18n interpolations => Validatious interpolations
           # Example: {{count}} => ${count}
-          message.gsub(/\{\{/, '${').gsub(/\}\}/, '}')
+          message.to_s.gsub(/\{\{/, '${').gsub(/\}\}/, '}')
+        end
+
+        def generic_name
+          namespace = self.name.split('::')
+          name = []
+          name.unshift(namespace.pop) until namespace.blank? || namespace.last == 'Validatious'
+          name.join('-').underscore.gsub(/_validator$/, '').tr('_', '-')
         end
 
       end
-
-      protected
-        
-        def generic_name
-          self.class.name.split('::').last.underscore.gsub(/_validator$/, '')
-        end
 
     end
   end

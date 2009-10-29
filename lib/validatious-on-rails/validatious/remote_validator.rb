@@ -5,16 +5,14 @@ module ValidatiousOnRails
   module Validatious
     class RemoteValidator < Validator
 
-      def initialize(validation, *args)
-        name = self.class.name.split('::').last.underscore.gsub(/_validator$/, '')
-        super name, *args
-        self.message = self.class.generate_message(validation)
+      def initialize(*args)
+        super
       end
 
       # Override default Validator-fn, with default a RemoteValidator-fn.
       #
       #   1. Perform AJAX request (dependencies: validatious-on-rails.js, XMLHttpRequest.js).
-      #   2. Always return true, callback-function should perform the actual client side validation.
+      #   2. Always return last result, callback-function should perform the actual client side validation.
       #
       def fn
         self.class.truncate_whitespace(@fn ||= %{
@@ -43,7 +41,7 @@ module ValidatiousOnRails
             return true if record.errors[attribute_name.to_sym].blank?
 
             # TODO: Refactor this when "the better" namin convention is used (see TODO).
-            validation_macro = ("validates_%s" % self.name.split('::').last.underscore.gsub(/_validator$/, ''))
+            validation_macro = ("validates_%s" % self.generic_name)
             validation = record.class.reflect_on_validations_for(attribute_name.to_sym).select { |v|
                 v.macro.to_s == validation_macro || v.macro.to_s == "#{validation_macro}_of"
               }.first

@@ -6,16 +6,15 @@ module ValidatiousOnRails
     module Numericality
       class OnlyIntegerValidator < ClientSideValidator
 
-        def initialize(validation, options = {})
-          name = 'numericality-only_integer'
-          super name, options
-          self.message = self.class.generate_message(validation, :key => :not_a_number)
-          self.accept_empty = validation.options[:allow_nil]
+        def initialize(*args)
+          super
+          self.message = self.class.generate_message(:not_a_number, :count => '{{count}}')
+          self.params = %w[allow_nil]
           self.fn = %{
+            #{self.class.handle_nil(0)}
             value = +value;
-            return /\A[+-]?\d+\Z/.test(value);
+            return /^[+-]?\d+$/.test(value);
           }
-          self.fn.freeze
         end
 
       end
