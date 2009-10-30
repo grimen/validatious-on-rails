@@ -1,4 +1,11 @@
-h1. 0.4.6
+h1. CHANGELOG
+
+h2. 0.4.7
+
+* bug-fix: validates_uniqueness_of-message now uses the correct I18n key (:blank => :taken)
+* feature/enhancement: Auto-detect available ActiveRecord validations (validation hooks) instead of explicitly defining them. Easier to extend with non-core validations without any - or with minimal - effort.
+
+h2. 0.4.6
 
 * enhancement: :allow_nil/:allow_blank now should work *exactly* as Rails core validations.
 * disabled feature: Explicit validation messages are temporarily ignored - re-structured the validator internals, and messages is a bit tricky to alter dynamically. *TODO*
