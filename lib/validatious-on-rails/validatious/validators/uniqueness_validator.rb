@@ -7,8 +7,7 @@ module ValidatiousOnRails
 
       def initialize(*args)
         super
-        self.params = %w[]
-        self.message = self.class.generate_message(:blank)
+        self.message = self.class.generate_message(:taken)
       end
 
     end
