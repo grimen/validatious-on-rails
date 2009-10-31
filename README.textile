@@ -93,7 +93,7 @@ $ ./script/generate validatious
       create  public/javascripts/v2.rails.js
 </pre>
 
-*Important:* It is very impostant that you do this (update these scripts) on each new gem release; especially @v2.Rails@ will be a subject for change because this library contains kind of low level helpers to get Validatious and additional features such as AJAX validations to play. I'm not sure what might be added/removed in the future, but as long as you keep these updated you probably won't notice any difference.
+*Important:* It is very impostant that you do this (update these scripts) on each new gem release; especially @v2.rails@ will be a subject for change because this library contains kind of low level helpers to get Validatious and additional features such as AJAX validations to play. I'm not sure what might be added/removed in the future, but as long as you keep these updated you probably won't notice any difference.
 
 h3. 2. Include the javascripts in your layout
 
