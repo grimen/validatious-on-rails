@@ -85,13 +85,15 @@ h2. Configuration
 h3. 1. Generate required javascript files
 
 <pre>
-$ ./script/generate validatious
+$ ./script/generate v2
       create  config/initializers/validatious-on-rails.rb
       create  public/javascripts/XMLHttpRequest.js
       create  public/javascripts/v2.standalone.full.min.js
       create  public/javascripts/v2.config.js
       create  public/javascripts/v2.rails.js
 </pre>
+
+*Note:* @./script/generate v2@ <=> @./script/generate validatious@
 
 *Important:* It is very impostant that you do this (update these scripts) on each new gem release; especially @v2.rails@ will be a subject for change because this library contains kind of low level helpers to get Validatious and additional features such as AJAX validations to play. I'm not sure what might be added/removed in the future, but as long as you keep these updated you probably won't notice any difference.
 
