@@ -68,6 +68,7 @@ build_model :bogus_items do
 
   validates_presence_of :name, :body, :variant, :file_path, :dummie
   validates_uniqueness_of :name
+  validates_uniqueness_of :name # test dupplication (that should be ignored)
   validates_confirmation_of :name
   validates_acceptance_of :signed, :accept => true
   validates_format_of :url,

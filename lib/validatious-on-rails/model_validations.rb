@@ -79,9 +79,19 @@ module ValidatiousOnRails
         return validators
       end
 
+      added_validations = []
+
       # Iterate thorugh the validations for the current class,
       # and collect validation options.
       klass.reflect_on_validations_for(attribute_method.to_sym).each do |validation|
+        validation_id = [validation.macro.to_sym, validation.name.to_sym].hash
+        if added_validations.include?(validation_id)
+          ValidatiousOnRails.log "Duplicate validation detected on #{object_or_class}##{attribute_method}: #{validation.macro}." <<
+            " All except the first one will be ignored. Please remove the redundant ones, or try to merge them into just one.", :warn
+          next
+        end
+        added_validations << validation_id
+
         validates_type = validation.macro.to_s.sub(/^validates?_/, '')
         if validation.options[:client_side].nil?
           validation.options[:client_side] = ::ValidatiousOnRails.client_side_validations_by_default

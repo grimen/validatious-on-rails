@@ -216,7 +216,10 @@ class ModelValidationsTest < ::ActiveSupport::TestCase
   end
 
   test "uniqueness_of" do
-    # TODO: not implemented
+    validators = ::ValidatiousOnRails::ModelValidations.uniqueness_of(validation(:validates_uniqueness_of))
+    assert_validator_class 'uniqueness_false_false', validators
+    # Ignore duplicates (Note: defined two times in TestHelper).
+    assert_equal 1, [*validators].collect { |v| v.to_class.split(' ') }.flatten.select { |c| c == 'uniqueness_false_false'}.size
   end
 
   private
