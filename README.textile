@@ -111,7 +111,7 @@ h3. 2. Include the javascripts in your layout
 *Notes:*
 
 * @XMLHttpRequest.js@ - Unobtrusive cross-browser implementation of the native XMLHttpRequest (remote validations only, not required for client-side validations).
-* @v2.config.js@ - optional, but contains some default Valdiatious-configuration that easily can be tweaked or extended - see "Validatious documentation":http://validatious.org/learn.
+* @v2.config.js@ - Default Valdiatious-configuration that easily can be tweaked or extended - see "Validatious documentation":http://validatious.org/learn.
 * @v2.rails.js@ - Helpers to get remote AJAX validations to work without any configuration.
 * @javascript_for_validatious@ - This is where custom validations - and any additional meta data associated with these - gets inserted. No worries; the plugin is doing the magic!
 
