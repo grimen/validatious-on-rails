@@ -12,12 +12,12 @@ module ValidatiousOnRails
         self.message = self.class.generate_message(:exclusion)
         self.params = %w[exclude allow_nil allow_blank]
         self.data = %{
-          v2.Rails.params['#{args.first}'] = #{data.to_json};
+          v2.rails.params['#{args.first}'] = #{data.to_json};
         }
         self.fn = %{
           #{self.class.handle_nil(1)}
           #{self.class.handle_blank(2)}
-          var exclusion_values = v2.Rails.params[params[0]];
+          var exclusion_values = v2.rails.params[params[0]];
           for (var i = 0; i < exclusion_values.length; i++) {
             if (exclusion_values[i] == value) { return false; }
           };

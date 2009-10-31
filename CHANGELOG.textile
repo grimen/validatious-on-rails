@@ -2,12 +2,12 @@ h1. CHANGELOG
 
 h2. 0.4.8
 
-* bug-fix: Removed debug line in @v2.Rails.js@ that will cause headache in non-Webkit browsers.
+* bug-fix: Removed debug line in @v2.rails.js@ that will cause headache in non-Webkit browsers.
 * bug-fix: Duplication of validation declarations is now ignored, only first ones is used. No more infinite AJAX-requests caused by this.
 
 h2. 0.4.7
 
-* refactor: DRYed up @v2.Rails.js@ a bit, with help of new method: @v2.present()@.
+* refactor: DRYed up @v2.rails.js@ a bit, with help of new method: @v2.present()@.
 * enhancement: @validates_uniqueness_of@ (or remote validations) implements allow_nil/allow_blank on client-side to avoid flickering validation messages, and unnecessary requests. They are both very fundamental input validation features so this makes sense, but of course this is easy to override in the future for custom validations but should work great for 9/10 cases at least. 
 * bug-fix: remote-client (remote validations substitution validator) now got @acceptEmpty@ set to false, because set to true cause remote validators to flicker a fail message on first attempt if the field is empty.
 * bug-fix: @validates_uniqueness_of@-message now uses the correct I18n key (@:blank@ => @:taken@)
