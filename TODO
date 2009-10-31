@@ -7,7 +7,6 @@
 
 == Medium
 
-* bug: if same validation is specified on same field, and it's ajax/remote - it'll trigger an infinite calling loop. Even though it's avoidable, it's bad.
 * feature: Make any validation be validated remotely if requested, i.e. :ajax => true/false. Add "Remote"-prefix to affected classes. **
 * feature: Validator API: Custom validators (client-side + remote)
 * feature: Form Input Helper API: Custom form helpers (non-"core helper" based)
@@ -25,3 +24,4 @@
 * refactor: Consider refactor the validator calls im ModelValidations into the actual validator class. Would be a bit cleaner public interface?
 * feature: Consider filter/masking of invalid input (e.g. validates_numericality_of).
 * feature: validates_association
+* feature: DataMapper, MongoMapper, ... support
