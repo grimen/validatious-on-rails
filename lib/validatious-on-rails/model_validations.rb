@@ -306,7 +306,9 @@ module ValidatiousOnRails
     #
     def uniqueness_of(validation)
       validators = []
-      validators << Validatious::UniquenessValidator.new
+      validation.options[:allow_nil] = false if validation.options[:allow_nil].nil?
+      validation.options[:allow_blank] = false if validation.options[:allow_blank].nil?
+      validators << Validatious::UniquenessValidator.new(validation.options[:allow_nil], validation.options[:allow_blank])
     end
 
     # Unknown validations - if no matching custom validator is found/registered.

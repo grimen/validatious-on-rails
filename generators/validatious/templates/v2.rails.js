@@ -20,7 +20,14 @@ v2.blank = function blank(value) {
 */
 v2.bool = function bool(value) {
   value += '';
-  return (value === true) || (value === 'true');
+  return value === 'true' || +value > 0;
+};
+
+/**
+* Checks if a string is null/undefined.
+*/
+v2.present = function present(value) {
+  return !(typeof value === 'undefined' || value === null);
 };
 
 /**
@@ -44,54 +51,57 @@ v2.trimField = function trimField(field) {
 /**
  *  Generic validator that acts as a client-side validator/helper for remote validator responses.
  */
-v2.Validator.add({acceptEmpty: true, fn: function(field, value, params) { return !!params[0]; }, message: null, name: 'remote-client'});
+v2.Validator.add({acceptEmpty: false, fn: function(field, value, params) { return !!params[0]; }, message: null, name: 'remote-client'});
 
 /**
  *  Perform a remote validation on a given field the Validatious way, slightly modified
  */
-v2.Rails.performRemoteValidation = function performRemoteValidation(name, field, value, params, message) {
-  var field_element = field.__elements[0];
-  var url = v2.Rails.remoteValidationUrlFor(name, field_element, value, params);
+ v2.Rails.performRemoteValidation = function performRemoteValidation(name, field, value, params, message) {
+   var field_element = field.__elements[0];
+   var url = v2.Rails.remoteValidationUrlFor(name, field_element, value, []);
 
-  v2.Rails.initializeLastResult(name, field_element.id);
+   v2.Rails.initializeLastResult(name, field_element.id);
 
-  var xmlHttpRequest = new XMLHttpRequest;
-  xmlHttpRequest.open('GET', url, true);
-  xmlHttpRequest.onreadystatechange = function() {
-    if (this.readyState == XMLHttpRequest.DONE) {
-      var validationResult = (this.responseText == 'true' || this.responseText == '1') ? true : false;
-      v2.Rails.lastRemoteValidationResult[name][field_element.id] = validationResult;
-      /* console.log('Validation result: ' + validationResult); */
+   console.log(v2.Rails.lastRemoteValidationResult[name][field_element.id]);
 
-      /* Get all validators for this field, except the current validator. */
-      var fieldClasses = field_element.getAttribute('class').replace(new RegExp(name + '\w*'), '').replace(/^\s+|\s+$/g, '');
-      var theOtherValidators = v2.html.validatorsFromString(fieldClasses);
+   var xmlHttpRequest = new XMLHttpRequest;
+   xmlHttpRequest.open('GET', url, true);
+   xmlHttpRequest.onreadystatechange = function() {
+     if (this.readyState == XMLHttpRequest.DONE) {
+       var validationResult = v2.bool(this.responseText);
+       v2.Rails.lastRemoteValidationResult[name][field_element.id] = validationResult;
 
-      /* Make remote-client validator trigger validation failure or not. */
-      var thisValidator = field_element.id.is('remote-client', validationResult).explain(message);
-      v2.html.applyValidators(theOtherValidators, thisValidator);
-      thisValidator.item.validate();
-    };
-  };
-  xmlHttpRequest.send(null);
-  return v2.Rails.lastRemoteValidationResult[name][field_element.id];
-};
+       /* Get all validators for this field, except the current validator. */
+       var fieldClasses = v2.trim(field_element.getAttribute('class').replace(new RegExp(name + '\w*'), ''));
+       var theOtherValidators = v2.html.validatorsFromString(fieldClasses);
+
+       /* Make remote-client validator trigger validation failure or not. */
+       var thisValidator = field_element.id.is('remote-client', validationResult).explain(message);
+       v2.html.applyValidators(theOtherValidators, thisValidator);
+
+       /* Trigger validation. */
+       thisValidator.item.validate();
+     };
+   };
+   xmlHttpRequest.send(null);
+   return v2.Rails.lastRemoteValidationResult[name][field_element.id];
+ };
 
 /**
  *  Initialize data structure for holding info about last remote AJAX validation result.
  *  We need this to make Validatious play well with remote validations.
  */
-v2.Rails.initializeLastResult = function initializeLastResult(validator_name, field_id) {
-  if (typeof v2.Rails.lastRemoteValidationResult == 'undefined') {
-    v2.Rails.lastRemoteValidationResult = new Array();
-  }
-  if (typeof v2.Rails.lastRemoteValidationResult[validator_name] == 'undefined') {
-    v2.Rails.lastRemoteValidationResult[validator_name] = new Array();
-  };
-  if (typeof v2.Rails.lastRemoteValidationResult[validator_name][field_id] == 'undefined') {
-    v2.Rails.lastRemoteValidationResult[validator_name][field_id] = false;
-  };
-};
+ v2.Rails.initializeLastResult = function initializeLastResult(validator_name, field_id) {
+   if (!v2.present(v2.Rails.lastRemoteValidationResult)) {
+     v2.Rails.lastRemoteValidationResult = new Array();
+   };
+   if (!v2.present(v2.Rails.lastRemoteValidationResult[validator_name])) {
+     v2.Rails.lastRemoteValidationResult[validator_name] = new Array();
+   };
+   if (!v2.present(v2.Rails.lastRemoteValidationResult[validator_name][field_id])) {
+     v2.Rails.lastRemoteValidationResult[validator_name][field_id] = false;
+   };
+ };
 
 /** 
  *  Generate a remote validation poll URL the validatious-on-rails-way,
@@ -112,11 +122,11 @@ v2.Rails.remoteValidationUrlFor = function remoteValidationUrlFor(name, field, v
               [
                 ['model', escape(modelName)].join('='),
                 ['attribute', escape(attributeName)].join('='),
-                ['id', recordId].join('='),
+                (v2.blank(recordId) ? null : ['id', recordId].join('=')),
                 ['value', escape(value)].join('='),
                 paramsString.join('&')
               ].join('&')
-            ].join('').replace(/\&$/, '');
+            ].join('').replace(/\&\&/, '&').replace(/\&$/, '');
   return url;
 };
 

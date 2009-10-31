@@ -17,7 +17,10 @@ module ValidatiousOnRails
       def fn
         self.class.truncate_whitespace(@fn ||= %{
             function(field, value, params) {
-              return !!v2.Rails.performRemoteValidation('#{self.name}', field, value, params, '#{self.message}');
+              value += '';
+              #{self.class.handle_nil(0)}
+              #{self.class.handle_blank(1)}
+              return v2.Rails.performRemoteValidation(#{self.name.to_json}, field, value, params, #{self.message.to_json});
             }
           })
       end

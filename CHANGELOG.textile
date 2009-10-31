@@ -2,7 +2,10 @@ h1. CHANGELOG
 
 h2. 0.4.7
 
-* bug-fix: validates_uniqueness_of-message now uses the correct I18n key (:blank => :taken)
+* refactor: DRYed up @v2.Rails.js@ a bit, with help of new method: @v2.present()@.
+* enhancement: @validates_uniqueness_of@ (or remote validations) implements allow_nil/allow_blank on client-side to avoid flickering validation messages, and unnecessary requests. They are both very fundamental input validation features so this makes sense, but of course this is easy to override in the future for custom validations but should work great for 9/10 cases at least. 
+* bug-fix: remote-client (remote validations substitution validator) now got @acceptEmpty@ set to false, because set to true cause remote validators to flicker a fail message on first attempt if the field is empty.
+* bug-fix: @validates_uniqueness_of@-message now uses the correct I18n key (@:blank@ => @:taken@)
 * feature/enhancement: Auto-detect available ActiveRecord validations (validation hooks) instead of explicitly defining them. Easier to extend with non-core validations without any - or with minimal - effort.
 
 h2. 0.4.6

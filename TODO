@@ -3,9 +3,7 @@
 == High
 
 * issue: Make messages not be bound to a specific validator, rather to a field. Tricky, but important.
-* tests: make them pass again after all the new changes.
-* validates_uniqueness_of/AJAX-bugs:
-  * bug: Make it impossible to submit the form when this validation haven't passed
+* bug: validates_uniqueness_of/AJAX: Don't flash a failure message on a field that is already validated as valid upon submit. (Solution: a timer?)
 
 == Medium
 
@@ -18,11 +16,12 @@
 == Low
 
 * feature: Make Rails core validations basic options fully supported **
-  * :on => :create|:save|:update (not easy - RemoteValidator?)
-  * :if/:unless => true|false (not easy - RemoteValidator?)
+  * :on => :create|:save|:update (RemoteValidator)
+  * :if/:unless => true|false (RemoteValidator)
 * test: Tighten up the tests more.
 
 == Not sure
 
+* refactor: Consider refactor the validator calls im ModelValidations into the actual validator class. Would be a bit cleaner public interface?
 * feature: Consider filter/masking of invalid input (e.g. validates_numericality_of).
 * feature: validates_association

@@ -168,7 +168,7 @@ module ValidatiousOnRails
 
         def handle_nil(index = 1)
           %{
-            if (v2.bool(params[#{index}]) && v2.empty(value)) {
+            if (v2.present(params[#{index}]) && v2.bool(params[#{index}]) && v2.empty(value)) {
               return true;
             };
           }
@@ -176,10 +176,10 @@ module ValidatiousOnRails
 
         def handle_blank(index = 2)
           %{
-            if (v2.bool(params[#{index}]) && v2.blank(value)) {
+            if (v2.present(params[#{index}]) && v2.bool(params[#{index}]) && v2.blank(value)) {
               return true;
             };
-            if (!v2.bool(params[#{index}])) {
+            if (v2.present(params[#{index}]) && !v2.bool(params[#{index}])) {
               v2.trimField(field);
               value = v2.trim(value);
             };
