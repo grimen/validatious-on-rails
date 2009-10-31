@@ -62,8 +62,6 @@ v2.Validator.add({acceptEmpty: false, fn: function(field, value, params) { retur
 
    v2.Rails.initializeLastResult(name, field_element.id);
 
-   console.log(v2.Rails.lastRemoteValidationResult[name][field_element.id]);
-
    var xmlHttpRequest = new XMLHttpRequest;
    xmlHttpRequest.open('GET', url, true);
    xmlHttpRequest.onreadystatechange = function() {
