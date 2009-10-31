@@ -133,7 +133,8 @@ end
 
 <pre>
 <% form_for(@post, :html => {:class => 'validate'}) do |f| %>
-  <%= f.text_field :title %>
+  <%= f.text_field :title %>  # Validated performed using client-side. Note: uniqueness-check is performed using an AJAX-request.
+  <%= f.text_area :body %>    # No client-side validation performed, i.e. ignored.
 <% end %>
 </pre>
 
@@ -160,6 +161,8 @@ v2.Field.prototype.messagesClass = 'errors';
 v2.Field.prototype.failureClass = 'error';
 v2.Field.prototype.successClass = '';
 </pre>
+
+Actually, Validatious errors can be tweaked to work with *any form builder/markup*, but how that is done is out of context for this plugin. For more info; checkout the documentation for the "Validatious Reporting extension":http://validatious.org/learn/features/reporting.
 
 h2. Limitations
 
