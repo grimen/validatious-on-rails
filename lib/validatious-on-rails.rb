@@ -1,9 +1,7 @@
 # encoding: utf-8
-require File.join(File.dirname(__FILE__), *%w[validatious-on-rails validatious])
-require File.join(File.dirname(__FILE__), *%w[validatious-on-rails model_validations])
-require File.join(File.dirname(__FILE__), *%w[validatious-on-rails rails])
-require File.join(File.dirname(__FILE__), *%w[validatious-on-rails helpers])
-require File.join(File.dirname(__FILE__), *%w[validatious-on-rails controller])
+Dir.glob(File.join(File.dirname(__FILE__), 'validatious-on-rails', '*.rb').to_s).each do |file|
+  require file
+end
 
 module ValidatiousOnRails # :nodoc:
 
@@ -21,9 +19,14 @@ module ValidatiousOnRails # :nodoc:
 
   @@verbose = ::Object.const_defined?(:RAILS_ENV) ? (::RAILS_ENV.to_sym == :development) : true
   @@client_side_validations_by_default = true
+  @@fallback_on_ajax_by_default = true
 
   mattr_accessor  :verbose,
-                  :client_side_validations_by_default
+                  :client_side_validations_by_default,
+                  :fallback_on_ajax_by_default
+
+  alias :client_side_validations_by_default? :client_side_validations_by_default
+  alias :fallback_on_ajax_by_default? :fallback_on_ajax_by_default
 
   # Logging helper: Internal debug-logging for the plugin.
   #

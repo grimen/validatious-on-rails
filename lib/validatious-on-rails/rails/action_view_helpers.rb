@@ -1,5 +1,5 @@
 # encoding: utf-8
-require File.join(File.dirname(__FILE__), *%w[.. helpers])
+require File.expand_path(File.join(File.dirname(__FILE__), *%w[.. helpers]))
 #
 # Tap into the built-in form/input helpers to add validatious class names from
 # model validations. Only altering the options hash is interesting - we want to set a validator class for fields,

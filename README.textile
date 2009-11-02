@@ -46,7 +46,7 @@ _*Note:* This project is under heavy development; a lot of experimenting going o
 h3. Goals:
 
 * Should support all Rails core validations (using preferably *client-side* validation, or last-resort solution using *server-side* validation - backed by Validatious)
-* Should be very easy to extend with custom validations (plugins, e.g. @Validatious::Validators.add MyCustomValidator@), but within the domain of *Validatious* (focus) - no vision of support multiple libraries (only makes the code base unnecessary big and complex)
+* Should be very easy to extend with custom validations, but within the domain of *Validatious* (focus) - no vision of support multiple libraries (only makes the code base unnecessary big and complex)
 * Support all Rails core form helpers, but should also be easy to extend with custom form field helpers.
 * Should not only perform the validations, but also respect the Rails validation options
 * Should integrate with the Rails I18n API seamlessly

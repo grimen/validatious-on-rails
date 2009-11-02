@@ -6,7 +6,7 @@ rescue LoadError
   require 'validation_reflection'
 end
 
-require File.join(File.dirname(__FILE__), *%w[validatious validators])
+require File.join(File.dirname(__FILE__), 'validators')
 
 # Validatious-Rails validation translator.
 #
@@ -39,16 +39,18 @@ module ValidatiousOnRails
       # Handle Nested form.
       object_name = options[:object].present? ? options[:object].class.name : object_name
 
-      validators = self.from_active_record(object_name, attribute_method)
+      validators = self.for_class_method(object_name, attribute_method)
       validator_classes, validator_js = [options[:class]], []
 
       # Only attach validators that are not already attached.
       validators.flatten.compact.uniq.each do |v|
-        validator_js << v.to_js unless existing_validators.present? && /#{v.name}/ =~ existing_validators
+        # If validator already defined, then only attach meta data.
+        validator_is_already_defined = (/name:\s*\"#{v.name}\"/m =~ existing_validators.to_s)
+        validator_js << v.to_js(!validator_is_already_defined)
         validator_classes << v.to_class
       end
-      classes = validator_classes.compact.join(' ').strip
       js = validator_js.compact.join("\n").strip
+      classes = validator_classes.compact.join(' ').strip
       options.merge!(:class => (classes unless classes.blank?), :js => (js unless js.blank?))
     end
 
@@ -63,11 +65,11 @@ module ValidatiousOnRails
     # Returns a string that will be recognized by Validatious as a class name in
     # form markup.
     #
-    def from_active_record(object_or_class, attribute_method)
+    def for_class_method(object_or_class, attribute_method)
       validators = []
       begin
         klass = if [::String, ::Symbol].any? { |c| object_or_class.is_a?(c) }
-        object_or_class.to_s.classify.constantize
+          object_or_class.to_s.classify.constantize
         elsif object_or_class.is_a?(::Object)
           object_or_class.class
         else
@@ -80,28 +82,24 @@ module ValidatiousOnRails
       end
 
       added_validations = []
-
       # Iterate thorugh the validations for the current class,
       # and collect validation options.
       klass.reflect_on_validations_for(attribute_method.to_sym).each do |validation|
         validation_id = [validation.macro.to_sym, validation.name.to_sym].hash
         if added_validations.include?(validation_id)
-          ValidatiousOnRails.log "Duplicate validation detected on #{object_or_class}##{attribute_method}: #{validation.macro}." <<
+          ::ValidatiousOnRails.log "Duplicate validation detected on #{object_or_class}##{attribute_method}: #{validation.macro}." <<
             " All except the first one will be ignored. Please remove the redundant ones, or try to merge them into just one.", :warn
           next
         end
         added_validations << validation_id
 
         validates_type = validation.macro.to_s.sub(/^validates?_/, '')
-        if validation.options[:client_side].nil?
-          validation.options[:client_side] = ::ValidatiousOnRails.client_side_validations_by_default
-        end
 
         # Skip "confirmation_of"-validation info for the attribute that
         # needs to be confirmed. Validatious expects this validation rule
         # on the confirmation field. *
         unless validates_type =~ /^confirmation_of$/
-          validators << self.send(validates_type.to_sym, validation) if validation.options[:client_side]
+          validators << self.for_validation(validates_type, validation)
         end
       end
 
@@ -111,12 +109,8 @@ module ValidatiousOnRails
         # Check if validates_confirmation_of(:hello) actually exists,
         # if :hello_confirmation field exists - just to be safe.
         klass.reflect_on_validations_for(confirm_attribute_method.to_sym).each do |validation|
-          if validation.options[:client_side].nil?
-            validation.options[:client_side] = ::ValidatiousOnRails.client_side_validations_by_default
-          end
-
           if validation.macro.to_s =~ /^validates_confirmation_of$/
-            validators << self.confirmation_of(validation) if validation.options[:client_side]
+            validators << self.for_validation(:confirmation_of, validation)
             break
           end
         end
@@ -124,211 +118,29 @@ module ValidatiousOnRails
       validators.flatten.compact
     end
 
-    # Resolve validation from validates_acceptance_of.
-    #
-    # Alias, but might change: acceptance_of <=> presence_of
-    #
-    # NOTE: Not supported:
-    #   * :on - TODO.
-    #   * :if/:unless - hard to port all to client-side JavaScript
-    #                   (impossible: procs, unaccessible valiables, etc.).
-    #
-    def acceptance_of(validation)
-      validators = []
-      validation.options[:allow_nil] = false if validation.options[:allow_nil].nil?
-      validation.options[:accept] ||= '1' # Rails default.
-      validators << Validatious::AcceptanceAcceptValidator.new(validation.options[:accept],
-                                                               validation.options[:allow_nil])
-    end
-
-    # Resolve validation from validates_associated.
-    #
-    # NOTE: Not supported - low prio.
-    #
-    def associated(validation)
-      nil
-    end
-
-    # Resolve validation from validates_confirmation_of.
-    # This validation is treated a bit differently in compare
-    # to the other validations. See "from_active_record".
-    #
-    # NOTE: Not supported:
-    #   * :on - TODO.
-    #   * :if/:unless - hard to port all to client-side JavaScript
-    #                   (impossible: procs, unaccessible valiables, etc.).
-    #
-    def confirmation_of(validation)
-      validators = []
-      field_id = unless validation.active_record.present?
-      "#{validation.active_record.name.tableize.singularize.gsub('/', '_')}_#{validation.name}"
-      else
-        "#{validation.name}"
+    def for_validation(validation_name, validation)
+      if validation.options[:client_side].nil?
+        validation.options[:client_side] = ::ValidatiousOnRails.client_side_validations_by_default?
       end
-      validators << Validatious::ConfirmationOfValidator.new(field_id)
-    end
-
-    # Resolve validation from validates_exclusion_of.
-    #
-    # Attaching custom validator - with a unique name based on the exclusion values.
-    #
-    # NOTE: Not supported:
-    #   * :on - TODO.
-    #   * :if/:unless - hard to port all to client-side JavaScript
-    #                   (impossible: procs, unaccessible valiables, etc.).
-    #
-    def exclusion_of(validation)
-      validators = []
-      validation.options[:allow_nil] = false if validation.options[:allow_nil].nil?
-      validation.options[:allow_blank] = false if validation.options[:allow_blank].nil?
-      validators << Validatious::ExclusionInValidator.new(validation.options[:in],
-                                                          validation.options[:allow_nil], validation.options[:allow_blank])
-    end
-
-    # Resolve validation from validates_format_of.
-    #
-    # Attaching custom validator, with a unique name based on the regular expression.
-    # Needs regexp.inspect to get it right.
-    #
-    # NOTE: Not supported:
-    #   * :on - TODO.
-    #   * :if/:unless - hard to port all to client-side JavaScript
-    #                   (impossible: procs, unaccessible valiables, etc.).
-    #
-    def format_of(validation)
-      validators = []
-      validation.options[:allow_nil] = false if validation.options[:allow_nil].nil?
-      validation.options[:allow_blank] = false if validation.options[:allow_blank].nil?
-      validators << Validatious::FormatWithValidator.new(validation.options[:with],
-                                                         validation.options[:allow_nil], validation.options[:allow_blank])
-    end
-
-    # Resolve validation from validates_inclusion_of.
-    #
-    # Attaching custom validator - with a unique name based on the inclusion values.
-    #
-    # NOTE: Not supported:
-    #   * :on - TODO.
-    #   * :if/:unless - hard to port all to client-side JavaScript
-    #                   (impossible: procs, unaccessible valiables, etc.).
-    #
-    def inclusion_of(validation)
-      validators = []
-      validation.options[:allow_nil] = false if validation.options[:allow_nil].nil?
-      validation.options[:allow_blank] = false if validation.options[:allow_blank].nil?
-      validators << Validatious::InclusionInValidator.new(validation.options[:in],
-                                                          validation.options[:allow_nil], validation.options[:allow_blank])
-    end
-
-    # Resolve validation from validates_length_of.
-    #
-    # Example (of generated field classes):
-    #   length-is_5, length-maximum_2, length-minimum_2, etc.
-    #
-    # NOTE: Not supported:
-    #   * :tokenizer - see: :if/:unless
-    #   * :on - TODO.
-    #   * :if/:unless - hard to port all to client-side JavaScript
-    #                   (impossible: procs, unaccessible valiables, etc.).
-    #
-    def length_of(validation)
-      validators = []
-      validation.options[:allow_nil] = false if validation.options[:allow_nil].nil?
-      validation.options[:allow_blank] = false if validation.options[:allow_blank].nil?
-
-      if validation.options[:is].present?
-        validators << Validatious::Length::IsValidator.new(validation.options[:is],
-                                                           (validation.options[:allow_nil] || false),
-                                                           (validation.options[:allow_blank] || false))
-      elsif [:in, :within, :minimum, :maximum].any? { |k| validation.options[k].present? }
-        validation.options[:within] ||= validation.options[:in]
-        validation.options[:minimum] ||= validation.options[:within].min rescue nil
-        validation.options[:maximum] ||= validation.options[:within].max rescue nil
-
-        if validation.options[:minimum].present?
-          validators << Validatious::Length::MinimumValidator.new(validation.options[:minimum],
-                                                                  (validation.options[:allow_nil] || false),
-                                                                  (validation.options[:allow_blank] || false))
+      begin
+        if validation.options[:client_side]
+          validation_const = ValidatiousOnRails::Validators.validation_const_for(validation_name)
+          validators =  if validation.options[:ajax]
+                          validation_const.remote_validator_for(validation)
+                        else
+                          validation_const.validators_for(validation)
+                        end
+          if validators.blank?
+            ::ValidatiousOnRails.log "No client-side validators defined for #{validation.macro}(#{validation.name}); fallback on AJAX validator."
+            validators = validation_const.remote_validator_for(validation) if ::ValidatiousOnRails.fallback_on_ajax_by_default?
+          end
+          return validators
         end
-
-        if validation.options[:maximum].present?
-          validators << Validatious::Length::MaximumValidator.new(validation.options[:maximum],
-                                                                  (validation.options[:allow_nil] || false),
-                                                                  (validation.options[:allow_blank] || false))
-        end
+      rescue NoMethodError => e
+        ::ValidatiousOnRails.log "#{validation_const.name}#validators_for not defined - must be implemented. #{e}"
+        nil
       end
-      validators
-    end
-    alias :size_of :length_of
-
-    # Resolve validation from validates_numericality_of.
-    #
-    # Example (of generated field classes):
-    #   numericality-odd, numericality-only-integer, numericality-equal-to_5, etc.
-    #
-    # NOTE: Not supported:
-    #   * :on - TODO.en
-    #   * :if/:unless - hard to port all to client-side JavaScript
-    #                   (impossible: procs, unaccessible valiables, etc.).
-    #
-    def numericality_of(validation)
-      validators = []
-      validation.options[:allow_nil] = false if validation.options[:allow_nil].nil?
-
-      if validation.options[:odd] && !validation.options[:even]
-        validators << Validatious::Numericality::OddValidator.new(validation.options[:allow_nil])
-      end
-
-      if validation.options[:even] && !validation.options[:odd]
-        validators << Validatious::Numericality::EvenValidator.new(validation.options[:allow_nil])
-      end
-
-      if validation.options[:only_integer]
-        validators << Validatious::Numericality::OnlyIntegerValidator.new(validation.options[:allow_nil])
-      end
-
-      (validation.options.keys & [:equal_to, :less_than, :less_than_or_equal_to,
-      :greater_than, :greater_than_or_equal_to]).each { |name|
-        validator_klass = "::ValidatiousOnRails::Validatious::Numericality::#{name.to_s.classify}Validator".constantize
-        value = validation.options[name]
-        if value.is_a?(::Numeric)
-          validators << validator_klass.new(validation.options[name], validation.options[:allow_nil])
-        end
-      }
-      validators
     end
 
-    # Resolve validation from validates_presence_of.
-    #
-    # Alias, but might change: acceptance_of <=> presence_of
-    #
-    # NOTE: Not supported:
-    #   * :on - TODO.
-    #   * :if/:unless - hard to port all to client-side JavaScript
-    #                   (impossible: procs, unaccessible valiables, etc.).
-    #
-    def presence_of(validation)
-      validators = []
-      validators << Validatious::PresenceValidator.new
-    end
-
-    # Resolve validation from validates_uniqueness_of.
-    #
-    def uniqueness_of(validation)
-      validators = []
-      validation.options[:allow_nil] = false if validation.options[:allow_nil].nil?
-      validation.options[:allow_blank] = false if validation.options[:allow_blank].nil?
-      validators << Validatious::UniquenessValidator.new(validation.options[:allow_nil], validation.options[:allow_blank])
-    end
-
-    # Unknown validations - if no matching custom validator is found/registered.
-    #
-    def method_missing(sym, *args, &block)
-      ::ValidatiousOnRails.log "Unknown validation: #{sym}." <<
-      " No custom Validatious validator found for this validation makro. ", :warn
-      nil
-    end
-
-    #end
   end
 end
