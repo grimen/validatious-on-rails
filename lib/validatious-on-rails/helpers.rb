@@ -22,8 +22,7 @@ module ValidatiousOnRails
     #
     def attached_validators
       if @content_for_validatious.present?
-        content_tag(:script, @content_for_validatious,
-          :type => 'text/javascript', :id => 'custom_validators')
+        javascript_tag(@content_for_validatious, :id => 'custom_validators')
       end
     end
     alias :javascript_for_validatious :attached_validators
