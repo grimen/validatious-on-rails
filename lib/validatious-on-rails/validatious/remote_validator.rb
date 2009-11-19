@@ -25,6 +25,14 @@ module ValidatiousOnRails
           })
       end
 
+      def to_js
+         if ::ValidatiousOnRails.remote_validations_enabled
+           super
+         else
+           "// remote validations disabled"
+         end
+      end
+
       class << self
 
         # Perform the actual validation on the server-side.
