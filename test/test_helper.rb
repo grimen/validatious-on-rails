@@ -14,20 +14,22 @@ def smart_require(lib_name, gem_name, gem_version = '>= 0.0.0')
 end
 
 begin
-  require File.expand_path(File.join(File.dirname(__FILE__), *%w(.. .. .. .. config environment)))
+  require File.expand_path(File.join(File.dirname(__FILE__), *%w[.. .. .. .. config environment]))
 rescue LoadError
   require 'rubygems'
   
   smart_require 'test/unit', 'test-unit', '= 1.2.3'
   smart_require 'active_record', 'activerecord', '>= 1.2.3'
   smart_require 'action_controller', 'actionpack', '>= 1.2.3'
+  smart_require 'action_view', 'actionpack', '>= 1.2.3'
+  smart_require 'active_support', 'activesupport', '>= 1.2.3'
   smart_require 'sqlite3', 'sqlite3-ruby', '>= 1.2.0'
 end
 
 smart_require 'redgreen', 'redgreen', '>= 0.10.4'
-smart_require 'context', 'jeremymcanally-context', '>= 0.5.5'
+smart_require 'context', 'context', '>= 0.5.5'
 smart_require 'rr', 'rr', '>= 0.10.0'
-smart_require 'acts_as_fu', 'nakajima-acts_as_fu', '>= 0.0.5'
+smart_require 'acts_as_fu', 'acts_as_fu', '>= 0.0.5'
 
 extend RR::Adapters::RRMethods
 

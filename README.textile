@@ -78,7 +78,7 @@ and in @config/environment.rb@:
 * "validation_reflection":http://github.com/redinger/validation_reflection
 * "XMLHttpRequest":http://code.google.com/p/xmlhttprequest
 
-*Note:* For testing, get: "context":http://github.com/jeremymcanally/context, "rr":http://github.com/btakita/rr, "acts_as_fu":http://github.com/nakajima/acts_as_fu, and "redgreen":http://gemcutter.org/gems/redgreen.
+*Note:* For testing, get: "context":http://github.com/jeremymcanally/context, "rr":http://github.com/btakita/rr, "redgreen":http://gemcutter.org/gems/redgreen, "acts_as_fu":http://github.com/nakajima/acts_as_fu, and "sqlite3-ruby":http://gemcutter.org/gems/sqlite3-ruby.
 
 h2. Configuration
 
