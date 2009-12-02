@@ -34,7 +34,7 @@ module ValidatiousOnRails
         def initialize(*args)
           options = args.extract_options!
           self.name ||= self.class.generic_name
-          self.message = self.class.generate_message(options.delete(:message), self.params)
+          self.message = self.class.generate_message((options.delete(:message) || self.message), self.params)
           self.accept_empty = false
           self.args = args
         end
@@ -217,7 +217,8 @@ module ValidatiousOnRails
             namespace = self.name.split('::')
             name = []
             name.unshift(namespace.pop) until namespace.blank? || namespace.last == 'Validators'
-            name.join('-').underscore.gsub(/_validator$/, '').tr('_', '-')
+            name.delete('Validatious') # should not be a case, but had issues with the tests...
+            name.join('-').underscore.gsub(/_validator$/, '').gsub(//, '').tr('_', '-')
           end
 
         end

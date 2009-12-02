@@ -96,7 +96,7 @@ RAILS_ROOT = File.join(File.dirname(__FILE__)) unless defined?(RAILS_ROOT)
 
 # To show debug messages in test output, set this to true.
 #
-::ValidatiousOnRails.verbose = false
+ValidatiousOnRails.verbose = false
 
 #
 # Log file for testing only.

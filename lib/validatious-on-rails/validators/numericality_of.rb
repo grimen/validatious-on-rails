@@ -24,7 +24,7 @@ module ValidatiousOnRails
 
         (validation.options.keys & [:equal_to, :less_than, :less_than_or_equal_to,
         :greater_than, :greater_than_or_equal_to]).each { |name|
-          validator_klass = "#{name.to_s.classify}Validator".constantize
+          validator_klass = "::#{self.name}::#{name.to_s.classify}Validator".constantize
           value = validation.options[name]
           if value.is_a?(::Numeric)
             validators << validator_klass.new(validation.options[name],

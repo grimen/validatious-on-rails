@@ -29,10 +29,15 @@ module ValidatiousOnRails
       # Only check for method matching: validates_*.
       if record_klass.present? && record_klass.respond_to?(:"validates_#{action}")
         if validator_klass = ::ValidatiousOnRails::Validators::Validatious::AjaxValidator.class_for(action)
+          puts "controller: #{validator_klass.inspect}"
           if record = record_for(record_klass)
-            # Perform validation.
-            validation_result = validator_klass.perform_validation(record, params[:attribute].to_sym, params[:value], params)
+            # Perform the actual validation.
+            validation_result = validator_klass.validate(record, params[:attribute].to_sym, params[:value], params)
+            
+            # Log this.
             ::ValidatiousOnRails.log "#{validator_klass} validation result: #{validation_result.to_s.upcase}. #{record_klass}##{params[:attribute]} => #{params[:value].inspect}", :info
+            
+            # Return validaiton result.
             return render(:text => validation_result, :status => 200)
           else
             raise RemoteValidationInvalid, "Invalid record ID for class #{record_klass.inspect}: #{params[:id]}. No such record found."

@@ -5,9 +5,11 @@ require 'active_support/test_case'
 
 class ValidatorTest < ::ActiveSupport::TestCase
 
+  include ::ValidatiousOnRails::Validators::Validatious
+  
   def setup
-    @empty_validator = ValidatiousOnRails::Validatious::ClientSideValidator.new
-    @custom_validator = returning ValidatiousOnRails::Validatious::ClientSideValidator.new do |v|
+    @empty_validator = ClientSideValidator.new
+    @custom_validator = returning ClientSideValidator.new do |v|
       v.message = 'Fail, fail, fail!'
       v.params = ['some', 'params']
       v.aliases = ['some', 'aliases']
@@ -32,7 +34,7 @@ class ValidatorTest < ::ActiveSupport::TestCase
 
     assert_equal @custom_validator.name, @custom_validator.to_class
     assert_equal "#{@custom_validator.name}_1_hello_2", @custom_validator.to_class(1, "hello", 2)
-    assert_equal ::ValidatiousOnRails::Validatious::Validator.truncate_whitespace(expected_v2_validator), @empty_validator.to_js.strip
+    assert_equal Validator.truncate_whitespace(expected_v2_validator), @empty_validator.to_js.strip
   end
 
   test "creating a custom validator - and generate valid v2.Validator and class call" do
@@ -54,12 +56,12 @@ class ValidatorTest < ::ActiveSupport::TestCase
 
     assert_equal @custom_validator.name, @custom_validator.to_class
     assert_equal "#{@custom_validator.name}_1_hello_2", @custom_validator.to_class(1, "hello", 2)
-    assert_equal ::ValidatiousOnRails::Validatious::Validator.truncate_whitespace(expected_v2_validator), @custom_validator.to_js.strip
+    assert_equal Validator.truncate_whitespace(expected_v2_validator), @custom_validator.to_js.strip
   end
 
   context "Message" do
     test "I18n lookup" do
-      validator_klass = ::ValidatiousOnRails::Validatious::Validator
+      validator_klass = Validator
       # For some reason can't raise this in tests. =S
       # assert_raise(::I18n::MissingInterpolationArgument) {
       #    validator_klass.generate_message :key => :too_short
@@ -72,7 +74,7 @@ class ValidatorTest < ::ActiveSupport::TestCase
 
   context "JavaScript" do
     test "truncation of whitespace characters" do
-      duck_validator = ::ValidatiousOnRails::Validatious::ClientSideValidator.new('duck')
+      duck_validator = ClientSideValidator.new('duck')
       # Well... =)
       duck_validator.fn = %{
         var duck_says = "Quack!";

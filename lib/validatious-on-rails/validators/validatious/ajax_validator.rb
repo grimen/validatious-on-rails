@@ -30,7 +30,7 @@ module ValidatiousOnRails
           #
           # Base case: Return "true".
           #
-          def perform_validation(record, attribute_name, value, params = {})
+          def validate(record, attribute_name, value, params = {})
             return false if record.blank?
             record.send :"#{attribute_name}=", value
 
@@ -44,6 +44,8 @@ module ValidatiousOnRails
                   v.macro.to_s == validation_macro
                 }.first
               return true if validation.blank?
+
+              puts "ajax_validator: " << self.inspect + " #{validation_macro}"
               validation_error_message = self.translate_interpolation(self.new(validation).message)
 
               # Ugly, but probably the only way (?) to identify a certain error without open
@@ -53,7 +55,7 @@ module ValidatiousOnRails
               end
 
               if is_invalid
-                ValidatiousOnRails.log "Validation: FAIL: " + record.errors[attribute_name.to_sym].to_s
+                ::ValidatiousOnRails.log "Validation: FAIL: " + record.errors[attribute_name.to_sym].to_s
                 false
               else
                 true
@@ -61,11 +63,18 @@ module ValidatiousOnRails
             end
           end
 
+          # Get the AjaxValidator for a model validation.
+          #
           def class_for(validation_name, options = {})
+            # Old stuff:
+            #   ajax_validators = ::Object.subclasses_of(::ValidatiousOnRails::Validators::Validatious::AjaxValidator)
+            #   validator_klass = [*ajax_validators].select { |v| v.to_s == validator_klass_name }.first
             validator_klass_name = "::ValidatiousOnRails::Validators::#{validation_name.to_s.classify}::RemoteValidator"
-            # ajax_validators = ::Object.subclasses_of(::ValidatiousOnRails::Validators::Validatious::AjaxValidator)
-            # validator_klass = [*ajax_validators].select { |v| v.to_s == validator_klass_name }.first
+
+            # Custom RemoteValidator for current model validation already defined?
             validator_klass = validator_klass_name.constantize rescue nil
+
+            # If AjaxValidator defined (superclass of a RemoteValidator) use it, or define a generic one.
             validator_klass = if validator_klass.is_a?(::ValidatiousOnRails::Validators::Validatious::AjaxValidator)
               validator_klass
             else

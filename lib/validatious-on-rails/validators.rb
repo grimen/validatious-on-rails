@@ -36,11 +36,13 @@ module ValidatiousOnRails
       def default_remote_validator_for(validation, options = {})
         validation.options[:allow_nil] = false if validation.options[:allow_nil].nil?
         validation.options[:allow_blank] = false if validation.options[:allow_blank].nil?
+        validation.options[:message] = nil if validation.options[:message].blank?
+
         validation_name = validation.macro.to_s.gsub(/^validates_/, '')
 
         # Fallback on auto-generated error message I18n key, if none is specified.
         message = validation.options[:message] || options[:key] || validation_name.gsub(/_of$/, '').to_sym
-        
+
         Validatious::AjaxValidator.class_for(validation_name.to_sym).new(validation.options[:allow_nil],
           validation.options[:allow_blank], :message => message)
       end

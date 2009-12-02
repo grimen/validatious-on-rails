@@ -20,7 +20,6 @@ module ValidatiousOnRails
           validation.options[:minimum] ||= validation.options[:within].min rescue nil
           validation.options[:maximum] ||= validation.options[:within].max rescue nil
 
-          #debugger
           if validation.options[:minimum].present?
             validators << MinimumValidator.new(validation.options[:minimum],
                                                (validation.options[:allow_nil] || false),
