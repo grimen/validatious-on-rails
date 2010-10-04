@@ -8,6 +8,17 @@ require File.join(File.dirname(__FILE__), *%w[validatious-on-rails controller])
 module ValidatiousOnRails # :nodoc:
 
   extend self
+  
+  # Returns the environment of the Rails application,
+  # if this is running in a Rails context.
+  # Returns `nil` if no such environment is defined.
+  #
+  # @return [String, nil]
+  def rails_env
+    return ::Rails.env.to_s if defined?(::Rails.env)
+    return RAILS_ENV.to_s if defined?(RAILS_ENV)
+    return nil
+  end
 
   # Standard error: Acts as base error class for the plugin.
   #
@@ -19,7 +30,7 @@ module ValidatiousOnRails # :nodoc:
   end
   RemoteValidationInvalid = ::Class.new(::ValidatiousOnRails::ValidatiousOnRailsError)
 
-  @@verbose = ::Object.const_defined?(:RAILS_ENV) ? (::RAILS_ENV.to_sym == :development) : true
+  @@verbose = rails_env == nil ? true : (rails_env.to_sym == :development)
   @@client_side_validations_by_default = true
   @@remote_validations_enabled = false
 
