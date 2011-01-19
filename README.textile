@@ -56,6 +56,7 @@ _*Note:* Somethings fundamental is missing? Let me know! =)_
 
 h3. Known Issues
 
+* Not Rails 3-compatible - and it's most probably not a quick-fix either as quite much happened in the Rails 3 model validations API (kind of rewritten).
 * Remote validations (validates_uniqueness_of, ...) is not super stable, but I'm sure it will be very soon. Help me out by reporting issues you have, or submitting a patch - or two. =)
 
 h2. Installation
